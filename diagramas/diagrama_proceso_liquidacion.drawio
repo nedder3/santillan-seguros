@@ -1,0 +1,110 @@
+<mxfile host="app.diagrams.net" modified="2026-11-05T21:00:00.000Z" agent="nedder3" version="24.0.0" type="device">
+  <diagram id="diagrama-flujo-liquidacion" name="Flujo de Procesamiento y Liquidación FNOL - Federación Santillán">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="850" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Header Cátedra -->
+        <mxCell id="h2" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — FLUJO DE LIQUIDACIÓN DE SINIESTROS (FNOL)&lt;/b&gt;&lt;br&gt;Proceso Lógico de Recepción, Triage, Inspección Pericial y Aplicación de Deducible | C# .NET 8&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Inicio -->
+        <mxCell id="flow_start" value="Inicio: Denuncia de Siniestro (FNOL)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284c7;strokeColor=#0369a1;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: Ingreso en UI -->
+        <mxCell id="step_ui" value="&lt;b&gt;1. Captura en UI WPF&lt;/b&gt;&lt;br&gt;Ingreso de número de siniestro,&lt;br&gt;póliza asociada y monto reclamado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="220" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 2: Búsqueda en Sistema -->
+        <mxCell id="step_lookup" value="&lt;b&gt;2. Búsqueda en SistemaAseguradora&lt;/b&gt;&lt;br&gt;sistema.buscarPoliza(numPoliza)&lt;br&gt;Recupera instancia Poliza en Heap" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Decisión 1: Póliza válida? -->
+        <mxCell id="dec_poliza" value="¿Póliza existe &amp;amp;&lt;br&gt;está activa?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#b45309;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="110" y="440" width="160" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Rechazo póliza -->
+        <mxCell id="end_rej_pol" value="&lt;b&gt;Rechazo Inmediato&lt;/b&gt;&lt;br&gt;Póliza inexistente o inactiva&lt;br&gt;Estado: RECHAZADO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#b91c1c;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="360" y="465" width="190" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: Asignar Peritaje -->
+        <mxCell id="step_peritaje" value="&lt;b&gt;3. Inspección Pericial&lt;/b&gt;&lt;br&gt;Creación de objeto Peritaje&lt;br&gt;siniestro.registrarPeritaje(p)&lt;br&gt;Estado pasa a 'EN_PERITAJE'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="600" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Decisión 2: Daños verificados? -->
+        <mxCell id="dec_danos" value="¿Daños físicos&lt;br&gt;verificados por&lt;br&gt;el perito?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#b45309;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="582.5" width="170" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Rechazo peritaje -->
+        <mxCell id="end_rej_danos" value="&lt;b&gt;Rechazo Pericial&lt;/b&gt;&lt;br&gt;Daños no constatados&lt;br&gt;Estado: RECHAZADO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#b91c1c;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="465" width="170" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 4: Liquidación POO -->
+        <mxCell id="step_calc" value="&lt;b&gt;4. Cálculo de Indemnización&lt;/b&gt;&lt;br&gt;poliza.liquidarIndemnizacion(montoPeritado)&lt;br&gt;Neto = Daño - Deducible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="670" y="602.5" width="250" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Decisión 3: Supera deducible? -->
+        <mxCell id="dec_deducible" value="¿Monto peritado &amp;gt;&lt;br&gt;Deducible?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#b45309;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="990" y="582.5" width="170" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Rechazo franquicia -->
+        <mxCell id="end_rej_deducible" value="&lt;b&gt;Liquidación en $0&lt;/b&gt;&lt;br&gt;Daño inferior a la franquicia&lt;br&gt;Estado: RECHAZADO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#b91c1c;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="990" y="465" width="170" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Éxito: Liquidación aprobada -->
+        <mxCell id="step_success" value="&lt;b&gt;5. Siniestro LIQUIDADO&lt;/b&gt;&lt;br&gt;Monto = min(Neto, CoberturaMax)&lt;br&gt;Actualización de KPIs en UI WPF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#22c55e;strokeColor=#15803d;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="955" y="730" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Conexiones -->
+        <mxCell id="arr1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;" edge="1" parent="1" source="flow_start" target="step_ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;" edge="1" parent="1" source="step_ui" target="step_lookup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;" edge="1" parent="1" source="step_lookup" target="dec_poliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ef4444;fontColor=#ef4444;fontStyle=1;" edge="1" parent="1" source="dec_poliza" target="end_rej_pol">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4_yes" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" edge="1" parent="1" source="dec_poliza" target="step_peritaje">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9333ea;" edge="1" parent="1" source="step_peritaje" target="dec_danos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr6_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ef4444;fontColor=#ef4444;fontStyle=1;" edge="1" parent="1" source="dec_danos" target="end_rej_danos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr6_yes" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" edge="1" parent="1" source="dec_danos" target="step_calc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;" edge="1" parent="1" source="step_calc" target="dec_deducible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr8_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ef4444;fontColor=#ef4444;fontStyle=1;" edge="1" parent="1" source="dec_deducible" target="end_rej_deducible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr8_yes" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" edge="1" parent="1" source="dec_deducible" target="step_success">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

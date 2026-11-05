@@ -1,0 +1,450 @@
+<mxfile host="app.diagrams.net" modified="2026-11-05T21:10:00.000Z" agent="nedder3" version="24.0.0" type="device">
+<diagram id="diagrama-clases-uml" name="1. Diagrama de Clases UML">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Encabezado de Cátedra & Autor -->
+        <mxCell id="header_box" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — DIAGRAMA DE CLASES UML&lt;/b&gt;&lt;br&gt;Materia: Programación Orientada a Objetos | Lenguaje: C# .NET 8&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Fecha: Noviembre 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="1280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Clase FECHA -->
+        <mxCell id="c_fecha" value="&lt;p style=&quot;margin:0px;padding-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Fecha&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- dia: int&lt;br/&gt;- mes: int&lt;br/&gt;- ano: int&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Fecha(int, int, int)&lt;br/&gt;+ getDia(): int&lt;br/&gt;+ setDia(int): void&lt;br/&gt;+ getMes(): int&lt;br/&gt;+ setMes(int): void&lt;br/&gt;+ getAno(): int&lt;br/&gt;+ setAno(int): void&lt;br/&gt;+ copy(Fecha): void&lt;br/&gt;+ clone(): Fecha&lt;br/&gt;+ equals(Fecha): bool&lt;br/&gt;+ esValida(): bool&lt;br/&gt;+ ToString(): string&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;fillColor=#f8fafc;strokeColor=#64748b;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="440" width="180" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- Clase ASEGURADO -->
+        <mxCell id="c_asegurado" value="&lt;p style=&quot;margin:0px;padding-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Asegurado&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- codigo: int&lt;br/&gt;- dni: string&lt;br/&gt;- nombre: string&lt;br/&gt;- telefono: string&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Asegurado(int)&lt;br/&gt;+ Asegurado(int, string, string, string)&lt;br/&gt;+ getCodigo(): int&lt;br/&gt;+ setCodigo(int): void&lt;br/&gt;+ getDni(): string&lt;br/&gt;+ setDni(string): void&lt;br/&gt;+ getNombre(): string&lt;br/&gt;+ setNombre(string): void&lt;br/&gt;+ getTelefono(): string&lt;br/&gt;+ setTelefono(string): void&lt;br/&gt;+ copy(Asegurado): void&lt;br/&gt;+ clone(): Asegurado&lt;br/&gt;+ equals(Asegurado): bool&lt;br/&gt;+ ToString(): string&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;fillColor=#f8fafc;strokeColor=#64748b;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="130" width="220" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- Clase POLIZA -->
+        <mxCell id="c_poliza" value="&lt;p style=&quot;margin:0px;padding-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Poliza&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- numero: int&lt;br/&gt;- tipo: string&lt;br/&gt;- prima: float&lt;br/&gt;- coberturaMax: float&lt;br/&gt;- deducible: float&lt;br/&gt;- activa: bool&lt;br/&gt;- vigenciaInicio: Fecha&lt;br/&gt;- vigenciaFin: Fecha&lt;br/&gt;- titular: Asegurado&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Poliza(int, string, float, float, float, Fecha, Fecha, Asegurado)&lt;br/&gt;+ getNumero(): int&lt;br/&gt;+ getPrima(): float&lt;br/&gt;+ getCoberturaMax(): float&lt;br/&gt;+ getDeducible(): float&lt;br/&gt;+ getActiva(): bool&lt;br/&gt;+ copy(Poliza): void [Profundo]&lt;br/&gt;+ clone(): Poliza [Profundo]&lt;br/&gt;+ equals(Poliza): bool [Profundo]&lt;br/&gt;+ liquidarIndemnizacion(float): float&lt;br/&gt;+ ToString(): string&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;fillColor=#f8fafc;strokeColor=#64748b;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="310" height="310" as="geometry" />
+        </mxCell>
+
+        <!-- Clase PERITAJE -->
+        <mxCell id="c_peritaje" value="&lt;p style=&quot;margin:0px;padding-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Peritaje&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- codigo: int&lt;br/&gt;- perito: string&lt;br/&gt;- observaciones: string&lt;br/&gt;- montoPresupuestado: float&lt;br/&gt;- danosVerificados: bool&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Peritaje(int)&lt;br/&gt;+ Peritaje(int, string, float, bool, string)&lt;br/&gt;+ getCodigo(): int&lt;br/&gt;+ getPerito(): string&lt;br/&gt;+ getMontoPresupuestado(): float&lt;br/&gt;+ getDanosVerificados(): bool&lt;br/&gt;+ copy(Peritaje): void&lt;br/&gt;+ clone(): Peritaje&lt;br/&gt;+ equals(Peritaje): bool&lt;br/&gt;+ ToString(): string&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;fillColor=#f8fafc;strokeColor=#64748b;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="440" width="240" height="250" as="geometry" />
+        </mxCell>
+
+        <!-- Clase SINIESTRO -->
+        <mxCell id="c_siniestro" value="&lt;p style=&quot;margin:0px;padding-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Siniestro&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- numero: int&lt;br/&gt;- descripcion: string&lt;br/&gt;- estado: string&lt;br/&gt;- montoReclamado: float&lt;br/&gt;- montoLiquidado: float&lt;br/&gt;- fechaOcurrencia: Fecha&lt;br/&gt;- poliza: Poliza&lt;br/&gt;- peritaje: Peritaje&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Siniestro(int, string, float, Fecha, Poliza)&lt;br/&gt;+ getNumero(): int&lt;br/&gt;+ getEstado(): string&lt;br/&gt;+ getMontoLiquidado(): float&lt;br/&gt;+ registrarPeritaje(Peritaje): bool&lt;br/&gt;+ liquidar(): bool&lt;br/&gt;+ copy(Siniestro): void [Profundo]&lt;br/&gt;+ clone(): Siniestro [Profundo]&lt;br/&gt;+ equals(Siniestro): bool&lt;br/&gt;+ ToString(): string&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;fillColor=#f8fafc;strokeColor=#64748b;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="770" y="130" width="280" height="310" as="geometry" />
+        </mxCell>
+
+        <!-- Clase SISTEMAASEGURADORA -->
+        <mxCell id="c_sistema" value="&lt;p style=&quot;margin:0px;padding-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SistemaAseguradora&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- nombre: string&lt;br/&gt;- asegurados: List&amp;lt;Asegurado&amp;gt;&lt;br/&gt;- polizas: List&amp;lt;Poliza&amp;gt;&lt;br/&gt;- siniestros: List&amp;lt;Siniestro&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ SistemaAseguradora(string)&lt;br/&gt;+ agregarAsegurado(Asegurado): bool&lt;br/&gt;+ emitirPoliza(Poliza): bool&lt;br/&gt;+ registrarSiniestro(Siniestro): bool&lt;br/&gt;+ buscarPoliza(int): Poliza&lt;br/&gt;+ buscarAsegurado(int): Asegurado&lt;br/&gt;+ calcularTotalLiquidaciones(): float&lt;br/&gt;+ contarPorEstado(string): int&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;fillColor=#f8fafc;strokeColor=#64748b;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="520" width="270" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- Relaciones UML -->
+        <!-- Poliza -> Asegurado -->
+        <mxCell id="rel_pol_aseg" value="titular&#xa;1..1" style="endArrow=diamond;startArrow=none;html=1;endFill=0;strokeWidth=1.5;strokeColor=#0284c7;fontColor=#0f172a;exitX=0;exitY=0.3;entryX=1;entryY=0.3;" edge="1" parent="1" source="c_poliza" target="c_asegurado">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Poliza -> Fecha (vigenciaInicio / Fin) -->
+        <mxCell id="rel_pol_fecha" value="vigenciaInicio, vigenciaFin&#xa;2..2" style="endArrow=diamond;startArrow=none;html=1;endFill=0;strokeWidth=1.5;strokeColor=#16a34a;fontColor=#0f172a;exitX=0.2;exitY=1;entryX=1;entryY=0.3;" edge="1" parent="1" source="c_poliza" target="c_fecha">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Siniestro -> Poliza -->
+        <mxCell id="rel_sin_pol" value="poliza&#xa;1..1" style="endArrow=diamond;startArrow=none;html=1;endFill=0;strokeWidth=1.5;strokeColor=#d97706;fontColor=#0f172a;exitX=0;exitY=0.3;entryX=1;entryY=0.3;" edge="1" parent="1" source="c_siniestro" target="c_poliza">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Siniestro -> Peritaje -->
+        <mxCell id="rel_sin_peri" value="peritaje&#xa;0..1" style="endArrow=diamond;startArrow=none;html=1;endFill=0;strokeWidth=1.5;strokeColor=#9333ea;fontColor=#0f172a;exitX=0.9;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="c_siniestro" target="c_peritaje">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Siniestro -> Fecha (fechaOcurrencia) -->
+        <mxCell id="rel_sin_fecha" value="fechaOcurrencia&#xa;1..1" style="endArrow=diamond;startArrow=none;html=1;endFill=0;strokeWidth=1.5;strokeColor=#16a34a;fontColor=#0f172a;exitX=0.2;exitY=1;entryX=0.9;entryY=1;" edge="1" parent="1" source="c_siniestro" target="c_fecha">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="826" y="760" />
+              <mxPoint x="222" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SistemaAseguradora -> Colecciones -->
+        <mxCell id="rel_sis_pol" value="polizas&#xa;0..*" style="endArrow=diamond;startArrow=none;html=1;endFill=1;strokeWidth=1.5;strokeColor=#475569;fontColor=#0f172a;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="c_sistema" target="c_poliza">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_sis_sin" value="siniestros&#xa;0..*" style="endArrow=diamond;startArrow=none;html=1;endFill=1;strokeWidth=1.5;strokeColor=#475569;fontColor=#0f172a;exitX=0.9;exitY=0;entryX=0.3;entryY=1;" edge="1" parent="1" source="c_sistema" target="c_siniestro">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_sis_aseg" value="asegurados&#xa;0..*" style="endArrow=diamond;startArrow=none;html=1;endFill=1;strokeWidth=1.5;strokeColor=#475569;fontColor=#0f172a;exitX=0;exitY=0.3;entryX=0.9;entryY=0.9;" edge="1" parent="1" source="c_sistema" target="c_asegurado">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+<diagram id="diagrama-memoria-stack-heap" name="2. Memoria Stack vs Heap">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="950" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Header Cátedra -->
+        <mxCell id="h1" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — DIAGRAMA DE MEMORIA (STACK vs HEAP)&lt;/b&gt;&lt;br&gt;Evaluación de Punteros, Aliasing y Tríada Sagrada (Copy, Clone, Equals) | C# .NET 8&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ZONA 1: STACK (Variables Locales de Referencia) -->
+        <mxCell id="zone_stack" value="VARIABLES LOCALES (STACK / PILA)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f0f9ff;strokeColor=#0284c7;fontStyle=1;fontSize=13;fontColor=#0369a1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="280" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="var_a1" value="&lt;b&gt;a1&lt;/b&gt; : Asegurado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=12;fontColor=#0f172a;" vertex="1" parent="zone_stack">
+          <mxGeometry x="30" y="50" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="var_a2" value="&lt;b&gt;a2&lt;/b&gt; : Asegurado (alias a1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=12;fontColor=#0f172a;" vertex="1" parent="zone_stack">
+          <mxGeometry x="30" y="120" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="var_a3" value="&lt;b&gt;a3&lt;/b&gt; : Asegurado (clon de a1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=12;fontColor=#0f172a;" vertex="1" parent="zone_stack">
+          <mxGeometry x="30" y="190" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="var_p1" value="&lt;b&gt;p1&lt;/b&gt; : Poliza" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=12;fontColor=#0f172a;" vertex="1" parent="zone_stack">
+          <mxGeometry x="30" y="280" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="var_p2" value="&lt;b&gt;p2&lt;/b&gt; : Poliza (clon profundo p1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=12;fontColor=#0f172a;" vertex="1" parent="zone_stack">
+          <mxGeometry x="30" y="350" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="var_s1" value="&lt;b&gt;s1&lt;/b&gt; : Siniestro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=12;fontColor=#0f172a;" vertex="1" parent="zone_stack">
+          <mxGeometry x="30" y="470" width="220" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Cuadro Resumen Valores de Verdad -->
+        <mxCell id="box_truth" value="&lt;b&gt;VALORES DE VERDAD (EXAMEN):&lt;/b&gt;&lt;br&gt;1. a1 == a2 &amp;rarr; &lt;b&gt;TRUE&lt;/b&gt; (Aliasing, mismo puntero)&lt;br&gt;2. a1 == a3 &amp;rarr; &lt;b&gt;FALSE&lt;/b&gt; (Distinta instancia)&lt;br&gt;3. a1.equals(a3) &amp;rarr; &lt;b&gt;TRUE&lt;/b&gt; (Mismo estado)&lt;br&gt;4. p1 == p2 &amp;rarr; &lt;b&gt;FALSE&lt;/b&gt; (Instancias distintas)&lt;br&gt;5. p1.equals(p2) &amp;rarr; &lt;b&gt;TRUE&lt;/b&gt; (Contenido igual)&lt;br&gt;6. p1.VigenciaInicio == p2.VigenciaInicio &amp;rarr; &lt;b&gt;FALSE&lt;/b&gt;&lt;br&gt;7. p1.VigenciaInicio.equals(p2.VigenciaInicio) &amp;rarr; &lt;b&gt;TRUE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_stack">
+          <mxGeometry x="15" y="580" width="250" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ZONA 2: HEAP (Instancias en Memoria) -->
+        <mxCell id="zone_heap" value="INSTANCIAS EN MEMORIA (HEAP / MONTÍCULO)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;fontStyle=1;fontSize=13;fontColor=#b45309;" vertex="1" parent="1">
+          <mxGeometry x="370" y="100" width="980" height="780" as="geometry" />
+        </mxCell>
+
+        <!-- Obj Asegurado 1 -->
+        <mxCell id="obj_a1" value="&lt;b&gt;:Asegurado&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;codigo: 1001&lt;br&gt;dni: '20-33445566-9'&lt;br&gt;nombre: 'Federico Santillan'&lt;br&gt;telefono: '11-4455-6677'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_heap">
+          <mxGeometry x="50" y="40" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Obj Asegurado 3 (Clon) -->
+        <mxCell id="obj_a3" value="&lt;b&gt;:Asegurado (Clon)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;codigo: 1001&lt;br&gt;dni: '20-33445566-9'&lt;br&gt;nombre: 'Federico Santillan'&lt;br&gt;telefono: '11-4455-6677'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_heap">
+          <mxGeometry x="50" y="160" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Fechas Póliza 1 -->
+        <mxCell id="obj_f1" value="&lt;b&gt;:Fecha (Inicio p1)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;dia: 1 | mes: 1 | ano: 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#16a34a;fontSize=11;align=center;" vertex="1" parent="zone_heap">
+          <mxGeometry x="400" y="40" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="obj_f2" value="&lt;b&gt;:Fecha (Fin p1)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;dia: 31 | mes: 12 | ano: 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#16a34a;fontSize=11;align=center;" vertex="1" parent="zone_heap">
+          <mxGeometry x="400" y="120" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Poliza 1 -->
+        <mxCell id="obj_p1" value="&lt;b&gt;:Poliza&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;numero: 5001&lt;br&gt;tipo: 'AUTO'&lt;br&gt;prima: 15000.00&lt;br&gt;coberturaMax: 1000000.00&lt;br&gt;deducible: 50000.00&lt;br&gt;activa: true" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_heap">
+          <mxGeometry x="50" y="280" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Fechas Póliza 2 (Clonadas en profundidad) -->
+        <mxCell id="obj_f1_p2" value="&lt;b&gt;:Fecha (Clon p2)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;dia: 1 | mes: 1 | ano: 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#16a34a;fontSize=11;align=center;" vertex="1" parent="zone_heap">
+          <mxGeometry x="400" y="280" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="obj_f2_p2" value="&lt;b&gt;:Fecha (Clon p2)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;dia: 31 | mes: 12 | ano: 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#16a34a;fontSize=11;align=center;" vertex="1" parent="zone_heap">
+          <mxGeometry x="400" y="360" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Poliza 2 (Clon) -->
+        <mxCell id="obj_p2" value="&lt;b&gt;:Poliza (Clon Profundo)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;numero: 5001&lt;br&gt;tipo: 'AUTO'&lt;br&gt;coberturaMax: 1000000.00&lt;br&gt;deducible: 50000.00&lt;br&gt;activa: true" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_heap">
+          <mxGeometry x="50" y="430" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Siniestro 1 -->
+        <mxCell id="obj_s1" value="&lt;b&gt;:Siniestro&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;numero: 901&lt;br&gt;descripcion: 'Colisión urbana'&lt;br&gt;estado: 'LIQUIDADO'&lt;br&gt;montoReclamado: 85000.00&lt;br&gt;montoLiquidado: 35000.00" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbcfe8;strokeColor=#db2777;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_heap">
+          <mxGeometry x="50" y="580" width="220" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- Fecha Ocurrencia Siniestro -->
+        <mxCell id="obj_fSin" value="&lt;b&gt;:Fecha (Ocurrencia)&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;dia: 10 | mes: 2 | ano: 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#16a34a;fontSize=11;align=center;" vertex="1" parent="zone_heap">
+          <mxGeometry x="380" y="600" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Peritaje 1 -->
+        <mxCell id="obj_peri" value="&lt;b&gt;:Peritaje&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;codigo: 501&lt;br&gt;perito: 'Ing. Martin Santillan'&lt;br&gt;montoPresupuestado: 85000.00&lt;br&gt;danosVerificados: true" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e9d5ff;strokeColor=#9333ea;fontSize=11;align=left;spacingLeft=8;" vertex="1" parent="zone_heap">
+          <mxGeometry x="640" y="600" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Flechas Stack a Heap -->
+        <mxCell id="p_a1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="var_a1" target="obj_a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Aliasing a2 apunta al mismo obj_a1 -->
+        <mxCell id="p_a2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#dc2626;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.7;" edge="1" parent="1" source="var_a2" target="obj_a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_a3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="var_a3" target="obj_a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="var_p1" target="obj_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="var_p2" target="obj_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_s1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="var_s1" target="obj_s1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flechas entre objetos del Heap -->
+        <!-- p1 -> a1 (titular) -->
+        <mxCell id="p_p1_titular" value="titular" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#ea580c;exitX=0.2;exitY=0;entryX=0.2;entryY=1;" edge="1" parent="zone_heap" source="obj_p1" target="obj_a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- p1 -> f1 y f2 -->
+        <mxCell id="p_p1_f1" value="vigenciaInicio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" parent="zone_heap" source="obj_p1" target="obj_f1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_p1_f2" value="vigenciaFin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;exitX=1;exitY=0.6;entryX=0;entryY=0.5;" edge="1" parent="zone_heap" source="obj_p1" target="obj_f2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- p2 -> fechas clonadas -->
+        <mxCell id="p_p2_f1" value="vigenciaInicio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" parent="zone_heap" source="obj_p2" target="obj_f1_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_p2_f2" value="vigenciaFin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="zone_heap" source="obj_p2" target="obj_f2_p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- s1 -> p1 -->
+        <mxCell id="p_s1_p1" value="poliza" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#db2777;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="zone_heap" source="obj_s1" target="obj_p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- s1 -> fSin -->
+        <mxCell id="p_s1_f" value="fechaOcurrencia" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" parent="zone_heap" source="obj_s1" target="obj_fSin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- s1 -> peritaje -->
+        <mxCell id="p_s1_peri" value="peritaje" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9333ea;exitX=1;exitY=0.7;entryX=0;entryY=0.5;" edge="1" parent="zone_heap" source="obj_s1" target="obj_peri">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="660" />
+              <mxPoint x="320" y="720" />
+              <mxPoint x="600" y="720" />
+              <mxPoint x="600" y="645" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+<diagram id="diagrama-flujo-liquidacion" name="3. Flujo Liquidacion FNOL">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="850" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Header Cátedra -->
+        <mxCell id="h2" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — FLUJO DE LIQUIDACIÓN DE SINIESTROS (FNOL)&lt;/b&gt;&lt;br&gt;Proceso Lógico de Recepción, Triage, Inspección Pericial y Aplicación de Deducible | C# .NET 8&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Inicio -->
+        <mxCell id="flow_start" value="Inicio: Denuncia de Siniestro (FNOL)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0284c7;strokeColor=#0369a1;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: Ingreso en UI -->
+        <mxCell id="step_ui" value="&lt;b&gt;1. Captura en UI WPF&lt;/b&gt;&lt;br&gt;Ingreso de número de siniestro,&lt;br&gt;póliza asociada y monto reclamado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="220" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 2: Búsqueda en Sistema -->
+        <mxCell id="step_lookup" value="&lt;b&gt;2. Búsqueda en SistemaAseguradora&lt;/b&gt;&lt;br&gt;sistema.buscarPoliza(numPoliza)&lt;br&gt;Recupera instancia Poliza en Heap" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Decisión 1: Póliza válida? -->
+        <mxCell id="dec_poliza" value="¿Póliza existe &amp;amp;&lt;br&gt;está activa?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#b45309;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="110" y="440" width="160" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Rechazo póliza -->
+        <mxCell id="end_rej_pol" value="&lt;b&gt;Rechazo Inmediato&lt;/b&gt;&lt;br&gt;Póliza inexistente o inactiva&lt;br&gt;Estado: RECHAZADO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#b91c1c;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="360" y="465" width="190" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: Asignar Peritaje -->
+        <mxCell id="step_peritaje" value="&lt;b&gt;3. Inspección Pericial&lt;/b&gt;&lt;br&gt;Creación de objeto Peritaje&lt;br&gt;siniestro.registrarPeritaje(p)&lt;br&gt;Estado pasa a 'EN_PERITAJE'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="600" width="220" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Decisión 2: Daños verificados? -->
+        <mxCell id="dec_danos" value="¿Daños físicos&lt;br&gt;verificados por&lt;br&gt;el perito?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#b45309;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="582.5" width="170" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Rechazo peritaje -->
+        <mxCell id="end_rej_danos" value="&lt;b&gt;Rechazo Pericial&lt;/b&gt;&lt;br&gt;Daños no constatados&lt;br&gt;Estado: RECHAZADO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#b91c1c;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="465" width="170" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 4: Liquidación POO -->
+        <mxCell id="step_calc" value="&lt;b&gt;4. Cálculo de Indemnización&lt;/b&gt;&lt;br&gt;poliza.liquidarIndemnizacion(montoPeritado)&lt;br&gt;Neto = Daño - Deducible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="670" y="602.5" width="250" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Decisión 3: Supera deducible? -->
+        <mxCell id="dec_deducible" value="¿Monto peritado &amp;gt;&lt;br&gt;Deducible?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#b45309;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="990" y="582.5" width="170" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Rechazo franquicia -->
+        <mxCell id="end_rej_deducible" value="&lt;b&gt;Liquidación en $0&lt;/b&gt;&lt;br&gt;Daño inferior a la franquicia&lt;br&gt;Estado: RECHAZADO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#b91c1c;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="990" y="465" width="170" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Éxito: Liquidación aprobada -->
+        <mxCell id="step_success" value="&lt;b&gt;5. Siniestro LIQUIDADO&lt;/b&gt;&lt;br&gt;Monto = min(Neto, CoberturaMax)&lt;br&gt;Actualización de KPIs en UI WPF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#22c55e;strokeColor=#15803d;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="955" y="730" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Conexiones -->
+        <mxCell id="arr1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;" edge="1" parent="1" source="flow_start" target="step_ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;" edge="1" parent="1" source="step_ui" target="step_lookup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0284c7;" edge="1" parent="1" source="step_lookup" target="dec_poliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ef4444;fontColor=#ef4444;fontStyle=1;" edge="1" parent="1" source="dec_poliza" target="end_rej_pol">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4_yes" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" edge="1" parent="1" source="dec_poliza" target="step_peritaje">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9333ea;" edge="1" parent="1" source="step_peritaje" target="dec_danos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr6_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ef4444;fontColor=#ef4444;fontStyle=1;" edge="1" parent="1" source="dec_danos" target="end_rej_danos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr6_yes" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" edge="1" parent="1" source="dec_danos" target="step_calc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;" edge="1" parent="1" source="step_calc" target="dec_deducible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr8_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ef4444;fontColor=#ef4444;fontStyle=1;" edge="1" parent="1" source="dec_deducible" target="end_rej_deducible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr8_yes" value="SÍ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16a34a;fontColor=#16a34a;fontStyle=1;" edge="1" parent="1" source="dec_deducible" target="step_success">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+<diagram id="diagrama-sistema-santillan" name="4. Arquitectura del Sistema">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="920" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Encabezado de Cátedra & Autor -->
+        <mxCell id="header_box_sys" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — ARQUITECTURA GENERAL DEL SISTEMA&lt;/b&gt;&lt;br&gt;Capa de Presentación (WPF XAML) | Capa de Coordinación | Dominio POO Puro (C# .NET 8)&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="20" width="1040" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Capa 1: Presentacion (WPF Desktop UI) -->
+        <mxCell id="c1" value="CAPA DE PRESENTACIÓN (WPF / XAML Desktop UI)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="1040" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_main" value="&lt;b&gt;MainWindow.xaml&lt;/b&gt;&lt;br&gt;Bento Grid Dashboard&lt;br&gt;(Panel Métricas, Dark Slate Theme)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="30" y="50" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_polizas" value="&lt;b&gt;Panel Pólizas&lt;/b&gt;&lt;br&gt;Emisión de pólizas&lt;br&gt;DataGrid reactivo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="270" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_siniestros" value="&lt;b&gt;Panel Siniestros&lt;/b&gt;&lt;br&gt;Recepción FNOL&lt;br&gt;Triage &amp; Liquidación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="460" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_peritajes" value="&lt;b&gt;Panel Peritajes&lt;/b&gt;&lt;br&gt;Inspección técnica&lt;br&gt;Validación de daños" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="650" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_inspector" value="&lt;b&gt;Inspector Memoria&lt;/b&gt;&lt;br&gt;Visualizador Stack/Heap&lt;br&gt;Demostración Tríada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="840" y="50" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Capa 2: Logica del Negocio y Coordinador -->
+        <mxCell id="c2" value="CAPA DE APLICACIÓN Y COORDINACIÓN" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="310" width="1040" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="app_sistema" value="&lt;b&gt;SistemaAseguradora&lt;/b&gt;&lt;br&gt;+ emitirPoliza(Poliza)&lt;br&gt;+ registrarSiniestro(Siniestro)&lt;br&gt;+ calcularTotalLiquidaciones()&lt;br&gt;+ buscarPoliza(int): Poliza" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c2">
+          <mxGeometry x="270" y="40" width="240" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="app_liquidaciones" value="&lt;b&gt;Gestor de Liquidación &amp; Peritaje&lt;/b&gt;&lt;br&gt;Aplica reglas de indemnización:&lt;br&gt;Neto = min(Daño - Deducible, CoberturaMax)&lt;br&gt;Control de estado del siniestro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c2">
+          <mxGeometry x="550" y="40" width="270" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Capa 3: Modelo de Dominio POO -->
+        <mxCell id="c3" value="CAPA DE DOMINIO ORIENTADO A OBJETOS (FederacionSantillan.Core)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="490" width="1040" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_asegurado" value="&lt;b&gt;Asegurado&lt;/b&gt;&lt;br&gt;- codigo: int&lt;br&gt;- dni, nombre, tel: string&lt;br&gt;+ copy(Asegurado)&lt;br&gt;+ clone(): Asegurado&lt;br&gt;+ equals(Asegurado): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="40" y="50" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_fecha" value="&lt;b&gt;Fecha&lt;/b&gt;&lt;br&gt;- dia, mes, ano: int&lt;br&gt;+ copy(Fecha)&lt;br&gt;+ clone(): Fecha&lt;br&gt;+ equals(Fecha): bool&lt;br&gt;+ esValida(): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16a34a;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="40" y="180" width="170" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_poliza" value="&lt;b&gt;Poliza&lt;/b&gt;&lt;br&gt;- numero: int | tipo: string&lt;br&gt;- prima, coberturaMax, deducible: float&lt;br&gt;- titular: Asegurado&lt;br&gt;- vigenciaInicio, vigenciaFin: Fecha&lt;br&gt;+ copy(Poliza) [Profundo]&lt;br&gt;+ clone(): Poliza [Profundo]&lt;br&gt;+ equals(Poliza): bool [Profundo]&lt;br&gt;+ liquidarIndemnizacion(float): float" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#475569;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="270" y="50" width="240" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_siniestro" value="&lt;b&gt;Siniestro&lt;/b&gt;&lt;br&gt;- numero: int | descripcion, estado: string&lt;br&gt;- montoReclamado, montoLiquidado: float&lt;br&gt;- fechaOcurrencia: Fecha&lt;br&gt;- poliza: Poliza&lt;br&gt;- peritaje: Peritaje&lt;br&gt;+ copy(Siniestro) [Profundo]&lt;br&gt;+ clone(): Siniestro [Profundo]&lt;br&gt;+ equals(Siniestro): bool&lt;br&gt;+ liquidar(): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="570" y="50" width="250" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_peritaje" value="&lt;b&gt;Peritaje&lt;/b&gt;&lt;br&gt;- codigo: int | perito: string&lt;br&gt;- montoPresupuestado: float&lt;br&gt;- danosVerificados: bool&lt;br&gt;+ copy(Peritaje)&lt;br&gt;+ clone(): Peritaje&lt;br&gt;+ equals(Peritaje): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9333ea;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="850" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Conectores y Asociaciones -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0284c7;" edge="1" parent="c3" source="ent_poliza" target="ent_asegurado">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;" edge="1" parent="c3" source="ent_poliza" target="ent_fecha">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#d97706;" edge="1" parent="c3" source="ent_siniestro" target="ent_poliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9333ea;" edge="1" parent="c3" source="ent_siniestro" target="ent_peritaje">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Conexiones entre capas -->
+        <mxCell id="ec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#475569;" edge="1" parent="1" source="ui_main" target="app_sistema">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7c3aed;" edge="1" parent="1" source="app_sistema" target="ent_poliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

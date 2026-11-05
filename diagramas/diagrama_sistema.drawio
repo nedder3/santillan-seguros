@@ -1,13 +1,18 @@
-<mxfile host="app.diagrams.net" modified="2026-11-05T20:25:00.000Z" agent="Antigravity" version="24.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2026-11-05T21:05:00.000Z" agent="nedder3" version="24.0.0" type="device">
   <diagram id="diagrama-sistema-santillan" name="Arquitectura Sistema Federacion Santillan">
-    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="920" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
+        <!-- Encabezado de Cátedra & Autor -->
+        <mxCell id="header_box_sys" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — ARQUITECTURA GENERAL DEL SISTEMA&lt;/b&gt;&lt;br&gt;Capa de Presentación (WPF XAML) | Capa de Coordinación | Dominio POO Puro (C# .NET 8)&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="20" width="1040" height="60" as="geometry" />
+        </mxCell>
+
         <!-- Capa 1: Presentacion (WPF Desktop UI) -->
         <mxCell id="c1" value="CAPA DE PRESENTACIÓN (WPF / XAML Desktop UI)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
-          <mxGeometry x="60" y="40" width="1040" height="180" as="geometry" />
+          <mxGeometry x="60" y="100" width="1040" height="180" as="geometry" />
         </mxCell>
         <mxCell id="ui_main" value="&lt;b&gt;MainWindow.xaml&lt;/b&gt;&lt;br&gt;Bento Grid Dashboard&lt;br&gt;(Panel Métricas, Dark Slate Theme)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=11;" vertex="1" parent="c1">
           <mxGeometry x="30" y="50" width="210" height="90" as="geometry" />
@@ -27,7 +32,7 @@
 
         <!-- Capa 2: Logica del Negocio y Coordinador -->
         <mxCell id="c2" value="CAPA DE APLICACIÓN Y COORDINACIÓN" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
-          <mxGeometry x="60" y="260" width="1040" height="150" as="geometry" />
+          <mxGeometry x="60" y="310" width="1040" height="150" as="geometry" />
         </mxCell>
         <mxCell id="app_sistema" value="&lt;b&gt;SistemaAseguradora&lt;/b&gt;&lt;br&gt;+ emitirPoliza(Poliza)&lt;br&gt;+ registrarSiniestro(Siniestro)&lt;br&gt;+ calcularTotalLiquidaciones()&lt;br&gt;+ buscarPoliza(int): Poliza" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c2">
           <mxGeometry x="270" y="40" width="240" height="85" as="geometry" />
@@ -38,7 +43,7 @@
 
         <!-- Capa 3: Modelo de Dominio POO -->
         <mxCell id="c3" value="CAPA DE DOMINIO ORIENTADO A OBJETOS (FederacionSantillan.Core)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
-          <mxGeometry x="60" y="450" width="1040" height="310" as="geometry" />
+          <mxGeometry x="60" y="490" width="1040" height="310" as="geometry" />
         </mxCell>
         <mxCell id="ent_asegurado" value="&lt;b&gt;Asegurado&lt;/b&gt;&lt;br&gt;- codigo: int&lt;br&gt;- dni, nombre, tel: string&lt;br&gt;+ copy(Asegurado)&lt;br&gt;+ clone(): Asegurado&lt;br&gt;+ equals(Asegurado): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
           <mxGeometry x="40" y="50" width="170" height="110" as="geometry" />

@@ -27,7 +27,20 @@
 
 ---
 
-## Diagramas de Arquitectura & Memoria
+## Diagramas de Arquitectura, Memoria &amp; UML (Draw.io &amp; Mermaid)
+
+Todos los diagramas fueron diseñados en formato nativo editable de **Draw.io** (`.drawio`) conforme a los estándares de entrega académica de la cátedra de POO:
+
+### 📦 Archivos Draw.io Disponibles en el Repositorio
+* **Libro Maestro Multipágina (Recomendado):** [diagramas/sistema_federacion_santillan_completo.drawio](diagramas/sistema_federacion_santillan_completo.drawio) *(contiene las 4 láminas en pestañas inferiores).*
+* **1. Diagrama de Clases UML:** [diagramas/diagrama_clases_uml.drawio](diagramas/diagrama_clases_uml.drawio)
+* **2. Memoria Stack vs. Heap (Objetos &amp; Tríada):** [diagramas/diagrama_objetos_memoria.drawio](diagramas/diagrama_objetos_memoria.drawio)
+* **3. Flujo de Procesamiento y Liquidación FNOL:** [diagramas/diagrama_proceso_liquidacion.drawio](diagramas/diagrama_proceso_liquidacion.drawio)
+* **4. Arquitectura del Sistema:** [diagramas/diagrama_sistema.drawio](diagramas/diagrama_sistema.drawio)
+
+> **Instrucciones para visualización:** Arrastrar cualquiera de los archivos `.drawio` directamente a [app.diagrams.net](https://app.diagrams.net) o abrirlos mediante la extensión oficial de Draw.io en VS Code.
+
+---
 
 ### 1. Diagrama de Objetos en Memoria (Stack vs. Heap)
 Representación bipartita que ilustra la asignación de variables de referencia en la Pila y la estructura de instancias y punteros de asociación en el Montículo:
