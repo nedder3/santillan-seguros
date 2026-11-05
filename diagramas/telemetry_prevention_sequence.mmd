@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor Sensor as IoT Telematics / Sensor Mesh
+    participant Gateway as Ingestion Gateway (EventStream)
+    participant Sentinel as PreventionSentinel (Evaluator)
+    participant Actuator as Automated Actuator / Shutoff
+    participant Notify as Notification Service
+    participant PolicyLedger as Policy & Underwriting Ledger
+
+    Sensor->>Gateway: POST /v1/telemetry/events (Measured Telemetry)
+    Gateway->>Sentinel: Dispatch TelemetryEvent (Async Queue)
+    
+    critical Evaluate Threshold
+        Sentinel->>Sentinel: Compare Measured Value vs Safety Limit
+    end
+
+    alt Measured Value >= Critical Threshold
+        Sentinel->>Actuator: Trigger Automated Mitigation (e.g. Shutoff Valve)
+        Actuator-->>Sentinel: Actuation Acknowledged (Mitigation Applied)
+        Sentinel->>Notify: Push Critical Alert to Policyholder & Emergency Crew
+        Notify-->>Sensor: Alert Dispatched (SMS / App Push)
+        Sentinel->>PolicyLedger: Log Prevention Credit (Loss Avoidance Record)
+    else Sub-Threshold Nominal Reading
+        Sentinel->>PolicyLedger: Record Periodic Telemetry Heartbeat
+    end

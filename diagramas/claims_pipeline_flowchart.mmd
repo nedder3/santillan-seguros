@@ -1,0 +1,25 @@
+flowchart TD
+    FNOL["Claimant / Broker First Notice of Loss (FNOL)"] --> Ingest["Ingestion & Policy Validation Gateway"]
+    Ingest --> ActiveCheck{"Is Policy Active and Premiums Current?"}
+    
+    ActiveCheck -- No --> RejectPre["Auto-Reject (Policy Inactive / Expired)"]
+    ActiveCheck -- Yes --> FraudScore["Fraud Heuristics & Anomaly Scoring Engine"]
+    
+    FraudScore --> FraudEval{"Fraud Risk Score >= 0.60?"}
+    
+    FraudEval -- Yes --> SIU["Special Investigation Unit (SIU) Escalation"]
+    SIU --> SIUVerdict{"SIU Assessment Validated?"}
+    SIUVerdict -- Fraud Confirmed --> RejectFraud["Claim Denied (Fraud Attempt Logged)"]
+    SIUVerdict -- Cleared --> AdjusterDispatch["Dispatch Certified Loss Adjuster"]
+    
+    FraudEval -- No --> AdjusterDispatch
+    
+    AdjusterDispatch --> Survey["On-Site Damage Survey & Digital Evidence Ingestion"]
+    Survey --> LossAssessment["Verify Damages vs Policy Coverage Limit & Deductible"]
+    
+    LossAssessment --> SettlementCalc{"Verified Loss > Deductible?"}
+    SettlementCalc -- No --> CloseDeductible["Claim Closed (Under Deductible Threshold)"]
+    SettlementCalc -- Yes --> ApprovePayout["Approve Payout: Verified Amount - Deductible"]
+    
+    ApprovePayout --> PayoutLedger["Banking Gateway Disbursal & Settlement Ledger"]
+    PayoutLedger --> Closed["Claim Settled & Archived"]
