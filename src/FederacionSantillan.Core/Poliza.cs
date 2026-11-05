@@ -1,6 +1,8 @@
+using FederacionSantillan.Core.Domain.Abstractions;
+
 namespace FederacionSantillan.Core;
 
-public class Poliza
+public class Poliza : ICopiable<Poliza>, IClonable<Poliza>, IIdentificable<int>
 {
     private int numero;
     private string tipo;
@@ -8,6 +10,8 @@ public class Poliza
     private bool activa;
     private Fecha vigenciaInicio, vigenciaFin;
     private Asegurado titular;
+
+    public int Id => numero;
 
     public Poliza(int n, string t, float p, float c, float d, Fecha vi, Fecha vf, Asegurado a)
     {

@@ -1,9 +1,13 @@
+using FederacionSantillan.Core.Domain.Abstractions;
+
 namespace FederacionSantillan.Core;
 
-public class Asegurado
+public class Asegurado : ICopiable<Asegurado>, IClonable<Asegurado>, IIdentificable<int>
 {
     private int codigo;
     private string dni, nombre, telefono;
+
+    public int Id => codigo;
 
     public Asegurado(int c)
     {

@@ -1,11 +1,15 @@
+using FederacionSantillan.Core.Domain.Abstractions;
+
 namespace FederacionSantillan.Core;
 
-public class Peritaje
+public class Peritaje : ICopiable<Peritaje>, IClonable<Peritaje>, IIdentificable<int>
 {
     private int codigo;
     private string perito, observaciones;
     private float montoPresupuestado;
     private bool danosVerificados;
+
+    public int Id => codigo;
 
     public Peritaje(int c)
     {

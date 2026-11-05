@@ -1,6 +1,8 @@
+using FederacionSantillan.Core.Domain.Abstractions;
+
 namespace FederacionSantillan.Core;
 
-public class Siniestro
+public class Siniestro : ICopiable<Siniestro>, IClonable<Siniestro>, IIdentificable<int>
 {
     private int numero;
     private string descripcion, estado;
@@ -8,6 +10,8 @@ public class Siniestro
     private Fecha fechaOcurrencia;
     private Poliza poliza;
     private Peritaje peritaje;
+
+    public int Id => numero;
 
     public Siniestro(int n, string desc, float monto, Fecha fecha, Poliza p)
     {

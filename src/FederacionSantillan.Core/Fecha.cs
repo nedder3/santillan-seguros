@@ -1,6 +1,8 @@
+using FederacionSantillan.Core.Domain.Abstractions;
+
 namespace FederacionSantillan.Core;
 
-public class Fecha
+public class Fecha : ICopiable<Fecha>, IClonable<Fecha>
 {
     private int dia, mes, ano;
 
