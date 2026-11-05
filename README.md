@@ -1,239 +1,222 @@
 <div align="center">
 
 # Sistema Federación Santillán
-### Next-Generation Insurance Underwriting, Heuristic Fraud Triage & Loss Prevention Mesh
+### Plataforma de Gestión de Pólizas, Siniestros &amp; Auditoría de Memoria POO en C# .NET 8
 
-[![Python](https://img.shields.io/badge/PYTHON-3.11%20%7C%203.14-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/FRAMEWORK-PYDANTIC%20V2-E92063?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
-[![Platform](https://img.shields.io/badge/PLATFORM-CROSS--PLATFORM-0078D6?style=for-the-badge&logo=windows&logoColor=white)]()
+[![Language](https://img.shields.io/badge/C%23-12%20%7C%20.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![UI](https://img.shields.io/badge/UI-WPF%20XAML-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)
+[![Design](https://img.shields.io/badge/DESIGN-BENTO%20GRID%20SLATE-0F172A?style=for-the-badge)]()
 [![License](https://img.shields.io/badge/LICENSE-MIT-22C55E?style=for-the-badge)](LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/CONVENTIONAL%20COMMITS-1.0.0-FE5196?style=for-the-badge&logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org/)
-[![Architecture](https://img.shields.io/badge/ARCHITECTURE-EVENT--DRIVEN%20%26%20HEURISTIC%20TRIAGE-8B5CF6?style=for-the-badge)]()
+[![Architecture](https://img.shields.io/badge/POO-TRÍADA%20SAGRADA%20EN%20PROFUNDIDAD-F59E0B?style=for-the-badge)]()
 
 </div>
 
 ---
 
-## Executive Summary & Capabilities
+## Resumen Ejecutivo & Capacidades
 
-**Sistema Federación Santillán** is an enterprise-grade insurance underwriting, automated claims settlement, and proactive loss prevention engine designed for modern mutual and commercial insurance syndicates.
+**Sistema Federación Santillán** es una aplicación de escritorio desarrollada en **C# .NET 8 con WPF (XAML)** para la materia de **Programación Orientada a Objetos (POO)**. Implementa la gestión integral de una aseguradora mutual (emisión de pólizas, administración de asegurados, recepción de siniestros FNOL y liquidación pericial de indemnizaciones), diseñada con estricto apego a las convenciones académicas de memoria y encapsulamiento.
 
-Traditional insurance workflows suffer from protracted manual loss adjustments, delayed First Notice of Loss (FNOL) processing, and vulnerability to organized claim fraud. This platform combines deterministic actuarial validation, multi-vector fraud anomaly scoring, and real-time IoT telemetry sentinels that execute physical mitigation actions before an accident or asset loss escalates into a catastrophic claim.
-
-### Technical Highlights
-- **Deterministic Domain Modeling:** Strongly-typed Pydantic v2 schemas for Policies, Claims, and Certified Adjuster Surveys with strict runtime invariant checks.
-- **Multi-Vector Fraud Heuristics Engine:** Automated risk scoring covering Rapid Inception Claims (< 15 days), Limit Over-Exposure (> 90%), Off-Hours / Night Incidents, and Recurrent Claimant Histories.
-- **Proactive IoT Loss Prevention Sentinel:** High-frequency telemetry evaluation across water flow, fire/smoke, thermal overload, telematics speed, and industrial vibration with automated shutoff commands.
-- **Cryptographic Evidence Sealing:** Loss surveyor photo/video verification sealed with SHA-256 evidence digests to prevent post-inspection tampering.
-- **Zero-Warning Automated Test Suite:** Complete unit and integration test harness verified across modern Python runtime versions.
+### Aspectos Técnicos Destacados
+- **Gestión Rigurosa de Memoria (Stack vs. Heap):** Demostración empírica de aliasing de punteros de referencia frente a instancias independientes en el montículo.
+- **La Tríada Sagrada en Profundidad:** Implementación canónica y minimalista de `copy(T obj)` (mutación in-place), `clone()` (creación de nueva instancia idéntica) y `equals(T obj)` (comparación por valor de estado).
+- **Encapsulamiento Dual:** Atributos privados con métodos explícitos tradicionales (`getCodigo()`, `setCodigo()`) y propiedades de respaldo compactas en un solo renglón (`public int Codigo { get => codigo; set => codigo = value; }`) para enlace de datos reactivo en XAML.
+- **Interfaz Bento Grid de Alto Nivel:** Maquetada en WPF aplicando heurísticas de UX/UI (`ux-ui-heuristic-redesign`), cero emojis de sistema, contraste WCAG AA, tipografía técnica monoespaciada para métricas y paleta Slate Dark.
+- **Inspector de Memoria en Caliente:** Módulo interactivo en la UI que ejecuta simulacros de examen en vivo, imprimiendo el estado de las variables, los punteros y el valor de verdad de las operaciones lógicas.
 
 ---
 
-## Visual Architecture
+## Diagramas de Arquitectura & Memoria
 
-### 1. Claims Settlement & Heuristic Fraud Triage Pipeline
+### 1. Diagrama de Objetos en Memoria (Stack vs. Heap)
+Representación bipartita que ilustra la asignación de variables de referencia en la Pila y la estructura de instancias y punteros de asociación en el Montículo:
+
+```mermaid
+flowchart LR
+    subgraph STACK["Variables Locales (Stack / Punteros)"]
+        var_a1["a1 (Asegurado)"]
+        var_a2["a2 (Asegurado alias)"]
+        var_a3["a3 (Asegurado clone)"]
+        var_p1["p1 (Poliza)"]
+        var_s1["s1 (Siniestro)"]
+    end
+
+    subgraph HEAP["Instancias en Memoria (Heap)"]
+        obj_a1[":Asegurado<br/>codigo: 1001<br/>nombre: 'Federico Santillan'<br/>dni: '30-11223344-9'"]
+        obj_a3[":Asegurado<br/>codigo: 1001<br/>nombre: 'Federico Santillan'<br/>dni: '30-11223344-9'"]
+
+        obj_f1[":Fecha (Inicio)<br/>dia: 1<br/>mes: 1<br/>ano: 2026"]
+        obj_f2[":Fecha (Fin)<br/>dia: 31<br/>mes: 12<br/>ano: 2026"]
+        obj_fSin[":Fecha (Ocurrencia)<br/>dia: 15<br/>mes: 3<br/>ano: 2026"]
+
+        obj_p1[":Poliza<br/>numero: 5001<br/>tipo: 'AUTO'<br/>coberturaMax: 1000000<br/>deducible: 50000<br/>activa: true"]
+
+        obj_peri[":Peritaje<br/>codigo: 401<br/>perito: 'Ing. Gomez'<br/>montoPresupuestado: 75000<br/>danosVerificados: true"]
+
+        obj_s1[":Siniestro<br/>numero: 901<br/>descripcion: 'Colisión vehicular'<br/>estado: 'LIQUIDADO'<br/>montoReclamado: 80000<br/>montoLiquidado: 55000"]
+    end
+
+    var_a1 -->|apunta a| obj_a1
+    var_a2 -->|apunta a (mismo objeto)| obj_a1
+    var_a3 -->|apunta a (clon nuevo)| obj_a3
+    var_p1 -->|apunta a| obj_p1
+    var_s1 -->|apunta a| obj_s1
+
+    obj_p1 -->|titular| obj_a1
+    obj_p1 -->|vigenciaInicio| obj_f1
+    obj_p1 -->|vigenciaFin| obj_f2
+
+    obj_s1 -->|poliza| obj_p1
+    obj_s1 -->|fechaOcurrencia| obj_fSin
+    obj_s1 -->|peritaje| obj_peri
+
+    classDef stackStyle fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef heapStyle fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef assocStyle fill:#e8f5e9,stroke:#43a047,stroke-width:2px;
+
+    class var_a1,var_a2,var_a3,var_p1,var_s1 stackStyle;
+    class obj_a1,obj_a3,obj_p1,obj_s1,obj_peri heapStyle;
+    class obj_f1,obj_f2,obj_fSin assocStyle;
+```
+
+### 2. Diagrama del Sistema de Software (Capas & Responsabilidades)
+El proyecto incluye el diagrama nativo editable de **Draw.io** en el repositorio:
+* **Archivo Draw.io:** [diagramas/diagrama_sistema.drawio](diagramas/diagrama_sistema.drawio) (compatible con `app.diagrams.net` y la extensión Draw.io de VS Code).
+
 ```mermaid
 flowchart TD
-    FNOL["Claimant / Broker First Notice of Loss (FNOL)"] --> Ingest["Ingestion & Policy Validation Gateway"]
-    Ingest --> ActiveCheck{"Is Policy Active and Premiums Current?"}
-    
-    ActiveCheck -- No --> RejectPre["Auto-Reject (Policy Inactive / Expired)"]
-    ActiveCheck -- Yes --> FraudScore["Fraud Heuristics & Anomaly Scoring Engine"]
-    
-    FraudScore --> FraudEval{"Fraud Risk Score >= 0.60?"}
-    
-    FraudEval -- Yes --> SIU["Special Investigation Unit (SIU) Escalation"]
-    SIU --> SIUVerdict{"SIU Assessment Validated?"}
-    SIUVerdict -- Fraud Confirmed --> RejectFraud["Claim Denied (Fraud Attempt Logged)"]
-    SIUVerdict -- Cleared --> AdjusterDispatch["Dispatch Certified Loss Adjuster"]
-    
-    FraudEval -- No --> AdjusterDispatch
-    
-    AdjusterDispatch --> Survey["On-Site Damage Survey & Digital Evidence Ingestion"]
-    Survey --> LossAssessment["Verify Damages vs Policy Coverage Limit & Deductible"]
-    
-    LossAssessment --> SettlementCalc{"Verified Loss > Deductible?"}
-    SettlementCalc -- No --> CloseDeductible["Claim Closed (Under Deductible Threshold)"]
-    SettlementCalc -- Yes --> ApprovePayout["Approve Payout: Verified Amount - Deductible"]
-    
-    ApprovePayout --> PayoutLedger["Banking Gateway Disbursal & Settlement Ledger"]
-    PayoutLedger --> Closed["Claim Settled & Archived"]
-```
-
-### 2. Concurrent Telemetry Streaming & Actuation Shutoff
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Sensor as IoT Telematics / Sensor Mesh
-    participant Gateway as Ingestion Gateway (EventStream)
-    participant Sentinel as PreventionSentinel (Evaluator)
-    participant Actuator as Automated Actuator / Shutoff
-    participant Notify as Notification Service
-    participant PolicyLedger as Policy & Underwriting Ledger
-
-    Sensor->>Gateway: POST /v1/telemetry/events (Measured Telemetry)
-    Gateway->>Sentinel: Dispatch TelemetryEvent (Async Queue)
-    
-    critical Evaluate Threshold
-        Sentinel->>Sentinel: Compare Measured Value vs Safety Limit
+    subgraph UI["Capa de Presentación (WPF / XAML Desktop UI)"]
+        Dash["Bento Grid Dashboard<br/>(Resumen Ejecutivo, Métricas, KPIs)"]
+        PolGrid["Panel de Gestión de Pólizas<br/>(Emisión, Cobertura, Titulares)"]
+        SinGrid["Panel de Denuncia & Siniestros<br/>(FNOL, Triage, Daños)"]
+        PeriGrid["Panel de Peritajes Técnicos<br/>(Inspección, Presupuestos)"]
+        MemInspector["Inspector de Memoria Stack / Heap<br/>(Visualizador Tríada: copy/clone/equals)"]
     end
 
-    alt Measured Value >= Critical Threshold
-        Sentinel->>Actuator: Trigger Automated Mitigation (e.g. Shutoff Valve)
-        Actuator-->>Sentinel: Actuation Acknowledged (Mitigation Applied)
-        Sentinel->>Notify: Push Critical Alert to Policyholder & Emergency Crew
-        Notify-->>Sensor: Alert Dispatched (SMS / App Push)
-        Sentinel->>PolicyLedger: Log Prevention Credit (Loss Avoidance Record)
-    else Sub-Threshold Nominal Reading
-        Sentinel->>PolicyLedger: Record Periodic Telemetry Heartbeat
+    subgraph APP["Capa de Aplicación y Coordinación"]
+        Sistema["SistemaAseguradora<br/>(Listas en Memoria & Consultas)"]
+        Liquidador["Motor de Liquidación<br/>Neto = min(Daño - Deducible, CoberturaMax)"]
     end
+
+    subgraph DOMAIN["Capa de Dominio POO (FederacionSantillan.Core)"]
+        direction TB
+        Asegurado[":Asegurado<br/>codigo, dni, nombre, tel"]
+        Fecha[":Fecha<br/>dia, mes, ano"]
+        Poliza[":Poliza<br/>numero, tipo, prima, cobertura, deducible"]
+        Siniestro[":Siniestro<br/>numero, descripcion, estado, montos"]
+        Peritaje[":Peritaje<br/>codigo, perito, monto, danosVerificados"]
+
+        Poliza -->|titular| Asegurado
+        Poliza -->|vigenciaInicio / Fin| Fecha
+        Siniestro -->|poliza| Poliza
+        Siniestro -->|fechaOcurrencia| Fecha
+        Siniestro -->|peritaje| Peritaje
+    end
+
+    UI --> APP
+    APP --> DOMAIN
 ```
 
 ---
 
-## Protocol & API Specifications
+## Especificación de la Tríada Sagrada & Valores de Verdad
 
-### 1. Ingest First Notice of Loss (FNOL)
-- **Endpoint:** `POST /api/v1/claims`
-- **Headers:** `Content-Type: application/json`, `X-Idempotency-Key: <uuid>`
+En el modelo de evaluación de la cátedra, cada clase de dominio implementa estrictamente:
 
-#### Request Payload
-```json
-{
-  "claim_id": "CLM-2026-9041",
-  "policy_id": "POL-2026-001",
-  "incident_timestamp": "2026-11-05T14:30:00Z",
-  "location": "Av. Corrientes 1234, CABA, Argentina",
-  "description": "Rear collision at signalized intersection while vehicle was stationary.",
-  "claimed_amount_usd": 4500.0,
-  "severity": "MEDIUM"
-}
+```csharp
+// 1. COPY: Modifica el estado interno de THIS usando los datos del argumento. Retorna void.
+public void copy(Poliza p);
+
+// 2. CLONE: Crea una NUEVA instancia independiente en el Heap con el estado actual. Retorna la clase.
+public Poliza clone();
+
+// 3. EQUALS: Compara igualdad de estado/contenido, NO la dirección de memoria. Retorna bool.
+public bool equals(Poliza p);
 ```
 
-#### Response: `201 Created`
-```json
-{
-  "claim_id": "CLM-2026-9041",
-  "status": "PENDING_TRIAGE",
-  "fraud_evaluation": {
-    "risk_score": 0.0,
-    "risk_level": "LOW",
-    "triggered_rules": [],
-    "requires_siu_investigation": false,
-    "explanation": "Evaluated with 0 rule triggers. Score: 0.000. Severity: LOW."
-  },
-  "adjuster_dispatched": true
-}
+### Tabla de Resolución de Valores de Verdad (Preguntas de Examen)
+
+Dada la secuencia de ejecución:
+```csharp
+a1 = new Asegurado(1001, "Federico");
+a2 = a1;            // Aliasing
+a3 = a1.clone();    // Clonación
+p1 = new Poliza(..., a1);
+p2 = p1.clone();    // Clonación en profundidad
 ```
 
-#### Error Response: `422 Unprocessable Entity`
-```json
-{
-  "error": "VALIDATION_FAILED",
-  "detail": [
-    {
-      "loc": ["body", "claimed_amount_usd"],
-      "msg": "Input should be greater than 0",
-      "type": "greater_than"
-    }
-  ]
-}
+| Operación | Valor de Verdad | Fundamento Técnico de Memoria |
+|---|:---:|---|
+| `a1 == a2` | **TRUE** | Ambas variables en el Stack contienen el mismo puntero hacia el mismo objeto en Heap. |
+| `a1 == a3` | **FALSE** | `a3` nació de un `clone()`. Son dos bloques de memoria físicamente independientes. |
+| `a1.equals(a3)` | **TRUE** | Tienen idéntico estado en sus atributos privados. |
+| `p1 == p2` | **FALSE** | Instancias distintas en el Heap generadas por el constructor en `clone()`. |
+| `p1.equals(p2)` | **TRUE** | Mismo número de póliza, cobertura y asegurado titular. |
+| `p1.VigenciaInicio == p2.VigenciaInicio` | **FALSE** | La clonación profunda duplicó el objeto `Fecha` asociado. |
+| `p1.VigenciaInicio.equals(p2.VigenciaInicio)` | **TRUE** | Coinciden día, mes y año de la vigencia. |
+
+---
+
+## Guía de Compilación & Ejecución Reproducible
+
+### Requisitos Previos
+* **.NET 8.0 SDK** (instalado en `%LOCALAPPDATA%\Microsoft\dotnet` o agregado al PATH).
+* Sistema Operativo: Windows 10/11 (para ejecución de la interfaz gráfica WPF).
+
+### Comandos de Shell (PowerShell)
+
+```powershell
+# 1. Posicionarse en la raíz del proyecto
+cd C:\Users\arijd\Documents\Atlas\projects\sistema-federacion-santillan
+
+# 2. Restaurar dependencias de la solución
+dotnet restore
+
+# 3. Compilar la solución completa (Core, Tests y App)
+dotnet build
+
+# 4. Ejecutar la suite automatizada de pruebas unitarias xUnit
+dotnet test
+
+# 5. Iniciar la aplicación de escritorio WPF
+dotnet run --project src/FederacionSantillan.App
 ```
 
 ---
 
-### 2. Ingest IoT Prevention Telemetry Event
-- **Endpoint:** `POST /api/v1/telemetry/events`
-- **Headers:** `Content-Type: application/json`
-
-#### Request Payload
-```json
-{
-  "event_id": "EVT-WAT-88129",
-  "device_id": "DEV-WATER-99",
-  "policy_id": "POL-HOME-400",
-  "sensor_type": "WATER_FLOW",
-  "measured_value": 58.2,
-  "unit": "L/min",
-  "timestamp": "2026-11-05T16:20:00Z"
-}
-```
-
-#### Response: `200 OK` (Critical Mitigation Actuated)
-```json
-{
-  "alert_id": "ALT-T-88129",
-  "policy_id": "POL-HOME-400",
-  "sensor_type": "WATER_FLOW",
-  "severity": "CRITICAL",
-  "mitigation_action": "AUTOMATED_SHUTOFF_COMMAND",
-  "incident_prevented_estimate_usd": 15000.0,
-  "details": "Threshold exceeded for WATER_FLOW: measured 58.2 L/min >= 45.0 limit."
-}
-```
-
----
-
-## Reproducible Build & Test Guide
-
-### Prerequisites
-- Python 3.11+ (tested on Python 3.11 and Python 3.14)
-- Git 2.40+
-
-### Step-by-Step Shell Instructions
-
-```bash
-# 1. Clone repository with submodules (if any)
-git clone --recursive https://github.com/nedder3/sistema-federacion-santillan.git
-cd sistema-federacion-santillan
-
-# 2. Initialize and activate virtual environment
-python -m venv .venv
-# On Windows (PowerShell):
-.venv\Scripts\Activate.ps1
-# On Linux / macOS:
-# source .venv/bin/activate
-
-# 3. Install core dependencies and test runner
-pip install --upgrade pip
-pip install pydantic pytest
-
-# 4. Execute automated test suite with full verbosity
-python -m pytest -v
-```
-
----
-
-## Module Layout
+## Estructura de la Solución
 
 ```text
 sistema-federacion-santillan/
+├── FederacionSantillan.sln               # Solución unificada de Visual Studio / .NET CLI
 ├── diagramas/
-│   ├── claims_pipeline_flowchart.mmd     # Mermaid loss adjustment workflow
-│   └── telemetry_prevention_sequence.mmd # Mermaid concurrent telemetry & actuation
-├── docs/
-│   └── CODE-DOCUMENTATION.md             # Architecture & docstring conventions
+│   ├── diagrama_objetos_memoria.mmd      # Diagrama Mermaid de Objetos Stack vs Heap
+│   ├── diagrama_sistema.drawio           # Diagrama nativo Draw.io (Capas y Arquitectura)
+│   └── diagrama_sistema_arquitectura.mmd # Versión Mermaid del sistema para markdown
 ├── src/
-│   ├── domain/
-│   │   ├── __init__.py                   # Exported domain models
-│   │   └── models.py                     # Policy, Claim, SurveyFinding Pydantic models
-│   ├── engine/
-│   │   ├── __init__.py                   # Exported calculation engines
-│   │   ├── fraud_detector.py             # Multi-vector heuristic fraud scoring
-│   │   └── prevention_sentinel.py        # IoT telemetry triage & actuator dispatch
-│   └── __init__.py                       # Package entry point
+│   ├── FederacionSantillan.Core/         # Biblioteca de Clases (Dominio POO Puro)
+│   │   ├── Asegurado.cs                  # Entidad titular con Tríada y getters/setters
+│   │   ├── Fecha.cs                      # Clase fecha básica con validación
+│   │   ├── Peritaje.cs                   # Informe técnico de perito liquidador
+│   │   ├── Poliza.cs                     # Póliza asociada con liquidación matemática
+│   │   ├── Siniestro.cs                  # Denuncia FNOL y ciclo de liquidación
+│   │   └── SistemaAseguradora.cs         # Administrador en memoria de la aseguradora
+│   └── FederacionSantillan.App/          # Aplicación de Escritorio WPF XAML
+│       ├── App.xaml                      # Configuración de arranque de la aplicación
+│       ├── MainWindow.xaml               # Interfaz Bento Grid en XAML Dark Slate
+│       └── MainWindow.xaml.cs            # Controlador y runner del inspector de memoria
 ├── tests/
-│   ├── test_domain_models.py             # Validation & entity unit tests
-│   ├── test_fraud_engine.py              # Heuristic fraud rules & SIU threshold tests
-│   └── test_prevention_sentinel.py       # Sensor threshold & mitigation tests
-├── .gitignore                            # Production gitignore
-├── CHANGELOG.md                          # Project version changelog
-├── CONTRIBUTING.md                       # Conventional Commits guideline
-└── README.md                             # Production architectural documentation
+│   └── FederacionSantillan.Tests/        # Proyecto de Pruebas xUnit
+│       └── TriadaSagradaTests.cs         # Tests de aliasing, clonación y liquidación
+├── .gitignore                            # Exclusión de bin/, obj/, .vs/, AGENTS.md, ROADMAP.md
+├── CHANGELOG.md                          # Historial de cambios
+├── CONTRIBUTING.md                       # Protocolo de Conventional Commits
+└── README.md                             # Documentación arquitectónica de entrega
 ```
 
 ---
 
-## License
+## Licencia
 
-This project is licensed under the terms of the [MIT License](LICENSE).
+Este proyecto se distribuye bajo la licencia [MIT](LICENSE).
