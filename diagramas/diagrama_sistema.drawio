@@ -1,0 +1,83 @@
+<mxfile host="app.diagrams.net" modified="2026-11-05T20:25:00.000Z" agent="Antigravity" version="24.0.0" type="device">
+  <diagram id="diagrama-sistema-santillan" name="Arquitectura Sistema Federacion Santillan">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Capa 1: Presentacion (WPF Desktop UI) -->
+        <mxCell id="c1" value="CAPA DE PRESENTACIÓN (WPF / XAML Desktop UI)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="1040" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_main" value="&lt;b&gt;MainWindow.xaml&lt;/b&gt;&lt;br&gt;Bento Grid Dashboard&lt;br&gt;(Panel Métricas, Dark Slate Theme)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="30" y="50" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_polizas" value="&lt;b&gt;Panel Pólizas&lt;/b&gt;&lt;br&gt;Emisión de pólizas&lt;br&gt;DataGrid reactivo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="270" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_siniestros" value="&lt;b&gt;Panel Siniestros&lt;/b&gt;&lt;br&gt;Recepción FNOL&lt;br&gt;Triage &amp; Liquidación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="460" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_peritajes" value="&lt;b&gt;Panel Peritajes&lt;/b&gt;&lt;br&gt;Inspección técnica&lt;br&gt;Validación de daños" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="650" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_inspector" value="&lt;b&gt;Inspector Memoria&lt;/b&gt;&lt;br&gt;Visualizador Stack/Heap&lt;br&gt;Demostración Tríada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="c1">
+          <mxGeometry x="840" y="50" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Capa 2: Logica del Negocio y Coordinador -->
+        <mxCell id="c2" value="CAPA DE APLICACIÓN Y COORDINACIÓN" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="1040" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="app_sistema" value="&lt;b&gt;SistemaAseguradora&lt;/b&gt;&lt;br&gt;+ emitirPoliza(Poliza)&lt;br&gt;+ registrarSiniestro(Siniestro)&lt;br&gt;+ calcularTotalLiquidaciones()&lt;br&gt;+ buscarPoliza(int): Poliza" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c2">
+          <mxGeometry x="270" y="40" width="240" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="app_liquidaciones" value="&lt;b&gt;Gestor de Liquidación &amp; Peritaje&lt;/b&gt;&lt;br&gt;Aplica reglas de indemnización:&lt;br&gt;Neto = min(Daño - Deducible, CoberturaMax)&lt;br&gt;Control de estado del siniestro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c2">
+          <mxGeometry x="550" y="40" width="270" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Capa 3: Modelo de Dominio POO -->
+        <mxCell id="c3" value="CAPA DE DOMINIO ORIENTADO A OBJETOS (FederacionSantillan.Core)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;fontSize=14;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="450" width="1040" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_asegurado" value="&lt;b&gt;Asegurado&lt;/b&gt;&lt;br&gt;- codigo: int&lt;br&gt;- dni, nombre, tel: string&lt;br&gt;+ copy(Asegurado)&lt;br&gt;+ clone(): Asegurado&lt;br&gt;+ equals(Asegurado): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="40" y="50" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_fecha" value="&lt;b&gt;Fecha&lt;/b&gt;&lt;br&gt;- dia, mes, ano: int&lt;br&gt;+ copy(Fecha)&lt;br&gt;+ clone(): Fecha&lt;br&gt;+ equals(Fecha): bool&lt;br&gt;+ esValida(): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16a34a;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="40" y="180" width="170" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_poliza" value="&lt;b&gt;Poliza&lt;/b&gt;&lt;br&gt;- numero: int | tipo: string&lt;br&gt;- prima, coberturaMax, deducible: float&lt;br&gt;- titular: Asegurado&lt;br&gt;- vigenciaInicio, vigenciaFin: Fecha&lt;br&gt;+ copy(Poliza) [Profundo]&lt;br&gt;+ clone(): Poliza [Profundo]&lt;br&gt;+ equals(Poliza): bool [Profundo]&lt;br&gt;+ liquidarIndemnizacion(float): float" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#475569;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="270" y="50" width="240" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_siniestro" value="&lt;b&gt;Siniestro&lt;/b&gt;&lt;br&gt;- numero: int | descripcion, estado: string&lt;br&gt;- montoReclamado, montoLiquidado: float&lt;br&gt;- fechaOcurrencia: Fecha&lt;br&gt;- poliza: Poliza&lt;br&gt;- peritaje: Peritaje&lt;br&gt;+ copy(Siniestro) [Profundo]&lt;br&gt;+ clone(): Siniestro [Profundo]&lt;br&gt;+ equals(Siniestro): bool&lt;br&gt;+ liquidar(): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="570" y="50" width="250" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="ent_peritaje" value="&lt;b&gt;Peritaje&lt;/b&gt;&lt;br&gt;- codigo: int | perito: string&lt;br&gt;- montoPresupuestado: float&lt;br&gt;- danosVerificados: bool&lt;br&gt;+ copy(Peritaje)&lt;br&gt;+ clone(): Peritaje&lt;br&gt;+ equals(Peritaje): bool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9333ea;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="c3">
+          <mxGeometry x="850" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Conectores y Asociaciones -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0284c7;" edge="1" parent="c3" source="ent_poliza" target="ent_asegurado">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#16a34a;" edge="1" parent="c3" source="ent_poliza" target="ent_fecha">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#d97706;" edge="1" parent="c3" source="ent_siniestro" target="ent_poliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9333ea;" edge="1" parent="c3" source="ent_siniestro" target="ent_peritaje">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Conexiones entre capas -->
+        <mxCell id="ec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#475569;" edge="1" parent="1" source="ui_main" target="app_sistema">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7c3aed;" edge="1" parent="1" source="app_sistema" target="ent_poliza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

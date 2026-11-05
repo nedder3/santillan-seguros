@@ -1,0 +1,50 @@
+flowchart LR
+    %% Subgrafo para la Pila (Stack) con las variables de referencia
+    subgraph STACK["Variables Locales (Stack / Punteros)"]
+        var_a1["a1 (Asegurado)"]
+        var_a2["a2 (Asegurado alias)"]
+        var_a3["a3 (Asegurado clone)"]
+        var_p1["p1 (Poliza)"]
+        var_s1["s1 (Siniestro)"]
+    end
+
+    %% Subgrafo para el Montículo (Heap) con las instancias y su estado interno
+    subgraph HEAP["Instancias en Memoria (Heap)"]
+        obj_a1[":Asegurado<br/>codigo: 1001<br/>nombre: 'Federico Santillan'<br/>dni: '30-11223344-9'"]
+        obj_a3[":Asegurado<br/>codigo: 1001<br/>nombre: 'Federico Santillan'<br/>dni: '30-11223344-9'"]
+
+        obj_f1[":Fecha (Inicio)<br/>dia: 1<br/>mes: 1<br/>ano: 2026"]
+        obj_f2[":Fecha (Fin)<br/>dia: 31<br/>mes: 12<br/>ano: 2026"]
+        obj_fSin[":Fecha (Ocurrencia)<br/>dia: 15<br/>mes: 3<br/>ano: 2026"]
+
+        obj_p1[":Poliza<br/>numero: 5001<br/>tipo: 'AUTO'<br/>coberturaMax: 1000000<br/>deducible: 50000<br/>activa: true"]
+
+        obj_peri[":Peritaje<br/>codigo: 401<br/>perito: 'Ing. Gomez'<br/>montoPresupuestado: 75000<br/>danosVerificados: true"]
+
+        obj_s1[":Siniestro<br/>numero: 901<br/>descripcion: 'Colisión vehicular'<br/>estado: 'LIQUIDADO'<br/>montoReclamado: 80000<br/>montoLiquidado: 55000"]
+    end
+
+    %% Punteros desde Stack al Heap
+    var_a1 -->|apunta a| obj_a1
+    var_a2 -->|apunta a (mismo objeto)| obj_a1
+    var_a3 -->|apunta a (clon nuevo)| obj_a3
+    var_p1 -->|apunta a| obj_p1
+    var_s1 -->|apunta a| obj_s1
+
+    %% Punteros internos de Asociación entre Objetos en el Heap
+    obj_p1 -->|titular| obj_a1
+    obj_p1 -->|vigenciaInicio| obj_f1
+    obj_p1 -->|vigenciaFin| obj_f2
+
+    obj_s1 -->|poliza| obj_p1
+    obj_s1 -->|fechaOcurrencia| obj_fSin
+    obj_s1 -->|peritaje| obj_peri
+
+    %% Estilos requeridos por el profesor
+    classDef stackStyle fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef heapStyle fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef assocStyle fill:#e8f5e9,stroke:#43a047,stroke-width:2px;
+
+    class var_a1,var_a2,var_a3,var_p1,var_s1 stackStyle;
+    class obj_a1,obj_a3,obj_p1,obj_s1,obj_peri heapStyle;
+    class obj_f1,obj_f2,obj_fSin assocStyle;

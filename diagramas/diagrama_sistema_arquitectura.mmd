@@ -1,0 +1,31 @@
+flowchart TD
+    subgraph UI["Capa de Presentación (WPF / XAML Desktop UI)"]
+        Dash["Bento Grid Dashboard<br/>(Resumen Ejecutivo, Métricas, KPIs)"]
+        PolGrid["Panel de Gestión de Pólizas<br/>(Emisión, Cobertura, Titulares)"]
+        SinGrid["Panel de Denuncia & Siniestros<br/>(FNOL, Triage, Daños)"]
+        PeriGrid["Panel de Peritajes Técnicos<br/>(Inspección, Presupuestos)"]
+        MemInspector["Inspector de Memoria Stack / Heap<br/>(Visualizador Tríada: copy/clone/equals)"]
+    end
+
+    subgraph APP["Capa de Aplicación y Coordinación"]
+        Sistema["SistemaAseguradora<br/>(Listas en Memoria & Consultas)"]
+        Liquidador["Motor de Liquidación<br/>Neto = min(Daño - Deducible, CoberturaMax)"]
+    end
+
+    subgraph DOMAIN["Capa de Dominio POO (FederacionSantillan.Core)"]
+        direction TB
+        Asegurado[":Asegurado<br/>codigo, dni, nombre, tel"]
+        Fecha[":Fecha<br/>dia, mes, ano"]
+        Poliza[":Poliza<br/>numero, tipo, prima, cobertura, deducible"]
+        Siniestro[":Siniestro<br/>numero, descripcion, estado, montos"]
+        Peritaje[":Peritaje<br/>codigo, perito, monto, danosVerificados"]
+
+        Poliza -->|titular| Asegurado
+        Poliza -->|vigenciaInicio / Fin| Fecha
+        Siniestro -->|poliza| Poliza
+        Siniestro -->|fechaOcurrencia| Fecha
+        Siniestro -->|peritaje| Peritaje
+    end
+
+    UI --> APP
+    APP --> DOMAIN
