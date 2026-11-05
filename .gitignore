@@ -35,3 +35,6 @@ ROADMAP.md
 graphify-out/
 SESSION-INDEX.md
 .tools/
+__pycache__/
+*.pyc
+.pytest_cache/
