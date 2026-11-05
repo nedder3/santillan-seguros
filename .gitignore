@@ -38,3 +38,9 @@ SESSION-INDEX.md
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# .NET build output
+bin/
+obj/
+.vs/
+*.user
