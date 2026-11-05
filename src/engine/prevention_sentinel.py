@@ -1,9 +1,13 @@
 """Proactive loss prevention sentinel and IoT telemetry triage engine."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel, Field
+
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 class SensorType(str, Enum):
@@ -28,7 +32,7 @@ class TelemetryEvent(BaseModel):
     sensor_type: SensorType
     measured_value: float
     unit: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=_utcnow)
 
 
 class PreventionAlert(BaseModel):

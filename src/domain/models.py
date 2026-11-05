@@ -1,9 +1,13 @@
 """Core domain models for Federación Santillán Insurance & Loss Prevention System."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, Field
+
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 class PolicyType(str, Enum):
@@ -55,7 +59,7 @@ class Claim(BaseModel):
     claim_id: str = Field(..., description="Unique claim identifier (e.g., CLM-2026-004)")
     policy_id: str = Field(..., description="Associated policy reference")
     incident_timestamp: datetime
-    reported_timestamp: datetime = Field(default_factory=datetime.utcnow)
+    reported_timestamp: datetime = Field(default_factory=_utcnow)
     location: str = Field(..., description="Physical coordinates or standardized geocoded address")
     description: str = Field(..., description="Incident narrative provided by the claimant")
     claimed_amount_usd: float = Field(..., gt=0, description="Estimated total loss claimed")
@@ -67,7 +71,7 @@ class SurveyFinding(BaseModel):
     survey_id: str = Field(..., description="Expert surveyor dispatch record ID")
     claim_id: str = Field(..., description="Target claim reference")
     adjuster_id: str = Field(..., description="Certified loss adjuster ID")
-    inspection_timestamp: datetime = Field(default_factory=datetime.utcnow)
+    inspection_timestamp: datetime = Field(default_factory=_utcnow)
     verified_damage_usd: float = Field(..., ge=0, description="Adjusted and verified repair/loss estimate")
     is_total_loss: bool = Field(default=False)
     certified_evidence_hashes: List[str] = Field(default_factory=list, description="SHA-256 digests of on-site photo/video evidence")
