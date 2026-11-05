@@ -4,11 +4,12 @@
 ### Plataforma de Gestión de Pólizas, Siniestros &amp; Auditoría de Memoria POO en C# .NET 8
 
 [![Language](https://img.shields.io/badge/C%23-12%20%7C%20.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Pattern](https://img.shields.io/badge/PATTERN-MVC%20%7C%20SOLID-0284C7?style=for-the-badge)]()
+[![Testing](https://img.shields.io/badge/TDD-FIRST%20PRINCIPLES-22C55E?style=for-the-badge)]()
+[![Big-O](https://img.shields.io/badge/BIG--O-O(1)%20HASH%20INDEXING-F59E0B?style=for-the-badge)]()
 [![UI](https://img.shields.io/badge/UI-WPF%20XAML-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://learn.microsoft.com/dotnet/desktop/wpf/)
-[![Design](https://img.shields.io/badge/DESIGN-BENTO%20GRID%20SLATE-0F172A?style=for-the-badge)]()
 [![License](https://img.shields.io/badge/LICENSE-MIT-22C55E?style=for-the-badge)](LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/CONVENTIONAL%20COMMITS-1.0.0-FE5196?style=for-the-badge&logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org/)
-[![Architecture](https://img.shields.io/badge/POO-TRÍADA%20SAGRADA%20EN%20PROFUNDIDAD-F59E0B?style=for-the-badge)]()
 
 </div>
 
@@ -19,11 +20,27 @@
 **Sistema Federación Santillán** es una aplicación de escritorio desarrollada en **C# .NET 8 con WPF (XAML)** para la materia de **Programación Orientada a Objetos (POO)**. Implementa la gestión integral de una aseguradora mutual (emisión de pólizas, administración de asegurados, recepción de siniestros FNOL y liquidación pericial de indemnizaciones), diseñada con estricto apego a las convenciones académicas de memoria y encapsulamiento.
 
 ### Aspectos Técnicos Destacados
+- **Arquitectura MVC (Model-View-Controller):** Desacoplamiento total entre la Vista gráfica (`MainWindow.xaml`), el Controlador de aplicación (`AseguradoraController`) y el Modelo de Dominio (`Poliza`, `Siniestro`, etc.).
+- **Principios SOLID en Acción:**
+  - *S (Single Responsibility):* Modelos encapsulan estado, Repositorios gestionan persistencia en memoria y Servicios resuelven liquidaciones.
+  - *O (Open/Closed):* Extensibilidad de cálculos mediante la interfaz `ILiquidadorStrategy` (`LiquidacionAutoStrategy`, `LiquidacionHogarStrategy`, `LiquidacionVidaStrategy`) sin modificar el motor central.
+  - *L (Liskov Substitution):* Todas las estrategias de liquidación son intercambiables en runtime.
+  - *I (Interface Segregation):* Contratos granulares y específicos (`ICopiable<T>`, `IClonable<T>`, `IIdentificable<TId>`).
+  - *D (Dependency Inversion):* El Controlador depende de abstracciones (`IRepository<T, TId>`, `ILiquidacionService`) y no de clases concretas.
+- **Optimización Algorítmica Big-O:**
+  - Uso de **tablas hash (`IndexedRepository<T, TId>`)** que reducen las búsquedas por ID de escaneos lineales $O(N)$ a tiempo constante **$O(1)$ amortizado**.
+  - **Índice Secundario Invertido:** Mapeo de estados/categorías con `Dictionary<string, HashSet<TId>>` que permite conteos en **$O(1)$** y filtrado en **$O(K)$** (donde $K$ es la cantidad de elementos en dicho estado, eliminando el recorrido de toda la colección).
+- **Pruebas Automatizadas TDD bajo Principios FIRST:**
+  - **Fast:** Suite completa de 11 tests ejecutada en menos de 25 ms.
+  - **Isolated:** Pruebas independientes sin acoplamiento de estado compartido.
+  - **Repeatable:** Resultados 100% deterministas en cualquier entorno.
+  - **Self-validating:** Validación automatizada con aserciones xUnit sin requerir inspección manual.
+  - **Timely:** Diseñadas en conjunto con la arquitectura de clases.
 - **Gestión Rigurosa de Memoria (Stack vs. Heap):** Demostración empírica de aliasing de punteros de referencia frente a instancias independientes en el montículo.
 - **La Tríada Sagrada en Profundidad:** Implementación canónica y minimalista de `copy(T obj)` (mutación in-place), `clone()` (creación de nueva instancia idéntica) y `equals(T obj)` (comparación por valor de estado).
-- **Encapsulamiento Dual:** Atributos privados con métodos explícitos tradicionales (`getCodigo()`, `setCodigo()`) y propiedades de respaldo compactas en un solo renglón (`public int Codigo { get => codigo; set => codigo = value; }`) para enlace de datos reactivo en XAML.
-- **Interfaz Bento Grid de Alto Nivel:** Maquetada en WPF aplicando heurísticas de UX/UI (`ux-ui-heuristic-redesign`), cero emojis de sistema, contraste WCAG AA, tipografía técnica monoespaciada para métricas y paleta Slate Dark.
-- **Inspector de Memoria en Caliente:** Módulo interactivo en la UI que ejecuta simulacros de examen en vivo, imprimiendo el estado de las variables, los punteros y el valor de verdad de las operaciones lógicas.
+- **Encapsulamiento Dual:** Atributos privados con métodos explícitos tradicionales (`getCodigo()`, `setCodigo()`) y propiedades de respaldo compactas en un solo renglón para enlace de datos reactivo en XAML.
+- **Interfaz Bento Grid de Alto Nivel:** Maquetada en WPF aplicando heurísticas de UX/UI (`ux-ui-heuristic-redesign`), cero emojis de sistema, contraste WCAG AA y paleta Slate Dark.
+- **Inspector de Memoria en Caliente:** Módulo interactivo en la UI que ejecuta simulacros de examen en vivo.
 
 ---
 
@@ -130,6 +147,21 @@ flowchart TD
     UI --> APP
     APP --> DOMAIN
 ```
+
+---
+
+## Análisis de Complejidad Algorítmica (Big-O)
+
+El repositorio implementa estructuras de indexación hash para garantizar rendimiento empresarial en carteras masivas de pólizas:
+
+| Operación | Enfoque Naive Tradicional | Implementación con `IndexedRepository` | Ventaja Arquitectónica |
+|---|:---:|:---:|---|
+| **Búsqueda por ID de Póliza / Siniestro** | $O(N)$ (Escaneo lineal) | **$O(1)$** (Tabla Hash) | Acceso instantáneo por clave primaria sin importar el volumen. |
+| **Comprobación de Existencia** | $O(N)$ | **$O(1)$** | Validación inmediata previo a inserción. |
+| **Inserción de Entidad** | $O(N)$ (Búsqueda previa de duplicados) | **$O(1)$** amortizado | Alta velocidad en ingesta de denuncias FNOL masivas. |
+| **Conteo por Estado (`contarPorEstado`)** | $O(N)$ | **$O(1)$** | Lectura inmediata desde el índice secundario invertido. |
+| **Filtrado por Estado (`filtrarPorEstado`)** | $O(N)$ | **$O(K)$** ($K \ll N$) | Itera únicamente sobre las referencias del conjunto indexado. |
+| **Liquidación de Indemnización** | $O(N)$ | **$O(1)$** | Selección de estrategia y cálculo aritmético directo. |
 
 ---
 
