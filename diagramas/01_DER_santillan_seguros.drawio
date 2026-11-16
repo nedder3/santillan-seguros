@@ -1,0 +1,63 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T19:40:00.000Z" agent="Antigravity" version="21.0.0" type="device">
+  <diagram id="der_santillan" name="DER - 3FN (ACORD / Database Answers)">
+    <mxGraphModel dx="1300" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Titulo -->
+        <mxCell id="title" value="MODELO ENTIDAD-RELACIÓN (3FN) - FEDERACIÓN SANTILLÁN SEGUROS&#xa;Basado en: Database Answers Canonical Insurance Model, ACORD Standards y Ley N° 22.400 (PAS - SSN)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0f4c81;" vertex="1" parent="1">
+          <mxGeometry x="160" y="20" width="880" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla: usuarios -->
+        <mxCell id="tbl_usuarios" value="&lt;b&gt;usuarios&lt;/b&gt;&lt;hr&gt;&lt;u&gt;PK id_usuario (INT)&lt;/u&gt;&lt;br&gt;username (VARCHAR 50) UQ&lt;br&gt;password_hash (VARCHAR 64)&lt;br&gt;nombre_completo (VARCHAR 120)&lt;br&gt;rol (ENUM)&lt;br&gt;activo (BOOLEAN)&lt;br&gt;fecha_creacion (DATETIME)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#f8fafc;strokeColor=#0f4c81;strokeWidth=2;spacing=6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="230" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla: asegurados -->
+        <mxCell id="tbl_asegurados" value="&lt;b&gt;asegurados&lt;/b&gt;&lt;hr&gt;&lt;u&gt;PK id_asegurado (INT)&lt;/u&gt;&lt;br&gt;dni_cuit (VARCHAR 20) UQ&lt;br&gt;apellido_nombre (VARCHAR 120)&lt;br&gt;telefono (VARCHAR 30)&lt;br&gt;email (VARCHAR 120)&lt;br&gt;domicilio (VARCHAR 180)&lt;br&gt;activo (BOOLEAN)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#eff6ff;strokeColor=#1d4ed8;strokeWidth=2;spacing=6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="320" width="230" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla: ramos -->
+        <mxCell id="tbl_ramos" value="&lt;b&gt;ramos&lt;/b&gt;&lt;hr&gt;&lt;u&gt;PK id_ramo (INT)&lt;/u&gt;&lt;br&gt;codigo (VARCHAR 20) UQ&lt;br&gt;nombre (VARCHAR 80)&lt;br&gt;descripcion (VARCHAR 255)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#f0fdf4;strokeColor=#15803d;strokeWidth=2;spacing=6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="390" y="100" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla: polizas -->
+        <mxCell id="tbl_polizas" value="&lt;b&gt;polizas&lt;/b&gt;&lt;hr&gt;&lt;u&gt;PK id_poliza (INT)&lt;/u&gt;&lt;br&gt;numero_poliza (INT) UQ&lt;br&gt;&lt;i&gt;FK id_asegurado (INT)&lt;/i&gt;&lt;br&gt;&lt;i&gt;FK id_ramo (INT)&lt;/i&gt;&lt;br&gt;compania (VARCHAR 80)&lt;br&gt;bien_asegurado (VARCHAR 180)&lt;br&gt;prima_total (DECIMAL 12,2)&lt;br&gt;cantidad_cuotas (INT)&lt;br&gt;fecha_inicio (DATE)&lt;br&gt;fecha_fin (DATE)&lt;br&gt;estado (ENUM)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#fffbeb;strokeColor=#b45309;strokeWidth=2;spacing=6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="300" width="240" height="225" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla: cuotas -->
+        <mxCell id="tbl_cuotas" value="&lt;b&gt;cuotas&lt;/b&gt;&lt;hr&gt;&lt;u&gt;PK id_cuota (INT)&lt;/u&gt;&lt;br&gt;&lt;i&gt;FK id_poliza (INT)&lt;/i&gt;&lt;br&gt;numero_cuota (INT)&lt;br&gt;monto (DECIMAL 12,2)&lt;br&gt;fecha_vencimiento (DATE)&lt;br&gt;estado (ENUM: PENDIENTE|PAGADA|VENCIDA)&lt;br&gt;fecha_pago (DATETIME)&lt;br&gt;metodo_pago (VARCHAR 50)&lt;br&gt;observaciones (VARCHAR 255)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#fef2f2;strokeColor=#b91c1c;strokeWidth=2;spacing=6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="300" width="270" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla: notificaciones -->
+        <mxCell id="tbl_notif" value="&lt;b&gt;notificaciones&lt;/b&gt;&lt;hr&gt;&lt;u&gt;PK id_notificacion (INT)&lt;/u&gt;&lt;br&gt;&lt;i&gt;FK id_cuota (INT)&lt;/i&gt;&lt;br&gt;tipo_alerta (ENUM: POR_VENCER|VENCIDA)&lt;br&gt;mensaje (VARCHAR 255)&lt;br&gt;fecha_generacion (DATETIME)&lt;br&gt;leida (BOOLEAN)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#faf5ff;strokeColor=#7e22ce;strokeWidth=2;spacing=6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="550" width="270" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- Relaciones 1:N -->
+        <mxCell id="rel_aseg_pol" value="1 : N (Contrata)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#1d4ed8;startArrow=ERone;endArrow=ERmany;" edge="1" parent="1" source="tbl_asegurados" target="tbl_polizas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_ramo_pol" value="1 : N (Clasifica)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#15803d;startArrow=ERone;endArrow=ERmany;" edge="1" parent="1" source="tbl_ramos" target="tbl_polizas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_pol_cuota" value="1 : N (Genera)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#b45309;startArrow=ERone;endArrow=ERmany;" edge="1" parent="1" source="tbl_polizas" target="tbl_cuotas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_cuota_notif" value="1 : N (Dispara)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#b91c1c;startArrow=ERone;endArrow=ERmany;" edge="1" parent="1" source="tbl_cuotas" target="tbl_notif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

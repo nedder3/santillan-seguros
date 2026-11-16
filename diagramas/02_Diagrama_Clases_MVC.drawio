@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" modified="2026-11-16T19:42:00.000Z" agent="Antigravity" version="21.0.0" type="device">
+  <diagram id="clases_mvc" name="Diagrama de Clases UML (MVC + 3 Capas)">
+    <mxGraphModel dx="1300" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="DIAGRAMA DE CLASES UML (3 CAPAS + MVC) - FEDERACIÓN SANTILLÁN SEGUROS" style="text;html=1;align=center;fontStyle=1;fontSize=15;fontColor=#0f4c81;" vertex="1" parent="1">
+          <mxGeometry x="240" y="15" width="800" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- CAPA VISTA -->
+        <mxCell id="grp_vista" value="CAPA VISTA (WinForms Designer)" style="swimlane;startSize=28;fillColor=#eff6ff;strokeColor=#2563eb;fontStyle=1;fontColor=#1e40af;" vertex="1" parent="1">
+          <mxGeometry x="30" y="60" width="320" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_login" value="&lt;b&gt;FormLogin&lt;/b&gt;&lt;hr&gt;&lt;&lt;Atributos&gt;&gt;&lt;br&gt;- _authController: AuthController&lt;br&gt;&lt;&lt;Comandos&gt;&gt;&lt;br&gt;+ btnIngresar_Click()&lt;br&gt;+ btnCrearUsuario_Click()" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#ffffff;strokeColor=#2563eb;spacing=4;fontSize=11;" vertex="1" parent="grp_vista">
+          <mxGeometry x="15" y="40" width="290" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_principal" value="&lt;b&gt;FormPrincipal&lt;/b&gt;&lt;hr&gt;&lt;&lt;Atributos&gt;&gt;&lt;br&gt;- _carteraController: CarteraController&lt;br&gt;- _notificacionController: NotificacionController&lt;br&gt;&lt;&lt;Comandos&gt;&gt;&lt;br&gt;+ CargarAlertas() / RegistrarPago()" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#ffffff;strokeColor=#2563eb;spacing=4;fontSize=11;" vertex="1" parent="grp_vista">
+          <mxGeometry x="15" y="148" width="290" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- CAPA CONTROLADOR -->
+        <mxCell id="grp_ctrl" value="CAPA CONTROLADOR (MVC)" style="swimlane;startSize=28;fillColor=#fefce8;strokeColor=#ca8a04;fontStyle=1;fontColor=#854d0e;" vertex="1" parent="1">
+          <mxGeometry x="400" y="60" width="360" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_authctrl" value="&lt;b&gt;AuthController&lt;/b&gt;&lt;hr&gt;- _usuarioDao: UsuarioDAO&lt;br&gt;+ IniciarSesion(user, pass): (bool, string, Usuario)&lt;br&gt;+ RegistrarUsuario(...): (bool, string)" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#ffffff;strokeColor=#ca8a04;spacing=4;fontSize=11;" vertex="1" parent="grp_ctrl">
+          <mxGeometry x="15" y="38" width="330" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_carteractrl" value="&lt;b&gt;CarteraController&lt;/b&gt;&lt;hr&gt;- _aseguradoDao, _polizaDao, _ramoDao&lt;br&gt;+ GuardarAsegurado(...): (bool, string)&lt;br&gt;+ EmitirPoliza(...): (bool, string)" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#ffffff;strokeColor=#ca8a04;spacing=4;fontSize=11;" vertex="1" parent="grp_ctrl">
+          <mxGeometry x="15" y="118" width="330" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_notifctrl" value="&lt;b&gt;NotificacionController&lt;/b&gt;&lt;hr&gt;- _cuotaDao: CuotaDAO&lt;br&gt;+ ObtenerCuotasVencidas(): List&amp;lt;Cuota&amp;gt;&lt;br&gt;+ ObtenerCuotasPorVencer(dias): List&amp;lt;Cuota&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#ffffff;strokeColor=#ca8a04;spacing=4;fontSize=11;" vertex="1" parent="grp_ctrl">
+          <mxGeometry x="15" y="192" width="330" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- CAPA DATOS DAO -->
+        <mxCell id="grp_data" value="CAPA MODELO - ACCESO A DATOS (MariaDB DAOs)" style="swimlane;startSize=28;fillColor=#f0fdf4;strokeColor=#16a34a;fontStyle=1;fontColor=#166534;" vertex="1" parent="1">
+          <mxGeometry x="810" y="60" width="420" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="cls_daos" value="&lt;b&gt;ConnectionFactory + DAOs&lt;/b&gt;&lt;hr&gt;• UsuarioDAO: Autenticar(), Registrar()&lt;br&gt;• AseguradoDAO: ObtenerTodos(), Insertar(), Actualizar()&lt;br&gt;• RamoDAO: ObtenerTodos()&lt;br&gt;• PolizaDAO: EmitirPolizaConCuotas() [Transacción SQL]&lt;br&gt;• CuotaDAO: ObtenerVencidas(), ObtenerPorVencer(), RegistrarPago()" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#ffffff;strokeColor=#16a34a;spacing=6;fontSize=11;" vertex="1" parent="grp_data">
+          <mxGeometry x="15" y="45" width="390" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- CAPA DOMINIO (CONVENCION CATEDRA) -->
+        <mxCell id="grp_domain" value="CAPA MODELO - ENTIDADES DE DOMINIO (Convención Cátedra: copy / clone / equals en profundidad)" style="swimlane;startSize=28;fillColor=#faf5ff;strokeColor=#7e22ce;fontStyle=1;fontColor=#581c87;" vertex="1" parent="1">
+          <mxGeometry x="30" y="360" width="1200" height="460" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cls_aseg" value="&lt;b&gt;Asegurado&lt;/b&gt;&lt;hr&gt;&lt;&lt;Atributos de instancia&gt;&gt;&lt;br&gt;- codigo: int&lt;br&gt;- dni, nombre, telefono, email, domicilio: string&lt;br&gt;&lt;&lt;CONSTRUCTORES&gt;&gt;&lt;br&gt;+ Asegurado(c: int)&lt;br&gt;+ Asegurado(c, d, n, t, em, dom)&lt;br&gt;&lt;&lt;Comandos&gt;&gt;&lt;br&gt;+ setNombre(n: string) / copy(a: Asegurado)&lt;br&gt;+ clone(): Asegurado&lt;br&gt;&lt;&lt;Consultas&gt;&gt;&lt;br&gt;+ getCodigo(): int / getNombre(): string&lt;br&gt;+ equals(a: Asegurado): bool" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#ffffff;strokeColor=#7e22ce;spacing=5;fontSize=11;" vertex="1" parent="grp_domain">
+          <mxGeometry x="20" y="45" width="275" height="225" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cls_poliza" value="&lt;b&gt;Poliza&lt;/b&gt;&lt;hr&gt;&lt;&lt;Atributos de instancia&gt;&gt;&lt;br&gt;- numero: int / tipo: string / activa: bool&lt;br&gt;- prima, coberturaMax, deducible: float&lt;br&gt;- vigenciaInicio, vigenciaFin: Fecha&lt;br&gt;- titular: Asegurado&lt;br&gt;&lt;&lt;CONSTRUCTORES&gt;&gt;&lt;br&gt;+ Poliza(n, t, p, c, d, vi, vf, a)&lt;br&gt;&lt;&lt;Comandos&gt;&gt;&lt;br&gt;+ copy(p: Poliza) / clone(): Poliza&lt;br&gt;&lt;&lt;Consultas&gt;&gt;&lt;br&gt;+ equals(p: Poliza): bool&lt;br&gt;+ liquidarIndemnizacion(m: float): float" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#ffffff;strokeColor=#7e22ce;spacing=5;fontSize=11;" vertex="1" parent="grp_domain">
+          <mxGeometry x="330" y="45" width="275" height="225" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cls_cuota" value="&lt;b&gt;Cuota&lt;/b&gt;&lt;hr&gt;&lt;&lt;Atributos de instancia&gt;&gt;&lt;br&gt;- idCuota, idPoliza, numeroCuota: int&lt;br&gt;- monto: decimal / fechaVencimiento: DateTime&lt;br&gt;- estado, metodoPago: string&lt;br&gt;&lt;&lt;CONSTRUCTORES&gt;&gt;&lt;br&gt;+ Cuota(id, polId, nro, m, vto, est)&lt;br&gt;&lt;&lt;Comandos&gt;&gt;&lt;br&gt;+ registrarPago(metodo: string): bool&lt;br&gt;+ copy(c: Cuota) / clone(): Cuota&lt;br&gt;&lt;&lt;Consultas&gt;&gt;&lt;br&gt;+ estaVencida(): bool / estaPorVencer(d): bool&lt;br&gt;+ equals(c: Cuota): bool" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#ffffff;strokeColor=#7e22ce;spacing=5;fontSize=11;" vertex="1" parent="grp_domain">
+          <mxGeometry x="640" y="45" width="270" height="225" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cls_notif" value="&lt;b&gt;Notificacion&lt;/b&gt;&lt;hr&gt;&lt;&lt;Atributos de instancia&gt;&gt;&lt;br&gt;- idNotificacion: int&lt;br&gt;- cuota: Cuota&lt;br&gt;- tipoAlerta, mensaje: string&lt;br&gt;- leida: bool&lt;br&gt;&lt;&lt;CONSTRUCTORES&gt;&gt;&lt;br&gt;+ Notificacion(id, c, tipo, msg)&lt;br&gt;&lt;&lt;Comandos&gt;&gt;&lt;br&gt;+ marcarComoLeida() / copy(n) / clone()&lt;br&gt;&lt;&lt;Consultas&gt;&gt;&lt;br&gt;+ equals(n: Notificacion): bool" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#ffffff;strokeColor=#7e22ce;spacing=5;fontSize=11;" vertex="1" parent="grp_domain">
+          <mxGeometry x="940" y="45" width="240" height="225" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cls_fecha" value="&lt;b&gt;Fecha&lt;/b&gt;&lt;hr&gt;- dia, mes, ano: int&lt;br&gt;+ Fecha(d, m, a) / copy(f) / clone() / equals(f)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#ffffff;strokeColor=#7e22ce;spacing=5;fontSize=11;" vertex="1" parent="grp_domain">
+          <mxGeometry x="330" y="320" width="275" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cls_usuario" value="&lt;b&gt;Usuario&lt;/b&gt;&lt;hr&gt;- idUsuario: int / username, passwordHash, rol: string&lt;br&gt;+ Usuario(id, u, p, n, r) / copy(u) / clone() / equals(u)" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#ffffff;strokeColor=#7e22ce;spacing=5;fontSize=11;" vertex="1" parent="grp_domain">
+          <mxGeometry x="20" y="320" width="275" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Relaciones entre capas y clases -->
+        <mxCell id="e_vista_ctrl" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="grp_vista" target="grp_ctrl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ctrl_data" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="grp_ctrl" target="grp_data">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pol_aseg" value="asociación (titular)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1.5;" edge="1" parent="grp_domain" source="cls_poliza" target="cls_aseg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pol_fecha" value="vigencia" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1.5;" edge="1" parent="grp_domain" source="cls_poliza" target="cls_fecha">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_notif_cuota" value="asociación" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=1.5;" edge="1" parent="grp_domain" source="cls_notif" target="cls_cuota">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
