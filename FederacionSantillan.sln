@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FederacionSantillan.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FederacionSantillan.App", "src\FederacionSantillan.App\FederacionSantillan.App.csproj", "{0F7AB062-5E7D-46AB-83BD-7B443E9F59BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FederacionSantillan.Data", "src\FederacionSantillan.Data\FederacionSantillan.Data.csproj", "{E8A31D4C-9F2B-4B7E-A123-7C8D9E0F1A2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +36,15 @@ Global
 		{0F7AB062-5E7D-46AB-83BD-7B443E9F59BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F7AB062-5E7D-46AB-83BD-7B443E9F59BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F7AB062-5E7D-46AB-83BD-7B443E9F59BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8A31D4C-9F2B-4B7E-A123-7C8D9E0F1A2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8A31D4C-9F2B-4B7E-A123-7C8D9E0F1A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8A31D4C-9F2B-4B7E-A123-7C8D9E0F1A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8A31D4C-9F2B-4B7E-A123-7C8D9E0F1A2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2750ADA6-687D-47BC-96B4-CC6171B1AC2A} = {CF4B3CD3-D2F1-4990-A77D-F656ED0D79F2}
 		{AC384079-78F0-43A2-B105-492A39188566} = {7655AE24-55BE-4E31-9148-1C4035DC4E98}
 		{0F7AB062-5E7D-46AB-83BD-7B443E9F59BE} = {CF4B3CD3-D2F1-4990-A77D-F656ED0D79F2}
+		{E8A31D4C-9F2B-4B7E-A123-7C8D9E0F1A2B} = {CF4B3CD3-D2F1-4990-A77D-F656ED0D79F2}
 	EndGlobalSection
 EndGlobal
