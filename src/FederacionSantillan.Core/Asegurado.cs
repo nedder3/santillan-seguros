@@ -58,7 +58,7 @@ public class Asegurado : ICopiable<Asegurado>, IClonable<Asegurado>, IIdentifica
     public string getDomicilio() => domicilio;
     public void setDomicilio(string d) => domicilio = d;
 
-    // Tríada Sagrada
+    // Métodos copy, clone y equals
     public void copy(Asegurado a)
     {
         if (a == null) return;

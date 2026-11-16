@@ -48,7 +48,7 @@ public class Peritaje : ICopiable<Peritaje>, IClonable<Peritaje>, IIdentificable
     public string getObservaciones() => observaciones;
     public void setObservaciones(string o) => observaciones = o;
 
-    // Tríada Sagrada
+    // Métodos copy, clone y equals
     public void copy(Peritaje p)
     {
         if (p == null) return;

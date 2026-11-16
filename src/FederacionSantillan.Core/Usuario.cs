@@ -4,7 +4,7 @@ namespace FederacionSantillan.Core;
 
 /// <summary>
 /// Entidad de Dominio: Usuario del sistema (Autenticación y Control de Acceso).
-/// Implementa Tríada Sagrada (copy, clone, equals) y expression bodies.
+/// Implementa Métodos copy, clone y equals y expression bodies.
 /// </summary>
 public class Usuario : ICopiable<Usuario>, IClonable<Usuario>, IIdentificable<int>
 {
@@ -49,7 +49,7 @@ public class Usuario : ICopiable<Usuario>, IClonable<Usuario>, IIdentificable<in
     public bool obtenerActivo() => activo;
     public void establecerActivo(bool a) => activo = a;
 
-    // Tríada Sagrada
+    // Métodos copy, clone y equals
     public void copy(Usuario u)
     {
         if (u == null) return;

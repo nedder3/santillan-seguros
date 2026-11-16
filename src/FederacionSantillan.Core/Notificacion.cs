@@ -34,7 +34,7 @@ public class Notificacion : ICopiable<Notificacion>, IClonable<Notificacion>, II
 
     public void marcarComoLeida() => leida = true;
 
-    // Tríada Sagrada EN PROFUNDIDAD
+    // Métodos copy, clone y equals en profundidad
     public void copy(Notificacion n)
     {
         if (n == null) return;

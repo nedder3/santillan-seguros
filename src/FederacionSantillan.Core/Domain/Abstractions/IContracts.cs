@@ -1,7 +1,7 @@
 namespace FederacionSantillan.Core.Domain.Abstractions;
 
 /// <summary>
-/// Contrato de mutación in-place de estado (Tríada Sagrada: copy).
+/// Contrato de mutación in-place de estado (Métodos copy, clone y equals: copy).
 /// </summary>
 public interface ICopiable<in T>
 {
@@ -9,7 +9,7 @@ public interface ICopiable<in T>
 }
 
 /// <summary>
-/// Contrato de instanciación independiente en Heap (Tríada Sagrada: clone).
+/// Contrato de instanciación independiente en Heap (Métodos copy, clone y equals: clone).
 /// </summary>
 public interface IClonable<out T>
 {

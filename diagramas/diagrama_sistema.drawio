@@ -26,7 +26,7 @@
         <mxCell id="ui_peritajes" value="&lt;b&gt;Panel Peritajes&lt;/b&gt;&lt;br&gt;Inspección técnica&lt;br&gt;Validación de daños" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=11;" vertex="1" parent="c1">
           <mxGeometry x="650" y="50" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="ui_inspector" value="&lt;b&gt;Inspector Memoria&lt;/b&gt;&lt;br&gt;Visualizador Stack/Heap&lt;br&gt;Demostración Tríada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="c1">
+        <mxCell id="ui_inspector" value="&lt;b&gt;Inspector Memoria&lt;/b&gt;&lt;br&gt;Visualizador Stack/Heap&lt;br&gt;Demostración copy/clone/equals" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="c1">
           <mxGeometry x="840" y="50" width="170" height="90" as="geometry" />
         </mxCell>
 

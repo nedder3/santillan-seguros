@@ -26,7 +26,7 @@ public class Fecha : ICopiable<Fecha>, IClonable<Fecha>
     public int getAno() => ano;
     public void setAno(int a) => ano = a;
 
-    // Tríada Sagrada
+    // Métodos copy, clone y equals
     public void copy(Fecha f)
     {
         if (f == null) return;

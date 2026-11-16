@@ -99,7 +99,7 @@
         <mxCell id="1" parent="0" />
 
         <!-- Header Cátedra -->
-        <mxCell id="h1" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — DIAGRAMA DE MEMORIA (STACK vs HEAP)&lt;/b&gt;&lt;br&gt;Evaluación de Punteros, Aliasing y Tríada Sagrada (Copy, Clone, Equals) | C# .NET 8&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
+        <mxCell id="h1" value="&lt;b&gt;SISTEMA FEDERACIÓN SANTILLÁN — DIAGRAMA DE MEMORIA (STACK vs HEAP)&lt;/b&gt;&lt;br&gt;Evaluación de Punteros, Aliasing y Métodos copy, clone y equals (Copy, Clone, Equals) | C# .NET 8&lt;br&gt;Autor: nedder3 (arij.dev@gmail.com) | Cátedra: Programación Orientada a Objetos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#334155;fontColor=#f8fafc;fontSize=12;align=center;" vertex="1" parent="1">
           <mxGeometry x="50" y="20" width="1300" height="60" as="geometry" />
         </mxCell>
 
@@ -388,7 +388,7 @@
         <mxCell id="ui_peritajes" value="&lt;b&gt;Panel Peritajes&lt;/b&gt;&lt;br&gt;Inspección técnica&lt;br&gt;Validación de daños" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=11;" vertex="1" parent="c1">
           <mxGeometry x="650" y="50" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="ui_inspector" value="&lt;b&gt;Inspector Memoria&lt;/b&gt;&lt;br&gt;Visualizador Stack/Heap&lt;br&gt;Demostración Tríada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="c1">
+        <mxCell id="ui_inspector" value="&lt;b&gt;Inspector Memoria&lt;/b&gt;&lt;br&gt;Visualizador Stack/Heap&lt;br&gt;Demostración copy/clone/equals" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontSize=11;" vertex="1" parent="c1">
           <mxGeometry x="840" y="50" width="170" height="90" as="geometry" />
         </mxCell>
 

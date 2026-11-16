@@ -80,7 +80,7 @@ public class Cuota : ICopiable<Cuota>, IClonable<Cuota>, IIdentificable<int>
         return true;
     }
 
-    // Tríada Sagrada
+    // Métodos copy, clone y equals
     public void copy(Cuota c)
     {
         if (c == null) return;

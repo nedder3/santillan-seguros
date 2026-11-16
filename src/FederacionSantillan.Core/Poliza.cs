@@ -57,7 +57,7 @@ public class Poliza : ICopiable<Poliza>, IClonable<Poliza>, IIdentificable<int>
     public Asegurado getTitular() => titular;
     public void setTitular(Asegurado a) => titular = a;
 
-    // Tríada Sagrada EN PROFUNDIDAD
+    // Métodos copy, clone y equals en profundidad
     public void copy(Poliza p)
     {
         if (p == null) return;

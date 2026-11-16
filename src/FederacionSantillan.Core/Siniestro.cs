@@ -53,7 +53,7 @@ public class Siniestro : ICopiable<Siniestro>, IClonable<Siniestro>, IIdentifica
     public Peritaje getPeritaje() => peritaje;
     public void setPeritaje(Peritaje p) => peritaje = p;
 
-    // Tríada Sagrada EN PROFUNDIDAD
+    // Métodos copy, clone y equals en profundidad
     public void copy(Siniestro s)
     {
         if (s == null) return;

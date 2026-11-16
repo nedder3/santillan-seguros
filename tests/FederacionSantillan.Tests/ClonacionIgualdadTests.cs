@@ -3,7 +3,7 @@ using FederacionSantillan.Core;
 
 namespace FederacionSantillan.Tests;
 
-public class TriadaSagradaTests
+public class ClonacionIgualdadTests
 {
     [Fact]
     public void TestFecha_Clone_Copy_Equals()
