@@ -1,49 +1,49 @@
 using System.Security.Cryptography;
 using System.Text;
-using FederacionSantillan.Core;
-using FederacionSantillan.Core.DTOs;
-using FederacionSantillan.Core.Exceptions;
-using FederacionSantillan.Core.Validation;
 using FederacionSantillan.Data.DAOs;
+using FederacionSantillan.Model;
+using FederacionSantillan.Model.DTOs;
+using FederacionSantillan.Model.Exceptions;
+using FederacionSantillan.Model.Validation;
 
 namespace FederacionSantillan.App.Controllers;
 
 public class AuthController
 {
-    private readonly UsuarioDAO _usuarioDao = new UsuarioDAO();
+    private readonly UserDao _userDao = new UserDao();
 
-    public static Usuario UsuarioActual { get; private set; }
+    public static User CurrentUser { get; private set; }
 
-    public Usuario IniciarSesion(string username, string password)
+    public User SignIn(string username, string password)
     {
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-            throw new NegocioException(MensajesSistema.CredencialesRequeridas);
+            throw new BusinessRuleException(SystemMessages.CredentialsRequired);
 
-        var usuario = _usuarioDao.Autenticar(username.Trim(), CalcularSha256(password));
-        if (usuario == null)
-            throw new NegocioException(MensajesSistema.CredencialesInvalidas);
+        var user = _userDao.Authenticate(username.Trim(), ComputeSha256(password));
+        if (user == null)
+            throw new BusinessRuleException(SystemMessages.InvalidCredentials);
 
-        UsuarioActual = usuario;
-        return usuario;
+        CurrentUser = user;
+        return user;
     }
 
-    public void RegistrarUsuario(RegistroUsuarioDTO dto)
+    public void RegisterUser(RegisterUserDto dto)
     {
-        DtoValidator.Validar(dto);
+        DtoValidator.Validate(dto);
 
-        string user = dto.Username.Trim();
-        if (_usuarioDao.ExisteUsername(user))
-            throw new EntidadDuplicadaException(MensajesSistema.Formatear(MensajesSistema.UsuarioDuplicado, user));
+        string cleanUser = dto.Username.Trim();
+        if (_userDao.ExistsUsername(cleanUser))
+            throw new DuplicateEntityException(SystemMessages.Format(SystemMessages.DuplicateUsername, cleanUser));
 
-        var nuevo = new Usuario(user, CalcularSha256(dto.Password), dto.NombreCompleto.Trim(), dto.Rol);
-        _usuarioDao.Registrar(nuevo);
+        var user = new User(cleanUser, ComputeSha256(dto.Password), dto.FullName.Trim(), dto.Role);
+        _userDao.Register(user);
     }
 
-    public void CerrarSesion() => UsuarioActual = null;
+    public void SignOut() => CurrentUser = null;
 
-    public static string CalcularSha256(string texto)
+    public static string ComputeSha256(string text)
     {
-        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(texto));
+        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(text));
         return Convert.ToHexString(bytes).ToLowerInvariant();
     }
 }

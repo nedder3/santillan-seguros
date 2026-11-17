@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\FederacionSantillan.Core\FederacionSantillan.Core.csproj" />
+    <ProjectReference Include="..\FederacionSantillan.Model\FederacionSantillan.Model.csproj" />
     <ProjectReference Include="..\FederacionSantillan.Data\FederacionSantillan.Data.csproj" />
   </ItemGroup>
 
