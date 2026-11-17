@@ -44,19 +44,19 @@ public class Asegurado : ICopiable<Asegurado>, IClonable<Asegurado>, IIdentifica
     public string Domicilio { get => domicilio; set => domicilio = value; }
     public bool Activo { get => activo; set => activo = value; }
 
-    // Métodos explícitos clásicos (Expression bodies)
-    public int getCodigo() => codigo;
-    public void setCodigo(int c) => codigo = c;
-    public string getDni() => dni;
-    public void setDni(string d) => dni = d;
-    public string getNombre() => nombre;
-    public void setNombre(string n) => nombre = n;
-    public string getTelefono() => telefono;
-    public void setTelefono(string t) => telefono = t;
-    public string getEmail() => email;
-    public void setEmail(string e) => email = e;
-    public string getDomicilio() => domicilio;
-    public void setDomicilio(string d) => domicilio = d;
+    // Métodos explícitos (Convención Cátedra)
+    public int obtenerCodigo() => codigo;
+    public void establecerCodigo(int c) => codigo = c;
+    public string obtenerDni() => dni;
+    public void establecerDni(string d) => dni = d;
+    public string obtenerNombre() => nombre;
+    public void establecerNombre(string n) => nombre = n;
+    public string obtenerTelefono() => telefono;
+    public void establecerTelefono(string t) => telefono = t;
+    public string obtenerEmail() => email;
+    public void establecerEmail(string e) => email = e;
+    public string obtenerDomicilio() => domicilio;
+    public void establecerDomicilio(string d) => domicilio = d;
 
     // Métodos copy, clone y equals
     public void copy(Asegurado a)

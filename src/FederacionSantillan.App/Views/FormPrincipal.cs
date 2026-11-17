@@ -140,12 +140,12 @@ public partial class FormPrincipal : Form
         var lista = _carteraController.ListarAsegurados(txtBuscarAseg.Text);
         dgvAsegurados.DataSource = lista.Select(a => new
         {
-            Id = a.getCodigo(),
-            DNI_CUIT = a.getDni(),
-            Nombre = a.getNombre(),
-            Telefono = a.getTelefono(),
-            Email = a.getEmail(),
-            Domicilio = a.getDomicilio()
+            Id = a.obtenerCodigo(),
+            DNI_CUIT = a.obtenerDni(),
+            Nombre = a.obtenerNombre(),
+            Telefono = a.obtenerTelefono(),
+            Email = a.obtenerEmail(),
+            Domicilio = a.obtenerDomicilio()
         }).ToList();
 
         if (dgvAsegurados.Columns["Id"] != null) dgvAsegurados.Columns["Id"].Visible = false;

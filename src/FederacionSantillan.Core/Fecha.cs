@@ -18,13 +18,13 @@ public class Fecha : ICopiable<Fecha>, IClonable<Fecha>
     public int Mes { get => mes; set => mes = value; }
     public int Ano { get => ano; set => ano = value; }
 
-    // Métodos explícitos clásicos
-    public int getDia() => dia;
-    public void setDia(int d) => dia = d;
-    public int getMes() => mes;
-    public void setMes(int m) => mes = m;
-    public int getAno() => ano;
-    public void setAno(int a) => ano = a;
+    // Métodos explícitos (Convención Cátedra)
+    public int obtenerDia() => dia;
+    public void establecerDia(int d) => dia = d;
+    public int obtenerMes() => mes;
+    public void establecerMes(int m) => mes = m;
+    public int obtenerAno() => ano;
+    public void establecerAno(int a) => ano = a;
 
     // Métodos copy, clone y equals
     public void copy(Fecha f)

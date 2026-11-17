@@ -65,11 +65,11 @@ public class AseguradoDAO
         using var conn = ConnectionFactory.CreateConnection();
         conn.Open();
         using var cmd = new MySqlCommand(sql, conn);
-        cmd.Parameters.AddWithValue("@dni", a.getDni());
-        cmd.Parameters.AddWithValue("@nombre", a.getNombre());
-        cmd.Parameters.AddWithValue("@tel", a.getTelefono());
-        cmd.Parameters.AddWithValue("@email", a.getEmail());
-        cmd.Parameters.AddWithValue("@domicilio", a.getDomicilio());
+        cmd.Parameters.AddWithValue("@dni", a.obtenerDni());
+        cmd.Parameters.AddWithValue("@nombre", a.obtenerNombre());
+        cmd.Parameters.AddWithValue("@tel", a.obtenerTelefono());
+        cmd.Parameters.AddWithValue("@email", a.obtenerEmail());
+        cmd.Parameters.AddWithValue("@domicilio", a.obtenerDomicilio());
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
 
@@ -84,12 +84,12 @@ public class AseguradoDAO
         using var conn = ConnectionFactory.CreateConnection();
         conn.Open();
         using var cmd = new MySqlCommand(sql, conn);
-        cmd.Parameters.AddWithValue("@id", a.getCodigo());
-        cmd.Parameters.AddWithValue("@dni", a.getDni());
-        cmd.Parameters.AddWithValue("@nombre", a.getNombre());
-        cmd.Parameters.AddWithValue("@tel", a.getTelefono());
-        cmd.Parameters.AddWithValue("@email", a.getEmail());
-        cmd.Parameters.AddWithValue("@domicilio", a.getDomicilio());
+        cmd.Parameters.AddWithValue("@id", a.obtenerCodigo());
+        cmd.Parameters.AddWithValue("@dni", a.obtenerDni());
+        cmd.Parameters.AddWithValue("@nombre", a.obtenerNombre());
+        cmd.Parameters.AddWithValue("@tel", a.obtenerTelefono());
+        cmd.Parameters.AddWithValue("@email", a.obtenerEmail());
+        cmd.Parameters.AddWithValue("@domicilio", a.obtenerDomicilio());
         return cmd.ExecuteNonQuery() > 0;
     }
 
