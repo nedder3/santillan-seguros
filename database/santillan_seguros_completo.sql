@@ -1,10 +1,10 @@
 ﻿-- ============================================================================
--- SISTEMA: FederaciÃ³n SantillÃ¡n Seguros (Productor Asesor - FederaciÃ³n Patronal)
--- MOTOR: MariaDB 11.4+ / MySQL 8+ (InnoDB, UTF8MB4)
--- ESTÃNDAR DE REFERENCIA:
---   * Database Answers Canonical Model (Insurance Policies & Billing)
+-- SYSTEM: Federacion Santillan Seguros (Insurance Producer - Federacion Patronal)
+-- ENGINE: MariaDB 11.4+ / MySQL 8+ (InnoDB, UTF8MB4)
+-- REFERENCE STANDARDS:
+--   * Database Answers Canonical Insurance Model (Policies & Billing)
 --   * ACORD Insurance Data Standards (Party -> Policy -> Installment -> Payment)
---   * Ley Nacional NÂ° 22.400 (Productores Asesores de Seguros - SSN Argentina)
+--   * Argentine Law NÂ° 22.400 (Insurance Producer Advisors - SSN)
 -- ============================================================================
 
 CREATE DATABASE IF NOT EXISTS santillan_seguros
@@ -13,109 +13,105 @@ CREATE DATABASE IF NOT EXISTS santillan_seguros
 
 USE santillan_seguros;
 
--- 1. Tabla de Usuarios del Sistema (AutenticaciÃ³n y Roles - RÃºbrica Obligatoria)
-CREATE TABLE IF NOT EXISTS usuarios (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+-- 1. Users (Authentication & Access Control)
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     password_hash VARCHAR(64) NOT NULL COMMENT 'SHA-256 hex digest',
-    nombre_completo VARCHAR(120) NOT NULL,
-    rol ENUM('ADMIN', 'PRODUCTOR', 'OPERADOR') NOT NULL DEFAULT 'PRODUCTOR',
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
-    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    full_name VARCHAR(120) NOT NULL,
+    role ENUM('ADMIN', 'PRODUCTOR', 'OPERADOR') NOT NULL DEFAULT 'PRODUCTOR',
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 2. Tabla ParamÃ©trica de Ramos de Seguros (SegÃºn clasificaciÃ³n SSN / FederaciÃ³n Patronal)
-CREATE TABLE IF NOT EXISTS ramos (
-    id_ramo INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(20) NOT NULL UNIQUE,
-    nombre VARCHAR(80) NOT NULL,
-    descripcion VARCHAR(255) NULL
+-- 2. Insurance Branches (SSN / Federacion Patronal Catalog)
+CREATE TABLE IF NOT EXISTS branches (
+    branch_id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    name VARCHAR(80) NOT NULL,
+    description VARCHAR(255) NULL
 ) ENGINE=InnoDB;
 
--- 3. Tabla de Asegurados / Clientes (Entidad Party/Client del estÃ¡ndar ACORD)
-CREATE TABLE IF NOT EXISTS asegurados (
-    id_asegurado INT AUTO_INCREMENT PRIMARY KEY,
-    dni_cuit VARCHAR(20) NOT NULL UNIQUE,
-    apellido_nombre VARCHAR(120) NOT NULL,
-    telefono VARCHAR(30) NOT NULL,
+-- 3. Insureds / Clients (ACORD Party/Client Entity)
+CREATE TABLE IF NOT EXISTS insureds (
+    insured_id INT AUTO_INCREMENT PRIMARY KEY,
+    tax_id VARCHAR(20) NOT NULL UNIQUE COMMENT 'DNI or CUIT',
+    full_name VARCHAR(120) NOT NULL,
+    phone VARCHAR(30) NOT NULL,
     email VARCHAR(120) NULL,
-    domicilio VARCHAR(180) NULL,
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
-    fecha_alta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_asegurado_nombre (apellido_nombre)
+    address VARCHAR(180) NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_insured_name (full_name)
 ) ENGINE=InnoDB;
 
--- 4. Tabla de PÃ³lizas Emitidas (Entidad Policy - 1 Asegurado posee 1..N PÃ³lizas; 1 Ramo clasifica 1..N PÃ³lizas)
-CREATE TABLE IF NOT EXISTS polizas (
-    id_poliza INT AUTO_INCREMENT PRIMARY KEY,
-    numero_poliza INT NOT NULL UNIQUE,
-    id_asegurado INT NOT NULL,
-    id_ramo INT NOT NULL,
-    compania VARCHAR(80) NOT NULL DEFAULT 'FederaciÃ³n Patronal Seguros',
-    bien_asegurado VARCHAR(180) NOT NULL COMMENT 'Ej: Dominio vehÃ­culo, direcciÃ³n inmueble, etc.',
-    prima_total DECIMAL(12, 2) NOT NULL,
-    cantidad_cuotas INT NOT NULL DEFAULT 6,
-    fecha_inicio DATE NOT NULL,
-    fecha_fin DATE NOT NULL,
-    estado ENUM('ACTIVA', 'SUSPENDIDA', 'ANULADA', 'VENCIDA') NOT NULL DEFAULT 'ACTIVA',
-    CONSTRAINT fk_poliza_asegurado FOREIGN KEY (id_asegurado)
-        REFERENCES asegurados(id_asegurado) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_poliza_ramo FOREIGN KEY (id_ramo)
-        REFERENCES ramos(id_ramo) ON UPDATE CASCADE ON DELETE RESTRICT,
-    INDEX idx_poliza_estado (estado)
+-- 4. Issued Policies (ACORD Policy Entity - 3FN)
+CREATE TABLE IF NOT EXISTS policies (
+    policy_id INT AUTO_INCREMENT PRIMARY KEY,
+    policy_number INT NOT NULL UNIQUE,
+    insured_id INT NOT NULL,
+    branch_id INT NOT NULL,
+    company VARCHAR(80) NOT NULL DEFAULT 'FederaciÃ³n Patronal Seguros',
+    insured_asset VARCHAR(180) NOT NULL,
+    total_premium DECIMAL(12, 2) NOT NULL,
+    installments_count INT NOT NULL DEFAULT 6,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status ENUM('ACTIVE', 'SUSPENDED', 'CANCELLED', 'EXPIRED') NOT NULL DEFAULT 'ACTIVE',
+    CONSTRAINT fk_policy_insured FOREIGN KEY (insured_id)
+        REFERENCES insureds(insured_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_policy_branch FOREIGN KEY (branch_id)
+        REFERENCES branches(branch_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    INDEX idx_policy_status (status)
 ) ENGINE=InnoDB;
 
--- 5. Tabla de Cuotas / Plan de Cobranzas (Entidad Billing/Installment - 1 PÃ³liza genera 1..N Cuotas)
-CREATE TABLE IF NOT EXISTS cuotas (
-    id_cuota INT AUTO_INCREMENT PRIMARY KEY,
-    id_poliza INT NOT NULL,
-    numero_cuota INT NOT NULL,
-    monto DECIMAL(12, 2) NOT NULL,
-    fecha_vencimiento DATE NOT NULL,
-    estado ENUM('PENDIENTE', 'PAGADA', 'VENCIDA') NOT NULL DEFAULT 'PENDIENTE',
-    fecha_pago DATETIME NULL,
-    metodo_pago VARCHAR(50) NULL COMMENT 'Efectivo, Transferencia, DÃ©bito AutomÃ¡tico, MercadoPago',
-    observaciones VARCHAR(255) NULL,
-    CONSTRAINT fk_cuota_poliza FOREIGN KEY (id_poliza)
-        REFERENCES polizas(id_poliza) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT uq_poliza_cuota UNIQUE (id_poliza, numero_cuota),
-    INDEX idx_cuota_vencimiento (fecha_vencimiento, estado)
+-- 5. Installments / Billing Schedule (ACORD Billing/Installment Entity)
+CREATE TABLE IF NOT EXISTS installments (
+    installment_id INT AUTO_INCREMENT PRIMARY KEY,
+    policy_id INT NOT NULL,
+    installment_number INT NOT NULL,
+    amount DECIMAL(12, 2) NOT NULL,
+    due_date DATE NOT NULL,
+    status ENUM('PENDING', 'PAID', 'OVERDUE') NOT NULL DEFAULT 'PENDING',
+    payment_date DATETIME NULL,
+    payment_method VARCHAR(50) NULL,
+    notes VARCHAR(255) NULL,
+    CONSTRAINT fk_installment_policy FOREIGN KEY (policy_id)
+        REFERENCES policies(policy_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT uq_policy_installment UNIQUE (policy_id, installment_number),
+    INDEX idx_installment_due_status (due_date, status)
 ) ENGINE=InnoDB;
 
--- 6. Tabla de Registro de Notificaciones de Cobranza (AuditorÃ­a de avisos al asegurado)
-CREATE TABLE IF NOT EXISTS notificaciones (
-    id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
-    id_cuota INT NOT NULL,
-    tipo_alerta ENUM('POR_VENCER', 'VENCIDA') NOT NULL,
-    mensaje VARCHAR(255) NOT NULL,
-    fecha_generacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    leida BOOLEAN NOT NULL DEFAULT FALSE,
-    CONSTRAINT fk_notificacion_cuota FOREIGN KEY (id_cuota)
-        REFERENCES cuotas(id_cuota) ON UPDATE CASCADE ON DELETE CASCADE
+-- 6. Collection Notifications Log (Audit trail of client reminders)
+CREATE TABLE IF NOT EXISTS notifications (
+    notification_id INT AUTO_INCREMENT PRIMARY KEY,
+    installment_id INT NOT NULL,
+    alert_type ENUM('UPCOMING', 'OVERDUE') NOT NULL,
+    message VARCHAR(255) NOT NULL,
+    generated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    sent BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT fk_notification_installment FOREIGN KEY (installment_id)
+        REFERENCES installments(installment_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    INDEX idx_notification_date (generated_at)
 ) ENGINE=InnoDB;
 -- ============================================================================
--- DATOS DE PRUEBA (SEED) - FederaciÃ³n SantillÃ¡n Seguros
--- Fechas relativas a CURDATE() para que las alertas de mora y vencimiento
--- funcionen en vivo sin importar el dÃ­a que se importe en DBeaver.
+-- SEED DATA - Federacion Santillan Seguros (Relative dates to CURDATE())
 -- ============================================================================
 
 USE santillan_seguros;
 
--- Usuarios iniciales (ContraseÃ±a 'admin123' y 'seguros2026' en SHA-256)
-INSERT IGNORE INTO usuarios (username, password_hash, nombre_completo, rol, activo) VALUES
+INSERT IGNORE INTO users (username, password_hash, full_name, role, active) VALUES
 ('admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Administrador General', 'ADMIN', TRUE),
 ('santillan', '7cbc7eb7a95fba33419d4abd2357bf17bffdf11e4922000374796bac341faeb7', 'FederaciÃ³n SantillÃ¡n (PAS)', 'PRODUCTOR', TRUE);
 
--- Ramos de Seguros (ClasificaciÃ³n SSN / FederaciÃ³n Patronal)
-INSERT IGNORE INTO ramos (id_ramo, codigo, nombre, descripcion) VALUES
-(1, 'AUTO', 'Automotor', 'Cobertura de Responsabilidad Civil, Terceros Completo y Todo Riesgo'),
-(2, 'HOGAR', 'Combinado Familiar', 'Incendio, robo contenido y cristales para vivienda particular'),
-(3, 'VIDA', 'Vida Colectivo / Individual', 'Seguro de vida obligatorio y cobertura por fallecimiento e invalidez'),
-(4, 'RC', 'Responsabilidad Civil', 'Cobertura de daÃ±os a terceros para comercios y profesionales'),
-(5, 'CAUCION', 'CauciÃ³n', 'GarantÃ­as contractuales, alquileres y obra pÃºblica');
+INSERT IGNORE INTO branches (branch_id, code, name, description) VALUES
+(1, 'AUTO', 'Automotor', 'Responsabilidad Civil, Terceros Completo y Todo Riesgo'),
+(2, 'HOME', 'Combinado Familiar', 'Incendio, robo contenido y cristales para vivienda'),
+(3, 'LIFE', 'Vida Colectivo / Individual', 'Seguro de vida obligatorio y cobertura integral'),
+(4, 'RC', 'Responsabilidad Civil', 'Cobertura de daÃ±os a terceros para comercios y obras'),
+(5, 'SURETY', 'CauciÃ³n', 'GarantÃ­as contractuales y de alquiler');
 
--- Asegurados (Cartera BahÃ­a Blanca y zona)
-INSERT IGNORE INTO asegurados (id_asegurado, dni_cuit, apellido_nombre, telefono, email, domicilio) VALUES
+INSERT IGNORE INTO insureds (insured_id, tax_id, full_name, phone, email, address) VALUES
 (1, '20-34567890-1', 'GÃ³mez, Carlos Alberto', '291-4123456', 'cgomez@email.com', 'Av. Alem 1240, BahÃ­a Blanca'),
 (2, '27-29876543-4', 'FernÃ¡ndez, Laura Beatriz', '291-5234567', 'laura.f@email.com', 'Sarmiento 450, BahÃ­a Blanca'),
 (3, '20-18765432-9', 'RodrÃ­guez, MartÃ­n Ezequiel', '291-6345678', 'mrodriguez@email.com', 'Alsina 820, BahÃ­a Blanca'),
@@ -123,37 +119,24 @@ INSERT IGNORE INTO asegurados (id_asegurado, dni_cuit, apellido_nombre, telefono
 (5, '20-25667788-5', 'MartÃ­nez, Juan Ignacio', '291-5778899', 'jmartinez@email.com', 'ZelarrayÃ¡n 1510, BahÃ­a Blanca'),
 (6, '30-71223344-8', 'Constructora del Sur SRL', '291-4550011', 'admin@constructorasur.com.ar', 'Parque Industrial, BahÃ­a Blanca');
 
--- PÃ³lizas emitidas con FederaciÃ³n Patronal Seguros
-INSERT IGNORE INTO polizas (id_poliza, numero_poliza, id_asegurado, id_ramo, compania, bien_asegurado, prima_total, cantidad_cuotas, fecha_inicio, fecha_fin, estado) VALUES
-(1, 900101, 1, 1, 'FederaciÃ³n Patronal Seguros', 'Toyota Hilux 2022 - Patente AF452KL', 360000.00, 6, DATE_SUB(CURDATE(), INTERVAL 60 DAY), DATE_ADD(CURDATE(), INTERVAL 120 DAY), 'ACTIVA'),
-(2, 900102, 2, 1, 'FederaciÃ³n Patronal Seguros', 'Volkswagen Golf 2020 - Patente AE118MN', 240000.00, 6, DATE_SUB(CURDATE(), INTERVAL 45 DAY), DATE_ADD(CURDATE(), INTERVAL 135 DAY), 'ACTIVA'),
-(3, 900103, 3, 2, 'FederaciÃ³n Patronal Seguros', 'Vivienda Alsina 820 - Suma $45M', 120000.00, 6, DATE_SUB(CURDATE(), INTERVAL 35 DAY), DATE_ADD(CURDATE(), INTERVAL 145 DAY), 'ACTIVA'),
-(4, 900104, 4, 1, 'FederaciÃ³n Patronal Seguros', 'Fiat Cronos 2023 - Patente AG221PR', 210000.00, 6, DATE_SUB(CURDATE(), INTERVAL 20 DAY), DATE_ADD(CURDATE(), INTERVAL 160 DAY), 'ACTIVA'),
-(5, 900105, 5, 3, 'FederaciÃ³n Patronal Seguros', 'Vida Individual Plan Integral', 90000.00, 6, DATE_SUB(CURDATE(), INTERVAL 25 DAY), DATE_ADD(CURDATE(), INTERVAL 155 DAY), 'ACTIVA'),
-(6, 900106, 6, 4, 'FederaciÃ³n Patronal Seguros', 'RC Comprensiva Obra Civil', 480000.00, 6, DATE_SUB(CURDATE(), INTERVAL 50 DAY), DATE_ADD(CURDATE(), INTERVAL 130 DAY), 'ACTIVA');
+INSERT IGNORE INTO policies (policy_id, policy_number, insured_id, branch_id, company, insured_asset, total_premium, installments_count, start_date, end_date, status) VALUES
+(1, 900101, 1, 1, 'FederaciÃ³n Patronal Seguros', 'Toyota Hilux 2022 - Patente AF452KL', 360000.00, 6, DATE_SUB(CURDATE(), INTERVAL 60 DAY), DATE_ADD(CURDATE(), INTERVAL 120 DAY), 'ACTIVE'),
+(2, 900102, 2, 1, 'FederaciÃ³n Patronal Seguros', 'Volkswagen Golf 2020 - Patente AE118MN', 240000.00, 6, DATE_SUB(CURDATE(), INTERVAL 45 DAY), DATE_ADD(CURDATE(), INTERVAL 135 DAY), 'ACTIVE'),
+(3, 900103, 3, 2, 'FederaciÃ³n Patronal Seguros', 'Vivienda Alsina 820 - Suma $45M', 120000.00, 6, DATE_SUB(CURDATE(), INTERVAL 35 DAY), DATE_ADD(CURDATE(), INTERVAL 145 DAY), 'ACTIVE'),
+(4, 900104, 4, 1, 'FederaciÃ³n Patronal Seguros', 'Fiat Cronos 2023 - Patente AG221PR', 210000.00, 6, DATE_SUB(CURDATE(), INTERVAL 20 DAY), DATE_ADD(CURDATE(), INTERVAL 160 DAY), 'ACTIVE'),
+(5, 900105, 5, 3, 'FederaciÃ³n Patronal Seguros', 'Vida Individual Plan Integral', 90000.00, 6, DATE_SUB(CURDATE(), INTERVAL 25 DAY), DATE_ADD(CURDATE(), INTERVAL 155 DAY), 'ACTIVE'),
+(6, 900106, 6, 4, 'FederaciÃ³n Patronal Seguros', 'RC Comprensiva Obra Civil', 480000.00, 6, DATE_SUB(CURDATE(), INTERVAL 50 DAY), DATE_ADD(CURDATE(), INTERVAL 130 DAY), 'ACTIVE');
 
--- Cuotas estratÃ©gicas: PAGADAS, VENCIDAS (Morosos en rojo) y POR VENCER (PrÃ³ximos 15 dÃ­as en amarillo)
-INSERT IGNORE INTO cuotas (id_poliza, numero_cuota, monto, fecha_vencimiento, estado, fecha_pago, metodo_pago, observaciones) VALUES
--- PÃ³liza 1 (GÃ³mez): Cuota 1 pagada, Cuota 2 VENCIDA hace 12 dÃ­as, Cuota 3 por vencer en 18 dÃ­as
-(1, 1, 60000.00, DATE_SUB(CURDATE(), INTERVAL 42 DAY), 'PAGADA', DATE_SUB(CURDATE(), INTERVAL 43 DAY), 'Transferencia', 'Abonada en tÃ©rmino'),
-(1, 2, 60000.00, DATE_SUB(CURDATE(), INTERVAL 12 DAY), 'VENCIDA', NULL, NULL, 'Requiere aviso urgente de mora'),
-(1, 3, 60000.00, DATE_ADD(CURDATE(), INTERVAL 18 DAY), 'PENDIENTE', NULL, NULL, NULL),
-
--- PÃ³liza 2 (FernÃ¡ndez): Cuota 1 pagada, Cuota 2 POR VENCER en 3 dÃ­as
-(2, 1, 40000.00, DATE_SUB(CURDATE(), INTERVAL 27 DAY), 'PAGADA', DATE_SUB(CURDATE(), INTERVAL 28 DAY), 'DÃ©bito AutomÃ¡tico', NULL),
-(2, 2, 40000.00, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'PENDIENTE', NULL, NULL, 'PrÃ³xima a vencer'),
-
--- PÃ³liza 3 (RodrÃ­guez): Cuota 1 VENCIDA hace 5 dÃ­as, Cuota 2 por vencer en 25 dÃ­as
-(3, 1, 20000.00, DATE_SUB(CURDATE(), INTERVAL 5 DAY), 'VENCIDA', NULL, NULL, 'Primer vencimiento impago'),
-(3, 2, 20000.00, DATE_ADD(CURDATE(), INTERVAL 25 DAY), 'PENDIENTE', NULL, NULL, NULL),
-
--- PÃ³liza 4 (PÃ©rez): Cuota 1 POR VENCER en 7 dÃ­as
-(4, 1, 35000.00, DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'PENDIENTE', NULL, NULL, 'Enviar recordatorio WhatsApp'),
-
--- PÃ³liza 5 (MartÃ­nez): Cuota 1 pagada, Cuota 2 POR VENCER en 12 dÃ­as
-(5, 1, 15000.00, DATE_SUB(CURDATE(), INTERVAL 18 DAY), 'PAGADA', DATE_SUB(CURDATE(), INTERVAL 19 DAY), 'Efectivo', NULL),
-(5, 2, 15000.00, DATE_ADD(CURDATE(), INTERVAL 12 DAY), 'PENDIENTE', NULL, NULL, NULL),
-
--- PÃ³liza 6 (Constructora del Sur): Cuota 1 pagada, Cuota 2 VENCIDA hace 20 dÃ­as (mora crÃ­tica)
-(6, 1, 80000.00, DATE_SUB(CURDATE(), INTERVAL 50 DAY), 'PAGADA', DATE_SUB(CURDATE(), INTERVAL 50 DAY), 'Transferencia', NULL),
-(6, 2, 80000.00, DATE_SUB(CURDATE(), INTERVAL 20 DAY), 'VENCIDA', NULL, NULL, 'Riesgo de suspensiÃ³n de cobertura');
+INSERT IGNORE INTO installments (policy_id, installment_number, amount, due_date, status, payment_date, payment_method, notes) VALUES
+(1, 1, 60000.00, DATE_SUB(CURDATE(), INTERVAL 42 DAY), 'PAID', DATE_SUB(CURDATE(), INTERVAL 43 DAY), 'Transferencia', 'Abonada en tÃ©rmino'),
+(1, 2, 60000.00, DATE_SUB(CURDATE(), INTERVAL 12 DAY), 'OVERDUE', NULL, NULL, 'Requiere aviso urgente de mora'),
+(1, 3, 60000.00, DATE_ADD(CURDATE(), INTERVAL 18 DAY), 'PENDING', NULL, NULL, NULL),
+(2, 1, 40000.00, DATE_SUB(CURDATE(), INTERVAL 27 DAY), 'PAID', DATE_SUB(CURDATE(), INTERVAL 28 DAY), 'DÃ©bito AutomÃ¡tico', NULL),
+(2, 2, 40000.00, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'PENDING', NULL, NULL, 'PrÃ³xima a vencer'),
+(3, 1, 20000.00, DATE_SUB(CURDATE(), INTERVAL 5 DAY), 'OVERDUE', NULL, NULL, 'Primer vencimiento impago'),
+(3, 2, 20000.00, DATE_ADD(CURDATE(), INTERVAL 25 DAY), 'PENDING', NULL, NULL, NULL),
+(4, 1, 35000.00, DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'PENDING', NULL, NULL, 'Enviar recordatorio WhatsApp'),
+(5, 1, 15000.00, DATE_SUB(CURDATE(), INTERVAL 18 DAY), 'PAID', DATE_SUB(CURDATE(), INTERVAL 19 DAY), 'Efectivo', NULL),
+(5, 2, 15000.00, DATE_ADD(CURDATE(), INTERVAL 12 DAY), 'PENDING', NULL, NULL, NULL),
+(6, 1, 80000.00, DATE_SUB(CURDATE(), INTERVAL 50 DAY), 'PAID', DATE_SUB(CURDATE(), INTERVAL 50 DAY), 'Transferencia', NULL),
+(6, 2, 80000.00, DATE_SUB(CURDATE(), INTERVAL 20 DAY), 'OVERDUE', NULL, NULL, 'Riesgo de suspensiÃ³n de cobertura');
