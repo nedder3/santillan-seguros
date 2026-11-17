@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="FederacionSantillan.Core.Asegurado">
+  <Class Name="FederacionSantillan.Model.Insured">
     <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAQAAgACEAAABCAQAAAAAAQAAAAIAAAAAAAA=</HashCode>
-      <FileName>Asegurado.cs</FileName>
+      <FileName>Insured.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FederacionSantillan.Core.Poliza">
+  <Class Name="FederacionSantillan.Model.Policy">
     <Position X="3.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAABAAAEAAAACAAIAAAAAQAAAEAAAAAAAAA=</HashCode>
-      <FileName>Poliza.cs</FileName>
+      <FileName>Policy.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FederacionSantillan.Core.Cuota">
+  <Class Name="FederacionSantillan.Model.Installment">
     <Position X="6.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Cuota.cs</FileName>
+      <FileName>Installment.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FederacionSantillan.Core.Notificacion">
+  <Class Name="FederacionSantillan.Model.Notification">
     <Position X="9.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Notificacion.cs</FileName>
+      <FileName>Notification.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FederacionSantillan.Core.Ramo">
+  <Class Name="FederacionSantillan.Model.Branch">
     <Position X="3.25" Y="4.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAQAAAAEAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ramo.cs</FileName>
+      <FileName>Branch.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FederacionSantillan.Core.Usuario">
+  <Class Name="FederacionSantillan.Model.User">
     <Position X="0.5" Y="4.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAEAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Usuario.cs</FileName>
+      <FileName>User.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FederacionSantillan.Core.Fecha">
+  <Class Name="FederacionSantillan.Model.CustomDate">
     <Position X="6.25" Y="4.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Fecha.cs</FileName>
+      <FileName>CustomDate.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

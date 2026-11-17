@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FederacionSantillan.Core.DTOs;
+namespace FederacionSantillan.Model.DTOs;
 
-public class RegistroUsuarioDTO
+public class RegisterUserDto
 {
     [Required(ErrorMessage = "El nombre completo es obligatorio.")]
     [StringLength(120, MinimumLength = 3, ErrorMessage = "El nombre completo debe tener entre 3 y 120 caracteres.")]
-    public string NombreCompleto { get; set; }
+    public string FullName { get; set; }
 
     [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
     [StringLength(50, MinimumLength = 3, ErrorMessage = "El usuario debe tener entre 3 y 50 caracteres.")]
@@ -18,8 +18,8 @@ public class RegistroUsuarioDTO
 
     [Required(ErrorMessage = "Debe confirmar la contraseña.")]
     [Compare(nameof(Password), ErrorMessage = "Las contraseñas ingresadas no coinciden.")]
-    public string ConfirmarPassword { get; set; }
+    public string ConfirmPassword { get; set; }
 
     [Required(ErrorMessage = "Debe seleccionar un rol.")]
-    public string Rol { get; set; }
+    public string Role { get; set; }
 }

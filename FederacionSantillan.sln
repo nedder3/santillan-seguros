@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CF4B3CD3-D2F1-4990-A77D-F656ED0D79F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FederacionSantillan.Core", "src\FederacionSantillan.Core\FederacionSantillan.Core.csproj", "{2750ADA6-687D-47BC-96B4-CC6171B1AC2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FederacionSantillan.Model", "src\FederacionSantillan.Model\FederacionSantillan.Model.csproj", "{2750ADA6-687D-47BC-96B4-CC6171B1AC2A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7655AE24-55BE-4E31-9148-1C4035DC4E98}"
 EndProject
