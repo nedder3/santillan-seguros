@@ -1,6 +1,7 @@
 using FederacionSantillan.App.Controllers;
+using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
-using FederacionSantillan.Core;
+using FederacionSantillan.Core.DTOs;
 
 namespace FederacionSantillan.App.Views;
 
@@ -54,22 +55,14 @@ public partial class FormPrincipal : Form
         RecargarTodo();
     }
 
-    private void RecargarTodo()
+    private void RecargarTodo() => GlobalExceptionHandler.Ejecutar(() =>
     {
-        try
-        {
-            CargarAlertas();
-            CargarAsegurados();
-            CargarCombosPolizas();
-            CargarPolizas();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error al cargar datos desde MariaDB: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
+        CargarAlertas();
+        CargarAsegurados();
+        CargarCombosPolizas();
+        CargarPolizas();
+    });
 
-    // ==================== ALERTAS Y NOTIFICACIONES ====================
     private void CargarAlertas()
     {
         var vencidas = _notificacionController.ObtenerCuotasVencidas();
@@ -112,11 +105,8 @@ public partial class FormPrincipal : Form
         toolStripStatusLabel.Text = $"Sesión activa: {user} | Actualizado: {DateTime.Now:HH:mm:ss} | Motor: MariaDB";
     }
 
-    private void btnRefrescarAlertas_Click(object sender, EventArgs e)
-    {
-        try { CargarAlertas(); }
-        catch (Exception ex) { MessageBox.Show($"Error al actualizar alertas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-    }
+    private void btnRefrescarAlertas_Click(object sender, EventArgs e) =>
+        GlobalExceptionHandler.Ejecutar(CargarAlertas);
 
     private void btnPagarVencida_Click(object sender, EventArgs e) => ProcesarPagoDesdeGrilla(dgvVencidas);
 
@@ -124,38 +114,27 @@ public partial class FormPrincipal : Form
 
     private void ProcesarPagoDesdeGrilla(DataGridView grilla)
     {
-        try
+        if (grilla.CurrentRow == null)
         {
-            if (grilla.CurrentRow == null)
-            {
-                MessageBox.Show("Seleccione una cuota de la lista para registrar su pago.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            int idCuota = Convert.ToInt32(grilla.CurrentRow.Cells["IdCuota"].Value);
-            string asegurado = grilla.CurrentRow.Cells["Asegurado"].Value?.ToString();
-            string metodo = cmbMetodoPagoAlerta.SelectedItem?.ToString() ?? "Transferencia";
-
-            var conf = MessageBox.Show(
-                $"¿Confirma registrar el pago de la cuota seleccionada para {asegurado} vía {metodo}?",
-                "Confirmar Cobro",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (conf != DialogResult.Yes) return;
-
-            var (exito, mensaje) = _notificacionController.RegistrarPagoCuota(idCuota, metodo);
-            MessageBox.Show(mensaje, exito ? "Cobro Exitoso" : "Error", MessageBoxButtons.OK, exito ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-            if (exito) RecargarTodo();
+            MessageBox.Show("Seleccione una cuota de la lista para registrar su pago.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
         }
-        catch (Exception ex)
+
+        int idCuota = Convert.ToInt32(grilla.CurrentRow.Cells["IdCuota"].Value);
+        string asegurado = grilla.CurrentRow.Cells["Asegurado"].Value?.ToString();
+        string metodo = cmbMetodoPagoAlerta.SelectedItem?.ToString() ?? "Transferencia";
+
+        if (MessageBox.Show($"¿Confirma registrar el pago de la cuota seleccionada para {asegurado} vía {metodo}?", "Confirmar Cobro", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+
+        GlobalExceptionHandler.Ejecutar(() =>
         {
-            MessageBox.Show($"Error al registrar el pago: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+            string mensaje = _notificacionController.RegistrarPagoCuota(idCuota, metodo);
+            MessageBox.Show(mensaje, "Cobro Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            RecargarTodo();
+        });
     }
 
-    // ==================== ASEGURADOS ====================
     private void CargarAsegurados()
     {
         var lista = _carteraController.ListarAsegurados(txtBuscarAseg.Text);
@@ -175,7 +154,7 @@ public partial class FormPrincipal : Form
     private void txtBuscarAseg_TextChanged(object sender, EventArgs e)
     {
         try { CargarAsegurados(); }
-        catch { /* Ignorar errores transitorios al teclear rápido */ }
+        catch { }
     }
 
     private void dgvAsegurados_SelectionChanged(object sender, EventArgs e)
@@ -189,7 +168,9 @@ public partial class FormPrincipal : Form
         txtAsegDom.Text = dgvAsegurados.CurrentRow.Cells["Domicilio"].Value?.ToString();
     }
 
-    private void btnAsegNuevo_Click(object sender, EventArgs e)
+    private void btnAsegNuevo_Click(object sender, EventArgs e) => LimpiarFormularioAsegurado();
+
+    private void LimpiarFormularioAsegurado()
     {
         _aseguradoSeleccionadoId = 0;
         txtAsegDni.Clear();
@@ -203,74 +184,51 @@ public partial class FormPrincipal : Form
     private void btnAsegGuardar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        if (string.IsNullOrWhiteSpace(txtAsegDni.Text))
+        var dto = new AseguradoInputDTO
         {
-            errorProvider.SetError(txtAsegDni, "Ingrese DNI o CUIT.");
-            txtAsegDni.Focus();
-            return;
-        }
-        if (string.IsNullOrWhiteSpace(txtAsegNombre.Text))
-        {
-            errorProvider.SetError(txtAsegNombre, "Ingrese apellido y nombre o razón social.");
-            txtAsegNombre.Focus();
-            return;
-        }
+            Id = _aseguradoSeleccionadoId,
+            DniCuit = txtAsegDni.Text,
+            ApellidoNombre = txtAsegNombre.Text,
+            Telefono = txtAsegTel.Text,
+            Email = txtAsegEmail.Text,
+            Domicilio = txtAsegDom.Text
+        };
 
-        try
+        GlobalExceptionHandler.Ejecutar(() =>
         {
-            var (exito, mensaje) = _carteraController.GuardarAsegurado(
-                _aseguradoSeleccionadoId, txtAsegDni.Text, txtAsegNombre.Text,
-                txtAsegTel.Text, txtAsegEmail.Text, txtAsegDom.Text);
-
-            MessageBox.Show(mensaje, exito ? "Éxito" : "Validación", MessageBoxButtons.OK, exito ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-            if (exito)
-            {
-                btnAsegNuevo_Click(null, null);
-                RecargarTodo();
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error al guardar asegurado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+            string mensaje = _carteraController.GuardarAsegurado(dto);
+            MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LimpiarFormularioAsegurado();
+            RecargarTodo();
+        }, txtAsegDni);
     }
 
     private void btnAsegEliminar_Click(object sender, EventArgs e)
     {
-        try
+        if (_aseguradoSeleccionadoId <= 0)
         {
-            if (_aseguradoSeleccionadoId <= 0)
-            {
-                MessageBox.Show("Seleccione un asegurado de la grilla.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            if (MessageBox.Show("¿Desea dar de baja este asegurado?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
+            MessageBox.Show("Seleccione un asegurado de la grilla.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+        if (MessageBox.Show("¿Desea dar de baja este asegurado?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
 
-            var (exito, mensaje) = _carteraController.EliminarAsegurado(_aseguradoSeleccionadoId);
-            MessageBox.Show(mensaje, exito ? "Baja Exitosa" : "Error", MessageBoxButtons.OK, exito ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-            if (exito)
-            {
-                btnAsegNuevo_Click(null, null);
-                RecargarTodo();
-            }
-        }
-        catch (Exception ex)
+        GlobalExceptionHandler.Ejecutar(() =>
         {
-            MessageBox.Show($"Error al dar de baja: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+            _carteraController.EliminarAsegurado(_aseguradoSeleccionadoId);
+            MessageBox.Show("Asegurado dado de baja correctamente.", "Baja Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LimpiarFormularioAsegurado();
+            RecargarTodo();
+        });
     }
 
-    // ==================== PÓLIZAS Y CUOTAS ====================
     private void CargarCombosPolizas()
     {
-        var asegurados = _carteraController.ListarAsegurados();
-        cmbPolAsegurado.DataSource = asegurados;
+        cmbPolAsegurado.DataSource = _carteraController.ListarAsegurados();
         cmbPolAsegurado.DisplayMember = "Nombre";
         cmbPolAsegurado.ValueMember = "Codigo";
 
-        var ramos = _carteraController.ListarRamos();
-        cmbPolRamo.DataSource = ramos;
+        cmbPolRamo.DataSource = _carteraController.ListarRamos();
         cmbPolRamo.DisplayMember = "Nombre";
         cmbPolRamo.ValueMember = "IdRamo";
     }
@@ -308,7 +266,7 @@ public partial class FormPrincipal : Form
                 Pago = c.FechaPago.HasValue ? c.FechaPago.Value.ToString("dd/MM/yyyy") : "-"
             }).ToList();
         }
-        catch { /* Ignorar errores transitorios de selección */ }
+        catch { }
     }
 
     private void ActualizarPreviewCuota_Event(object sender, EventArgs e)
@@ -328,42 +286,38 @@ public partial class FormPrincipal : Form
     private void btnEmitirPoliza_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        try
+        int.TryParse(txtPolNum.Text, out int numPoliza);
+        decimal.TryParse(txtPolPrima.Text, out decimal prima);
+
+        var dto = new PolizaInputDTO
         {
-            if (!int.TryParse(txtPolNum.Text, out int numPoliza) || numPoliza <= 0)
-            {
-                errorProvider.SetError(txtPolNum, "Ingrese un número de póliza válido.");
-                txtPolNum.Focus();
-                return;
-            }
-            if (!decimal.TryParse(txtPolPrima.Text, out decimal prima) || prima <= 0)
-            {
-                errorProvider.SetError(txtPolPrima, "Ingrese una prima total numérica mayor a cero.");
-                txtPolPrima.Focus();
-                return;
-            }
+            NumeroPoliza = numPoliza,
+            IdAsegurado = cmbPolAsegurado.SelectedValue != null ? Convert.ToInt32(cmbPolAsegurado.SelectedValue) : 0,
+            IdRamo = cmbPolRamo.SelectedValue != null ? Convert.ToInt32(cmbPolRamo.SelectedValue) : 0,
+            Compania = "Federación Patronal Seguros",
+            BienAsegurado = txtPolBien.Text,
+            PrimaTotal = prima,
+            CantidadCuotas = (int)nudPolCuotas.Value,
+            FechaInicio = DateTime.Today,
+            FechaFin = DateTime.Today.AddYears(1),
+            PrimerVencimiento = dtpPolPrimerVto.Value
+        };
 
-            int idAseg = cmbPolAsegurado.SelectedValue != null ? Convert.ToInt32(cmbPolAsegurado.SelectedValue) : 0;
-            int idRamo = cmbPolRamo.SelectedValue != null ? Convert.ToInt32(cmbPolRamo.SelectedValue) : 0;
-
-            var (exito, mensaje) = _carteraController.EmitirPoliza(
-                numPoliza, idAseg, idRamo, "Federación Patronal Seguros",
-                txtPolBien.Text, prima, (int)nudPolCuotas.Value,
-                DateTime.Today, DateTime.Today.AddYears(1), dtpPolPrimerVto.Value);
-
-            MessageBox.Show(mensaje, exito ? "Póliza Emitida" : "Validación", MessageBoxButtons.OK, exito ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-            if (exito)
-            {
-                txtPolNum.Clear();
-                txtPolBien.Clear();
-                txtPolPrima.Clear();
-                RecargarTodo();
-            }
-        }
-        catch (Exception ex)
+        GlobalExceptionHandler.Ejecutar(() =>
         {
-            MessageBox.Show($"Error al emitir póliza: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+            string mensaje = _carteraController.EmitirPoliza(dto);
+            MessageBox.Show(mensaje, "Póliza Emitida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            txtPolNum.Clear();
+            txtPolBien.Clear();
+            txtPolPrima.Clear();
+            RecargarTodo();
+        }, txtPolNum);
+    }
+
+    private void btnAyuda_Click(object sender, EventArgs e)
+    {
+        using var ayuda = new FormAyuda();
+        ayuda.ShowDialog(this);
     }
 
     private void btnCerrarSesion_Click(object sender, EventArgs e)

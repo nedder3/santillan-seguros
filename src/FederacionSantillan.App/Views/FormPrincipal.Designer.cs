@@ -6,6 +6,7 @@ partial class FormPrincipal
     private Panel panelTop;
     private Label lblBrand;
     private Label lblUsuarioActivo;
+    private Button btnAyuda;
     private Button btnCerrarSesion;
     private TabControl tabMain;
     private TabPage tabAlertas;
@@ -88,6 +89,7 @@ partial class FormPrincipal
         panelTop = new Panel();
         lblBrand = new Label();
         lblUsuarioActivo = new Label();
+        btnAyuda = new Button();
         btnCerrarSesion = new Button();
         tabMain = new TabControl();
         tabAlertas = new TabPage();
@@ -187,6 +189,7 @@ partial class FormPrincipal
 
         // panelTop
         panelTop.BackColor = Color.FromArgb(15, 76, 129);
+        panelTop.Controls.Add(btnAyuda);
         panelTop.Controls.Add(btnCerrarSesion);
         panelTop.Controls.Add(lblUsuarioActivo);
         panelTop.Controls.Add(lblBrand);
@@ -206,9 +209,24 @@ partial class FormPrincipal
         lblUsuarioActivo.AutoSize = true;
         lblUsuarioActivo.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
         lblUsuarioActivo.ForeColor = Color.FromArgb(219, 234, 254);
-        lblUsuarioActivo.Location = new Point(720, 19);
+        lblUsuarioActivo.Location = new Point(600, 19);
         lblUsuarioActivo.Name = "lblUsuarioActivo";
         lblUsuarioActivo.Text = "Usuario: --";
+
+        btnAyuda.AccessibleName = "Ayuda";
+        btnAyuda.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnAyuda.BackColor = Color.FromArgb(30, 64, 175);
+        btnAyuda.Cursor = Cursors.Hand;
+        btnAyuda.FlatAppearance.BorderSize = 0;
+        btnAyuda.FlatStyle = FlatStyle.Flat;
+        btnAyuda.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnAyuda.ForeColor = Color.White;
+        btnAyuda.Location = new Point(874, 12);
+        btnAyuda.Name = "btnAyuda";
+        btnAyuda.Size = new Size(96, 32);
+        btnAyuda.TabIndex = 0;
+        btnAyuda.Text = "Ayuda (?)";
+        btnAyuda.Click += btnAyuda_Click;
 
         btnCerrarSesion.AccessibleName = "Cerrar Sesión";
         btnCerrarSesion.Anchor = AnchorStyles.Top | AnchorStyles.Right;

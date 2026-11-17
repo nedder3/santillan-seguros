@@ -1,5 +1,7 @@
 using FederacionSantillan.App.Controllers;
+using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
+using FederacionSantillan.Core.DTOs;
 
 namespace FederacionSantillan.App.Views;
 
@@ -21,64 +23,25 @@ public partial class FormRegistroUsuario : Form
             errorProvider.SetError(ctrl, string.Empty);
     }
 
-    private bool ValidarCampos()
-    {
-        errorProvider.Clear();
-        if (string.IsNullOrWhiteSpace(txtNombreCompleto.Text))
-        {
-            errorProvider.SetError(txtNombreCompleto, "Ingrese el nombre y apellido.");
-            txtNombreCompleto.Focus();
-            return false;
-        }
-        if (string.IsNullOrWhiteSpace(txtUsername.Text))
-        {
-            errorProvider.SetError(txtUsername, "Ingrese un nombre de usuario.");
-            txtUsername.Focus();
-            return false;
-        }
-        if (string.IsNullOrWhiteSpace(txtPassword.Text))
-        {
-            errorProvider.SetError(txtPassword, "Ingrese una contraseña.");
-            txtPassword.Focus();
-            return false;
-        }
-        if (txtPassword.Text != txtConfirmarPassword.Text)
-        {
-            errorProvider.SetError(txtConfirmarPassword, "Las contraseñas no coinciden.");
-            txtConfirmarPassword.Focus();
-            return false;
-        }
-        return true;
-    }
-
     private void btnGuardar_Click(object sender, EventArgs e)
     {
-        if (!ValidarCampos()) return;
-
-        try
+        errorProvider.Clear();
+        var dto = new RegistroUsuarioDTO
         {
-            var (exito, mensaje) = _authController.RegistrarUsuario(
-                txtNombreCompleto.Text,
-                txtUsername.Text,
-                txtPassword.Text,
-                txtConfirmarPassword.Text,
-                cmbRol.SelectedItem?.ToString() ?? "PRODUCTOR");
+            NombreCompleto = txtNombreCompleto.Text,
+            Username = txtUsername.Text,
+            Password = txtPassword.Text,
+            ConfirmarPassword = txtConfirmarPassword.Text,
+            Rol = cmbRol.SelectedItem?.ToString() ?? "PRODUCTOR"
+        };
 
-            if (exito)
-            {
-                MessageBox.Show(mensaje, "Usuario Creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
-            }
-            else
-            {
-                MessageBox.Show(mensaje, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-        catch (Exception ex)
+        GlobalExceptionHandler.Ejecutar(() =>
         {
-            MessageBox.Show($"Error al registrar usuario en MariaDB: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+            _authController.RegistrarUsuario(dto);
+            MessageBox.Show("Usuario registrado exitosamente. Ya puede iniciar sesión.", "Usuario Creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DialogResult = DialogResult.OK;
+            Close();
+        }, txtNombreCompleto);
     }
 
     private void btnCancelar_Click(object sender, EventArgs e)

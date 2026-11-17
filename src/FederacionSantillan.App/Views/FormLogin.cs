@@ -1,4 +1,5 @@
 using FederacionSantillan.App.Controllers;
+using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
 using FederacionSantillan.Data;
 
@@ -19,25 +20,25 @@ public partial class FormLogin : Form
 
     private void FormLogin_Load(object sender, EventArgs e)
     {
+        VerificarConexionBaseDeDatos();
+        txtUsuario.Focus();
+    }
+
+    private void VerificarConexionBaseDeDatos()
+    {
         try
         {
-            if (ConnectionFactory.TestConnection(out string err))
-            {
-                lblEstadoDb.Text = "Base de datos: conectada (MariaDB - santillan_seguros)";
-                lblEstadoDb.ForeColor = Color.FromArgb(21, 128, 61);
-            }
-            else
-            {
-                lblEstadoDb.Text = $"Sin conexión a MariaDB: {err}";
-                lblEstadoDb.ForeColor = Color.FromArgb(185, 28, 28);
-            }
+            bool conectada = ConnectionFactory.TestConnection(out string error);
+            lblEstadoDb.Text = conectada
+                ? "Base de datos: conectada (MariaDB - santillan_seguros)"
+                : $"Sin conexión a MariaDB: {error}";
+            lblEstadoDb.ForeColor = conectada ? Color.FromArgb(21, 128, 61) : Color.FromArgb(185, 28, 28);
         }
         catch (Exception ex)
         {
             lblEstadoDb.Text = $"Error de red: {ex.Message}";
             lblEstadoDb.ForeColor = Color.FromArgb(185, 28, 28);
         }
-        txtUsuario.Focus();
     }
 
     private void Campos_TextChanged(object sender, EventArgs e)
@@ -55,55 +56,21 @@ public partial class FormLogin : Form
     private void btnIngresar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        if (string.IsNullOrWhiteSpace(txtUsuario.Text))
+        GlobalExceptionHandler.Ejecutar(() =>
         {
-            errorProvider.SetError(txtUsuario, "Ingrese su nombre de usuario.");
-            txtUsuario.Focus();
-            return;
-        }
-        if (string.IsNullOrWhiteSpace(txtPassword.Text))
-        {
-            errorProvider.SetError(txtPassword, "Ingrese su contraseña.");
-            txtPassword.Focus();
-            return;
-        }
-
-        try
-        {
-            var (exito, mensaje, _) = _authController.IniciarSesion(txtUsuario.Text, txtPassword.Text);
-            if (exito)
-            {
-                DialogResult = DialogResult.OK;
-                Close();
-            }
-            else
-            {
-                MessageBox.Show(mensaje, "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPassword.Clear();
-                txtPassword.Focus();
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                $"No se pudo conectar con la base de datos MariaDB.\nDetalle: {ex.Message}",
-                "Error de Conexión",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-        }
+            _authController.IniciarSesion(txtUsuario.Text, txtPassword.Text);
+            DialogResult = DialogResult.OK;
+            Close();
+        }, txtPassword);
     }
 
     private void btnCrearUsuario_Click(object sender, EventArgs e)
     {
-        try
+        GlobalExceptionHandler.Ejecutar(() =>
         {
             using var formReg = new FormRegistroUsuario();
             formReg.ShowDialog(this);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error al abrir registro: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        });
     }
 
     private void btnSalir_Click(object sender, EventArgs e)
