@@ -1,11 +1,9 @@
 using FederacionSantillan.Core;
+using FederacionSantillan.Core.Exceptions;
 using FederacionSantillan.Data.DAOs;
 
 namespace FederacionSantillan.App.Controllers;
 
-/// <summary>
-/// Controlador MVC de Notificaciones y Cobranzas: Detecta morosos y cuotas próximas a vencer.
-/// </summary>
 public class NotificacionController
 {
     private readonly CuotaDAO _cuotaDao = new CuotaDAO();
@@ -14,26 +12,15 @@ public class NotificacionController
 
     public List<Cuota> ObtenerCuotasPorVencer(int dias = 15) => _cuotaDao.ObtenerPorVencer(dias);
 
-    public (decimal TotalVencido, decimal TotalPorVencer, int CantVencidas, int CantPorVencer) ObtenerResumenAlertas(int dias = 15)
+    public string RegistrarPagoCuota(int idCuota, string metodoPago, string observaciones = "")
     {
-        var vencidas = ObtenerCuotasVencidas();
-        var porVencer = ObtenerCuotasPorVencer(dias);
-        return (
-            vencidas.Sum(c => c.Monto),
-            porVencer.Sum(c => c.Monto),
-            vencidas.Count,
-            porVencer.Count
-        );
-    }
+        if (idCuota <= 0 || string.IsNullOrWhiteSpace(metodoPago))
+            throw new NegocioException(MensajesSistema.SeleccionRequerida);
 
-    public (bool Exito, string Mensaje) RegistrarPagoCuota(int idCuota, string metodoPago, string observaciones = "")
-    {
-        if (idCuota <= 0) return (false, "Seleccione una cuota válida.");
-        if (string.IsNullOrWhiteSpace(metodoPago)) return (false, "Seleccione un método de pago.");
+        bool pagada = _cuotaDao.RegistrarPago(idCuota, metodoPago, observaciones);
+        if (!pagada)
+            throw new NegocioException(MensajesSistema.CuotaYaPagada);
 
-        bool ok = _cuotaDao.RegistrarPago(idCuota, metodoPago, observaciones);
-        return ok
-            ? (true, "Pago registrado correctamente. La alerta fue saldada.")
-            : (false, "No se pudo registrar el pago (verifique si la cuota ya estaba pagada).");
+        return "Pago registrado correctamente. La alerta fue saldada.";
     }
 }

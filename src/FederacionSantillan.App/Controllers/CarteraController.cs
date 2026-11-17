@@ -1,11 +1,11 @@
 using FederacionSantillan.Core;
+using FederacionSantillan.Core.DTOs;
+using FederacionSantillan.Core.Exceptions;
+using FederacionSantillan.Core.Validation;
 using FederacionSantillan.Data.DAOs;
 
 namespace FederacionSantillan.App.Controllers;
 
-/// <summary>
-/// Controlador MVC de Cartera: Orquesta Asegurados, Ramos, Pólizas y Cuotas.
-/// </summary>
 public class CarteraController
 {
     private readonly AseguradoDAO _aseguradoDao = new AseguradoDAO();
@@ -21,55 +21,62 @@ public class CarteraController
 
     public List<Cuota> ListarCuotasPorPoliza(int idPoliza) => _cuotaDao.ObtenerPorPoliza(idPoliza);
 
-    public (bool Exito, string Mensaje) GuardarAsegurado(int id, string dni, string nombre, string telefono, string email, string domicilio)
+    public string GuardarAsegurado(AseguradoInputDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dni) || string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(telefono))
-            return (false, "DNI/CUIT, Apellido y Nombre, y Teléfono son obligatorios.");
+        DtoValidator.Validar(dto);
 
-        if (_aseguradoDao.ExisteDni(dni.Trim(), id))
-            return (false, $"Ya existe un asegurado registrado con el DNI/CUIT {dni.Trim()}.");
+        string dni = dto.DniCuit.Trim();
+        if (_aseguradoDao.ExisteDni(dni, dto.Id))
+            throw new EntidadDuplicadaException(MensajesSistema.Formatear(MensajesSistema.DniDuplicado, dni));
 
-        var asegurado = new Asegurado(id, dni.Trim(), nombre.Trim(), telefono.Trim(), email?.Trim(), domicilio?.Trim());
-        if (id == 0)
+        var asegurado = new Asegurado(
+            dto.Id,
+            dni,
+            dto.ApellidoNombre.Trim(),
+            dto.Telefono.Trim(),
+            dto.Email?.Trim(),
+            dto.Domicilio?.Trim());
+
+        if (dto.Id == 0)
         {
             _aseguradoDao.Insertar(asegurado);
-            return (true, "Asegurado registrado correctamente.");
+            return "Asegurado registrado correctamente.";
         }
-        else
-        {
-            _aseguradoDao.Actualizar(asegurado);
-            return (true, "Datos del asegurado actualizados correctamente.");
-        }
+
+        _aseguradoDao.Actualizar(asegurado);
+        return "Datos del asegurado actualizados correctamente.";
     }
 
-    public (bool Exito, string Mensaje) EliminarAsegurado(int id)
+    public void EliminarAsegurado(int id)
     {
-        if (id <= 0) return (false, "Seleccione un asegurado válido.");
-        bool ok = _aseguradoDao.DarDeBaja(id);
-        return ok ? (true, "Asegurado dado de baja correctamente.") : (false, "No se pudo dar de baja al asegurado.");
+        if (id <= 0)
+            throw new NegocioException(MensajesSistema.SeleccionRequerida);
+
+        _aseguradoDao.DarDeBaja(id);
     }
 
-    public (bool Exito, string Mensaje) EmitirPoliza(
-        int numeroPoliza, int idAsegurado, int idRamo, string compania,
-        string bienAsegurado, decimal primaTotal, int cantidadCuotas,
-        DateTime fechaInicio, DateTime fechaFin, DateTime primerVencimiento)
+    public string EmitirPoliza(PolizaInputDTO dto)
     {
-        if (numeroPoliza <= 0) return (false, "El número de póliza debe ser mayor a cero.");
-        if (idAsegurado <= 0) return (false, "Debe seleccionar un asegurado.");
-        if (idRamo <= 0) return (false, "Debe seleccionar un ramo.");
-        if (string.IsNullOrWhiteSpace(bienAsegurado)) return (false, "Debe describir el bien asegurado.");
-        if (primaTotal <= 0) return (false, "La prima total debe ser mayor a cero.");
-        if (cantidadCuotas < 1 || cantidadCuotas > 24) return (false, "La cantidad de cuotas debe estar entre 1 y 24.");
-        if (fechaFin <= fechaInicio) return (false, "La fecha de fin debe ser posterior a la fecha de inicio.");
-        if (_polizaDao.ExisteNumeroPoliza(numeroPoliza))
-            return (false, $"La póliza #{numeroPoliza} ya se encuentra registrada.");
+        DtoValidator.Validar(dto);
+
+        if (dto.FechaFin <= dto.FechaInicio)
+            throw new NegocioException(MensajesSistema.VigenciaInvalida);
+
+        if (_polizaDao.ExisteNumeroPoliza(dto.NumeroPoliza))
+            throw new EntidadDuplicadaException(MensajesSistema.Formatear(MensajesSistema.PolizaDuplicada, dto.NumeroPoliza));
 
         _polizaDao.EmitirPolizaConCuotas(
-            numeroPoliza, idAsegurado, idRamo,
-            string.IsNullOrWhiteSpace(compania) ? "Federación Patronal Seguros" : compania.Trim(),
-            bienAsegurado.Trim(), primaTotal, cantidadCuotas,
-            fechaInicio, fechaFin, primerVencimiento);
+            dto.NumeroPoliza,
+            dto.IdAsegurado,
+            dto.IdRamo,
+            dto.Compania.Trim(),
+            dto.BienAsegurado.Trim(),
+            dto.PrimaTotal,
+            dto.CantidadCuotas,
+            dto.FechaInicio,
+            dto.FechaFin,
+            dto.PrimerVencimiento);
 
-        return (true, $"Póliza #{numeroPoliza} emitida con {cantidadCuotas} cuotas generadas.");
+        return $"Póliza #{dto.NumeroPoliza} emitida con {dto.CantidadCuotas} cuotas generadas.";
     }
 }
