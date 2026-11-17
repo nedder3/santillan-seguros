@@ -15,10 +15,33 @@ public partial class FormPrincipal : Form
     {
         InitializeComponent();
         Icon = IconHelper.CrearIconoEscudo();
-        btnCerrarSesion.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(127, 29, 29), "←");
-        btnRefrescarAlertas.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(30, 58, 138), "↻");
-        btnAsegGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(20, 83, 45), "✓");
-        btnEmitirPoliza.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(20, 83, 45), "+");
+        btnCerrarSesion.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(127, 29, 29), "back");
+        btnRefrescarAlertas.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(30, 58, 138), "refresh");
+        btnAsegGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "check");
+        btnEmitirPoliza.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "plus");
+        ConfigurarGrillas();
+    }
+
+    private void ConfigurarGrillas()
+    {
+        DataGridView[] grillas = { dgvVencidas, dgvPorVencer, dgvAsegurados, dgvPolizas, dgvCuotasPoliza };
+        foreach (var dgv in grillas)
+        {
+            dgv.RowHeadersVisible = false;
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv.GridColor = Color.FromArgb(226, 232, 240);
+            dgv.RowTemplate.Height = 28;
+            dgv.EnableHeadersVisualStyles = false;
+            dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv.ColumnHeadersHeight = 32;
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 76, 129);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
+            dgv.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+        }
     }
 
     private void FormPrincipal_Load(object sender, EventArgs e)
@@ -84,6 +107,9 @@ public partial class FormPrincipal : Form
         }).ToList();
 
         if (dgvPorVencer.Columns["IdCuota"] != null) dgvPorVencer.Columns["IdCuota"].Visible = false;
+
+        string user = AuthController.UsuarioActual?.obtenerUsername() ?? "sesion";
+        toolStripStatusLabel.Text = $"Sesión activa: {user} | Actualizado: {DateTime.Now:HH:mm:ss} | Motor: MariaDB";
     }
 
     private void btnRefrescarAlertas_Click(object sender, EventArgs e)
@@ -176,6 +202,20 @@ public partial class FormPrincipal : Form
 
     private void btnAsegGuardar_Click(object sender, EventArgs e)
     {
+        errorProvider.Clear();
+        if (string.IsNullOrWhiteSpace(txtAsegDni.Text))
+        {
+            errorProvider.SetError(txtAsegDni, "Ingrese DNI o CUIT.");
+            txtAsegDni.Focus();
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(txtAsegNombre.Text))
+        {
+            errorProvider.SetError(txtAsegNombre, "Ingrese apellido y nombre o razón social.");
+            txtAsegNombre.Focus();
+            return;
+        }
+
         try
         {
             var (exito, mensaje) = _carteraController.GuardarAsegurado(
@@ -271,18 +311,35 @@ public partial class FormPrincipal : Form
         catch { /* Ignorar errores transitorios de selección */ }
     }
 
+    private void ActualizarPreviewCuota_Event(object sender, EventArgs e)
+    {
+        errorProvider.SetError(txtPolPrima, string.Empty);
+        if (decimal.TryParse(txtPolPrima.Text, out decimal prima) && prima > 0 && nudPolCuotas.Value > 0)
+        {
+            decimal valorCuota = prima / nudPolCuotas.Value;
+            lblResumenCuota.Text = $"Valor estimado por cuota: {valorCuota:C2} ({(int)nudPolCuotas.Value} cuotas)";
+        }
+        else
+        {
+            lblResumenCuota.Text = "Valor estimado por cuota: --";
+        }
+    }
+
     private void btnEmitirPoliza_Click(object sender, EventArgs e)
     {
+        errorProvider.Clear();
         try
         {
-            if (!int.TryParse(txtPolNum.Text, out int numPoliza))
+            if (!int.TryParse(txtPolNum.Text, out int numPoliza) || numPoliza <= 0)
             {
-                MessageBox.Show("Ingrese un número de póliza válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                errorProvider.SetError(txtPolNum, "Ingrese un número de póliza válido.");
+                txtPolNum.Focus();
                 return;
             }
-            if (!decimal.TryParse(txtPolPrima.Text, out decimal prima))
+            if (!decimal.TryParse(txtPolPrima.Text, out decimal prima) || prima <= 0)
             {
-                MessageBox.Show("Ingrese una prima total numérica válida.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                errorProvider.SetError(txtPolPrima, "Ingrese una prima total numérica mayor a cero.");
+                txtPolPrima.Focus();
                 return;
             }
 

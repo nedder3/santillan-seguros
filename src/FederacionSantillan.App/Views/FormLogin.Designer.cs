@@ -15,6 +15,7 @@ partial class FormLogin
     private Button btnCrearUsuario;
     private Button btnSalir;
     private Label lblEstadoDb;
+    private ErrorProvider errorProvider;
 
     protected override void Dispose(bool disposing)
     {
@@ -25,6 +26,7 @@ partial class FormLogin
 
     private void InitializeComponent()
     {
+        components = new System.ComponentModel.Container();
         panelHeader = new Panel();
         lblSubtitulo = new Label();
         lblTitulo = new Label();
@@ -37,9 +39,15 @@ partial class FormLogin
         btnCrearUsuario = new Button();
         btnSalir = new Button();
         lblEstadoDb = new Label();
+        errorProvider = new ErrorProvider(components);
 
         panelHeader.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)errorProvider).BeginInit();
         SuspendLayout();
+
+        // errorProvider
+        errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+        errorProvider.ContainerControl = this;
 
         // panelHeader
         panelHeader.BackColor = Color.FromArgb(15, 76, 129);
@@ -63,36 +71,45 @@ partial class FormLogin
         // lblSubtitulo
         lblSubtitulo.AutoSize = true;
         lblSubtitulo.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
-        lblSubtitulo.ForeColor = Color.FromArgb(200, 225, 250);
+        lblSubtitulo.ForeColor = Color.FromArgb(219, 234, 254);
         lblSubtitulo.Location = new Point(22, 44);
         lblSubtitulo.Name = "lblSubtitulo";
         lblSubtitulo.Size = new Size(290, 17);
-        lblSubtitulo.Text = "Productor Asesor • Federación Patronal Seguros";
+        lblSubtitulo.Text = "Productor Asesor — Federación Patronal Seguros";
 
         // lblUsuario
         lblUsuario.AutoSize = true;
         lblUsuario.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        lblUsuario.ForeColor = Color.FromArgb(15, 23, 42);
         lblUsuario.Location = new Point(35, 105);
         lblUsuario.Name = "lblUsuario";
         lblUsuario.Size = new Size(60, 17);
         lblUsuario.Text = "Usuario:";
 
         // txtUsuario
+        txtUsuario.AccessibleDescription = "Ingrese su nombre de usuario asignado";
+        txtUsuario.AccessibleName = "Usuario";
+        txtUsuario.BorderStyle = BorderStyle.FixedSingle;
         txtUsuario.Font = new Font("Segoe UI", 10.5F);
         txtUsuario.Location = new Point(35, 126);
         txtUsuario.Name = "txtUsuario";
         txtUsuario.Size = new Size(368, 26);
         txtUsuario.TabIndex = 1;
+        txtUsuario.TextChanged += Campos_TextChanged;
 
         // lblPassword
         lblPassword.AutoSize = true;
         lblPassword.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        lblPassword.ForeColor = Color.FromArgb(15, 23, 42);
         lblPassword.Location = new Point(35, 165);
         lblPassword.Name = "lblPassword";
         lblPassword.Size = new Size(85, 17);
         lblPassword.Text = "Contraseña:";
 
-        // txtPassword (Enmascarada por defecto - Rúbrica)
+        // txtPassword
+        txtPassword.AccessibleDescription = "Ingrese su contraseña";
+        txtPassword.AccessibleName = "Contraseña";
+        txtPassword.BorderStyle = BorderStyle.FixedSingle;
         txtPassword.Font = new Font("Segoe UI", 10.5F);
         txtPassword.Location = new Point(35, 186);
         txtPassword.Name = "txtPassword";
@@ -100,27 +117,33 @@ partial class FormLogin
         txtPassword.Size = new Size(368, 26);
         txtPassword.TabIndex = 2;
         txtPassword.UseSystemPasswordChar = true;
+        txtPassword.TextChanged += Campos_TextChanged;
 
         // chkMostrarPassword
+        chkMostrarPassword.AccessibleName = "Mostrar contraseña";
         chkMostrarPassword.AutoSize = true;
-        chkMostrarPassword.Font = new Font("Segoe UI", 8.5F);
+        chkMostrarPassword.Cursor = Cursors.Hand;
+        chkMostrarPassword.Font = new Font("Segoe UI", 9F);
+        chkMostrarPassword.ForeColor = Color.FromArgb(51, 65, 85);
         chkMostrarPassword.Location = new Point(35, 218);
         chkMostrarPassword.Name = "chkMostrarPassword";
-        chkMostrarPassword.Size = new Size(135, 19);
+        chkMostrarPassword.Size = new Size(140, 19);
         chkMostrarPassword.TabIndex = 3;
         chkMostrarPassword.Text = "Mostrar contraseña";
         chkMostrarPassword.UseVisualStyleBackColor = true;
         chkMostrarPassword.CheckedChanged += chkMostrarPassword_CheckedChanged;
 
         // btnIngresar
-        btnIngresar.BackColor = Color.FromArgb(22, 163, 74);
+        btnIngresar.AccessibleName = "Ingresar al Sistema";
+        btnIngresar.BackColor = Color.FromArgb(21, 128, 61);
+        btnIngresar.Cursor = Cursors.Hand;
         btnIngresar.FlatAppearance.BorderSize = 0;
         btnIngresar.FlatStyle = FlatStyle.Flat;
         btnIngresar.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         btnIngresar.ForeColor = Color.White;
         btnIngresar.Location = new Point(35, 252);
         btnIngresar.Name = "btnIngresar";
-        btnIngresar.Size = new Size(368, 38);
+        btnIngresar.Size = new Size(368, 40);
         btnIngresar.TabIndex = 4;
         btnIngresar.Text = "  Ingresar al Sistema";
         btnIngresar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -128,14 +151,16 @@ partial class FormLogin
         btnIngresar.Click += btnIngresar_Click;
 
         // btnCrearUsuario
-        btnCrearUsuario.BackColor = Color.FromArgb(37, 99, 235);
+        btnCrearUsuario.AccessibleName = "Nuevo Usuario";
+        btnCrearUsuario.BackColor = Color.FromArgb(29, 78, 216);
+        btnCrearUsuario.Cursor = Cursors.Hand;
         btnCrearUsuario.FlatAppearance.BorderSize = 0;
         btnCrearUsuario.FlatStyle = FlatStyle.Flat;
         btnCrearUsuario.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         btnCrearUsuario.ForeColor = Color.White;
-        btnCrearUsuario.Location = new Point(35, 300);
+        btnCrearUsuario.Location = new Point(35, 302);
         btnCrearUsuario.Name = "btnCrearUsuario";
-        btnCrearUsuario.Size = new Size(180, 34);
+        btnCrearUsuario.Size = new Size(180, 36);
         btnCrearUsuario.TabIndex = 5;
         btnCrearUsuario.Text = "  Nuevo Usuario";
         btnCrearUsuario.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -143,14 +168,16 @@ partial class FormLogin
         btnCrearUsuario.Click += btnCrearUsuario_Click;
 
         // btnSalir
-        btnSalir.BackColor = Color.FromArgb(100, 116, 139);
+        btnSalir.AccessibleName = "Salir";
+        btnSalir.BackColor = Color.FromArgb(71, 85, 105);
+        btnSalir.Cursor = Cursors.Hand;
         btnSalir.FlatAppearance.BorderSize = 0;
         btnSalir.FlatStyle = FlatStyle.Flat;
         btnSalir.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         btnSalir.ForeColor = Color.White;
-        btnSalir.Location = new Point(223, 300);
+        btnSalir.Location = new Point(223, 302);
         btnSalir.Name = "btnSalir";
-        btnSalir.Size = new Size(180, 34);
+        btnSalir.Size = new Size(180, 36);
         btnSalir.TabIndex = 6;
         btnSalir.Text = "  Salir";
         btnSalir.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -158,21 +185,22 @@ partial class FormLogin
         btnSalir.Click += btnSalir_Click;
 
         // lblEstadoDb
+        lblEstadoDb.AccessibleName = "Estado de conexión a la base de datos";
         lblEstadoDb.AutoSize = true;
-        lblEstadoDb.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
-        lblEstadoDb.ForeColor = Color.DimGray;
-        lblEstadoDb.Location = new Point(35, 348);
+        lblEstadoDb.Font = new Font("Segoe UI", 8.5F, FontStyle.Regular);
+        lblEstadoDb.ForeColor = Color.FromArgb(71, 85, 105);
+        lblEstadoDb.Location = new Point(35, 352);
         lblEstadoDb.Name = "lblEstadoDb";
-        lblEstadoDb.Size = new Size(200, 15);
-        lblEstadoDb.Text = "Verificando conexión MariaDB...";
+        lblEstadoDb.Size = new Size(210, 15);
+        lblEstadoDb.Text = "Verificando conexión con MariaDB...";
 
         // FormLogin
         AcceptButton = btnIngresar;
         CancelButton = btnSalir;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        BackColor = Color.WhiteSmoke;
-        ClientSize = new Size(440, 380);
+        BackColor = Color.FromArgb(248, 250, 252);
+        ClientSize = new Size(440, 388);
         Controls.Add(lblEstadoDb);
         Controls.Add(btnSalir);
         Controls.Add(btnCrearUsuario);
@@ -193,6 +221,7 @@ partial class FormLogin
 
         panelHeader.ResumeLayout(false);
         panelHeader.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)errorProvider).EndInit();
         ResumeLayout(false);
         PerformLayout();
     }

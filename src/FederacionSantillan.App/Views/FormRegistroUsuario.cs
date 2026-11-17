@@ -11,12 +11,50 @@ public partial class FormRegistroUsuario : Form
     {
         InitializeComponent();
         Icon = IconHelper.CrearIconoEscudo();
-        btnGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(20, 83, 45), "✓");
-        btnCancelar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(51, 65, 85), "✕");
+        btnGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "check");
+        btnCancelar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(51, 65, 85), "close");
+    }
+
+    private void Campos_TextChanged(object sender, EventArgs e)
+    {
+        if (sender is Control ctrl)
+            errorProvider.SetError(ctrl, string.Empty);
+    }
+
+    private bool ValidarCampos()
+    {
+        errorProvider.Clear();
+        if (string.IsNullOrWhiteSpace(txtNombreCompleto.Text))
+        {
+            errorProvider.SetError(txtNombreCompleto, "Ingrese el nombre y apellido.");
+            txtNombreCompleto.Focus();
+            return false;
+        }
+        if (string.IsNullOrWhiteSpace(txtUsername.Text))
+        {
+            errorProvider.SetError(txtUsername, "Ingrese un nombre de usuario.");
+            txtUsername.Focus();
+            return false;
+        }
+        if (string.IsNullOrWhiteSpace(txtPassword.Text))
+        {
+            errorProvider.SetError(txtPassword, "Ingrese una contraseña.");
+            txtPassword.Focus();
+            return false;
+        }
+        if (txtPassword.Text != txtConfirmarPassword.Text)
+        {
+            errorProvider.SetError(txtConfirmarPassword, "Las contraseñas no coinciden.");
+            txtConfirmarPassword.Focus();
+            return false;
+        }
+        return true;
     }
 
     private void btnGuardar_Click(object sender, EventArgs e)
     {
+        if (!ValidarCampos()) return;
+
         try
         {
             var (exito, mensaje) = _authController.RegistrarUsuario(

@@ -72,6 +72,8 @@ partial class FormPrincipal
     private DataGridView dgvPolizas;
     private GroupBox grpCuotasPoliza;
     private DataGridView dgvCuotasPoliza;
+    private Label lblResumenCuota;
+    private ErrorProvider errorProvider;
 
     protected override void Dispose(bool disposing)
     {
@@ -82,6 +84,7 @@ partial class FormPrincipal
 
     private void InitializeComponent()
     {
+        components = new System.ComponentModel.Container();
         panelTop = new Panel();
         lblBrand = new Label();
         lblUsuarioActivo = new Label();
@@ -92,6 +95,8 @@ partial class FormPrincipal
         tabPolizas = new TabPage();
         statusStrip = new StatusStrip();
         toolStripStatusLabel = new ToolStripStatusLabel();
+        errorProvider = new ErrorProvider(components);
+        lblResumenCuota = new Label();
 
         // Tab 1 controls
         panelKpis = new Panel();
@@ -172,8 +177,13 @@ partial class FormPrincipal
         ((System.ComponentModel.ISupportInitialize)dgvPolizas).BeginInit();
         ((System.ComponentModel.ISupportInitialize)dgvCuotasPoliza).BeginInit();
         ((System.ComponentModel.ISupportInitialize)nudPolCuotas).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)errorProvider).BeginInit();
         statusStrip.SuspendLayout();
         SuspendLayout();
+
+        // errorProvider
+        errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+        errorProvider.ContainerControl = this;
 
         // panelTop
         panelTop.BackColor = Color.FromArgb(15, 76, 129);
@@ -190,18 +200,20 @@ partial class FormPrincipal
         lblBrand.ForeColor = Color.White;
         lblBrand.Location = new Point(16, 15);
         lblBrand.Name = "lblBrand";
-        lblBrand.Text = "Federación Santillán Seguros • Panel de Cobranzas y Cartera";
+        lblBrand.Text = "Federación Santillán Seguros — Panel de Cobranzas y Cartera";
 
         lblUsuarioActivo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         lblUsuarioActivo.AutoSize = true;
         lblUsuarioActivo.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
-        lblUsuarioActivo.ForeColor = Color.FromArgb(200, 225, 250);
-        lblUsuarioActivo.Location = new Point(740, 19);
+        lblUsuarioActivo.ForeColor = Color.FromArgb(219, 234, 254);
+        lblUsuarioActivo.Location = new Point(720, 19);
         lblUsuarioActivo.Name = "lblUsuarioActivo";
         lblUsuarioActivo.Text = "Usuario: --";
 
+        btnCerrarSesion.AccessibleName = "Cerrar Sesión";
         btnCerrarSesion.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        btnCerrarSesion.BackColor = Color.FromArgb(220, 38, 38);
+        btnCerrarSesion.BackColor = Color.FromArgb(185, 28, 28);
+        btnCerrarSesion.Cursor = Cursors.Hand;
         btnCerrarSesion.FlatAppearance.BorderSize = 0;
         btnCerrarSesion.FlatStyle = FlatStyle.Flat;
         btnCerrarSesion.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
@@ -227,13 +239,13 @@ partial class FormPrincipal
         tabMain.TabIndex = 1;
 
         // ==================== TAB 1: ALERTAS ====================
-        tabAlertas.BackColor = Color.WhiteSmoke;
+        tabAlertas.BackColor = Color.FromArgb(248, 250, 252);
         tabAlertas.Controls.Add(grpPorVencer);
         tabAlertas.Controls.Add(grpVencidas);
         tabAlertas.Controls.Add(panelKpis);
         tabAlertas.Name = "tabAlertas";
         tabAlertas.Padding = new Padding(10);
-        tabAlertas.Text = "🔔 Notificaciones de Vencimientos";
+        tabAlertas.Text = "Notificaciones de Vencimientos";
 
         panelKpis.Dock = DockStyle.Top;
         panelKpis.Height = 86;
@@ -293,7 +305,9 @@ partial class FormPrincipal
         cmbMetodoPagoAlerta.Size = new Size(200, 24);
         cmbMetodoPagoAlerta.TabIndex = 0;
 
-        btnRefrescarAlertas.BackColor = Color.FromArgb(37, 99, 235);
+        btnRefrescarAlertas.AccessibleName = "Actualizar Alertas";
+        btnRefrescarAlertas.BackColor = Color.FromArgb(29, 78, 216);
+        btnRefrescarAlertas.Cursor = Cursors.Hand;
         btnRefrescarAlertas.FlatAppearance.BorderSize = 0;
         btnRefrescarAlertas.FlatStyle = FlatStyle.Flat;
         btnRefrescarAlertas.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
@@ -310,11 +324,13 @@ partial class FormPrincipal
         grpVencidas.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         grpVencidas.ForeColor = Color.FromArgb(153, 27, 27);
         grpVencidas.Height = 245;
-        grpVencidas.Text = "⚠️ Morosos / Cuotas Vencidas (Requieren gestión inmediata)";
+        grpVencidas.Text = "Morosos / Cuotas Vencidas (Requieren gestión inmediata)";
         grpVencidas.Controls.Add(dgvVencidas);
         grpVencidas.Controls.Add(btnPagarVencida);
 
-        btnPagarVencida.BackColor = Color.FromArgb(22, 163, 74);
+        btnPagarVencida.AccessibleName = "Registrar pago de cuota vencida seleccionada";
+        btnPagarVencida.BackColor = Color.FromArgb(21, 128, 61);
+        btnPagarVencida.Cursor = Cursors.Hand;
         btnPagarVencida.Dock = DockStyle.Right;
         btnPagarVencida.FlatAppearance.BorderSize = 0;
         btnPagarVencida.FlatStyle = FlatStyle.Flat;
@@ -324,6 +340,7 @@ partial class FormPrincipal
         btnPagarVencida.Text = "Registrar Pago\n(Seleccionada)";
         btnPagarVencida.Click += btnPagarVencida_Click;
 
+        dgvVencidas.AccessibleName = "Grilla de cuotas vencidas";
         dgvVencidas.AllowUserToAddRows = false;
         dgvVencidas.AllowUserToDeleteRows = false;
         dgvVencidas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -337,11 +354,13 @@ partial class FormPrincipal
         grpPorVencer.Dock = DockStyle.Fill;
         grpPorVencer.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
         grpPorVencer.ForeColor = Color.FromArgb(146, 64, 14);
-        grpPorVencer.Text = "⏰ Cuotas Próximas a Vencer (Próximos 15 días)";
+        grpPorVencer.Text = "Cuotas Próximas a Vencer (Próximos 15 días)";
         grpPorVencer.Controls.Add(dgvPorVencer);
         grpPorVencer.Controls.Add(btnPagarPorVencer);
 
-        btnPagarPorVencer.BackColor = Color.FromArgb(22, 163, 74);
+        btnPagarPorVencer.AccessibleName = "Registrar pago de cuota próxima a vencer seleccionada";
+        btnPagarPorVencer.BackColor = Color.FromArgb(21, 128, 61);
+        btnPagarPorVencer.Cursor = Cursors.Hand;
         btnPagarPorVencer.Dock = DockStyle.Right;
         btnPagarPorVencer.FlatAppearance.BorderSize = 0;
         btnPagarPorVencer.FlatStyle = FlatStyle.Flat;
@@ -350,6 +369,8 @@ partial class FormPrincipal
         btnPagarPorVencer.TabIndex = 3;
         btnPagarPorVencer.Text = "Registrar Pago\n(Seleccionada)";
         btnPagarPorVencer.Click += btnPagarPorVencer_Click;
+
+        dgvPorVencer.AccessibleName = "Grilla de cuotas próximas a vencer";
 
         dgvPorVencer.AllowUserToAddRows = false;
         dgvPorVencer.AllowUserToDeleteRows = false;
@@ -361,14 +382,14 @@ partial class FormPrincipal
         dgvPorVencer.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
         // ==================== TAB 2: ASEGURADOS ====================
-        tabAsegurados.BackColor = Color.WhiteSmoke;
+        tabAsegurados.BackColor = Color.FromArgb(248, 250, 252);
         tabAsegurados.Controls.Add(dgvAsegurados);
         tabAsegurados.Controls.Add(txtBuscarAseg);
         tabAsegurados.Controls.Add(lblBuscarAseg);
         tabAsegurados.Controls.Add(grpFormAsegurado);
         tabAsegurados.Name = "tabAsegurados";
         tabAsegurados.Padding = new Padding(10);
-        tabAsegurados.Text = "👥 Cartera de Asegurados";
+        tabAsegurados.Text = "Cartera de Asegurados";
 
         grpFormAsegurado.Dock = DockStyle.Left;
         grpFormAsegurado.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
@@ -403,17 +424,20 @@ partial class FormPrincipal
         lblAsegDom.AutoSize = true; lblAsegDom.Location = new Point(16, 248); lblAsegDom.Text = "Domicilio:";
         txtAsegDom.Font = new Font("Segoe UI", 9.5F); txtAsegDom.Location = new Point(16, 268); txtAsegDom.Size = new Size(295, 24); txtAsegDom.TabIndex = 4;
 
-        btnAsegGuardar.BackColor = Color.FromArgb(22, 163, 74); btnAsegGuardar.FlatStyle = FlatStyle.Flat; btnAsegGuardar.FlatAppearance.BorderSize = 0;
+        btnAsegGuardar.AccessibleName = "Guardar Asegurado";
+        btnAsegGuardar.BackColor = Color.FromArgb(21, 128, 61); btnAsegGuardar.Cursor = Cursors.Hand; btnAsegGuardar.FlatStyle = FlatStyle.Flat; btnAsegGuardar.FlatAppearance.BorderSize = 0;
         btnAsegGuardar.ForeColor = Color.White; btnAsegGuardar.Location = new Point(16, 315); btnAsegGuardar.Size = new Size(295, 36); btnAsegGuardar.TabIndex = 5;
         btnAsegGuardar.Text = "  Guardar Asegurado"; btnAsegGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
         btnAsegGuardar.Click += btnAsegGuardar_Click;
 
-        btnAsegNuevo.BackColor = Color.FromArgb(37, 99, 235); btnAsegNuevo.FlatStyle = FlatStyle.Flat; btnAsegNuevo.FlatAppearance.BorderSize = 0;
+        btnAsegNuevo.AccessibleName = "Limpiar formulario para nuevo asegurado";
+        btnAsegNuevo.BackColor = Color.FromArgb(29, 78, 216); btnAsegNuevo.Cursor = Cursors.Hand; btnAsegNuevo.FlatStyle = FlatStyle.Flat; btnAsegNuevo.FlatAppearance.BorderSize = 0;
         btnAsegNuevo.ForeColor = Color.White; btnAsegNuevo.Location = new Point(16, 360); btnAsegNuevo.Size = new Size(142, 34); btnAsegNuevo.TabIndex = 6;
         btnAsegNuevo.Text = "Limpiar / Nuevo";
         btnAsegNuevo.Click += btnAsegNuevo_Click;
 
-        btnAsegEliminar.BackColor = Color.FromArgb(220, 38, 38); btnAsegEliminar.FlatStyle = FlatStyle.Flat; btnAsegEliminar.FlatAppearance.BorderSize = 0;
+        btnAsegEliminar.AccessibleName = "Dar de baja asegurado seleccionado";
+        btnAsegEliminar.BackColor = Color.FromArgb(185, 28, 28); btnAsegEliminar.Cursor = Cursors.Hand; btnAsegEliminar.FlatStyle = FlatStyle.Flat; btnAsegEliminar.FlatAppearance.BorderSize = 0;
         btnAsegEliminar.ForeColor = Color.White; btnAsegEliminar.Location = new Point(169, 360); btnAsegEliminar.Size = new Size(142, 34); btnAsegEliminar.TabIndex = 7;
         btnAsegEliminar.Text = "Dar de Baja";
         btnAsegEliminar.Click += btnAsegEliminar_Click;
@@ -423,10 +447,13 @@ partial class FormPrincipal
         lblBuscarAseg.Location = new Point(352, 18);
         lblBuscarAseg.Text = "Buscar por Nombre o DNI:";
 
+        txtBuscarAseg.AccessibleName = "Buscar asegurado por Nombre o DNI";
         txtBuscarAseg.Location = new Point(530, 14);
         txtBuscarAseg.Size = new Size(340, 24);
         txtBuscarAseg.TabIndex = 8;
         txtBuscarAseg.TextChanged += txtBuscarAseg_TextChanged;
+
+        dgvAsegurados.AccessibleName = "Grilla de asegurados";
 
         dgvAsegurados.AllowUserToAddRows = false;
         dgvAsegurados.AllowUserToDeleteRows = false;
@@ -441,18 +468,19 @@ partial class FormPrincipal
         dgvAsegurados.SelectionChanged += dgvAsegurados_SelectionChanged;
 
         // ==================== TAB 3: PÓLIZAS Y CUOTAS ====================
-        tabPolizas.BackColor = Color.WhiteSmoke;
+        tabPolizas.BackColor = Color.FromArgb(248, 250, 252);
         tabPolizas.Controls.Add(grpCuotasPoliza);
         tabPolizas.Controls.Add(grpListaPolizas);
         tabPolizas.Controls.Add(grpNuevaPoliza);
         tabPolizas.Name = "tabPolizas";
         tabPolizas.Padding = new Padding(10);
-        tabPolizas.Text = "📄 Pólizas y Plan de Cuotas";
+        tabPolizas.Text = "Pólizas y Plan de Cuotas";
 
         grpNuevaPoliza.Dock = DockStyle.Top;
         grpNuevaPoliza.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         grpNuevaPoliza.Height = 140;
         grpNuevaPoliza.Text = "Emitir Nueva Póliza (Genera Plan de Cuotas Automático)";
+        grpNuevaPoliza.Controls.Add(lblResumenCuota);
         grpNuevaPoliza.Controls.Add(btnEmitirPoliza);
         grpNuevaPoliza.Controls.Add(dtpPolPrimerVto);
         grpNuevaPoliza.Controls.Add(lblPolPrimerVto);
@@ -482,18 +510,31 @@ partial class FormPrincipal
         txtPolBien.Location = new Point(580, 42); txtPolBien.Size = new Size(320, 23); txtPolBien.TabIndex = 3;
 
         lblPolPrima.AutoSize = true; lblPolPrima.Location = new Point(14, 76); lblPolPrima.Text = "Prima Total ($):";
+        txtPolPrima.AccessibleName = "Prima Total en pesos";
         txtPolPrima.Location = new Point(14, 94); txtPolPrima.Size = new Size(130, 23); txtPolPrima.TabIndex = 4;
+        txtPolPrima.TextChanged += ActualizarPreviewCuota_Event;
 
         lblPolCuotas.AutoSize = true; lblPolCuotas.Location = new Point(156, 76); lblPolCuotas.Text = "Cuotas:";
+        nudPolCuotas.AccessibleName = "Cantidad de cuotas";
         nudPolCuotas.Location = new Point(156, 94); nudPolCuotas.Maximum = 24; nudPolCuotas.Minimum = 1; nudPolCuotas.Size = new Size(70, 23); nudPolCuotas.TabIndex = 5; nudPolCuotas.Value = 6;
+        nudPolCuotas.ValueChanged += ActualizarPreviewCuota_Event;
 
         lblPolPrimerVto.AutoSize = true; lblPolPrimerVto.Location = new Point(238, 76); lblPolPrimerVto.Text = "1er Vencimiento:";
+        dtpPolPrimerVto.AccessibleName = "Fecha de primer vencimiento";
         dtpPolPrimerVto.Format = DateTimePickerFormat.Short; dtpPolPrimerVto.Location = new Point(238, 94); dtpPolPrimerVto.Size = new Size(120, 23); dtpPolPrimerVto.TabIndex = 6;
 
-        btnEmitirPoliza.BackColor = Color.FromArgb(22, 163, 74); btnEmitirPoliza.FlatStyle = FlatStyle.Flat; btnEmitirPoliza.FlatAppearance.BorderSize = 0;
+        btnEmitirPoliza.AccessibleName = "Emitir Póliza y Cuotas";
+        btnEmitirPoliza.BackColor = Color.FromArgb(21, 128, 61); btnEmitirPoliza.Cursor = Cursors.Hand; btnEmitirPoliza.FlatStyle = FlatStyle.Flat; btnEmitirPoliza.FlatAppearance.BorderSize = 0;
         btnEmitirPoliza.ForeColor = Color.White; btnEmitirPoliza.Location = new Point(388, 86); btnEmitirPoliza.Size = new Size(210, 36); btnEmitirPoliza.TabIndex = 7;
         btnEmitirPoliza.Text = "  Emitir Póliza y Cuotas"; btnEmitirPoliza.TextImageRelation = TextImageRelation.ImageBeforeText;
         btnEmitirPoliza.Click += btnEmitirPoliza_Click;
+
+        lblResumenCuota.AutoSize = true;
+        lblResumenCuota.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        lblResumenCuota.ForeColor = Color.FromArgb(15, 76, 129);
+        lblResumenCuota.Location = new Point(615, 96);
+        lblResumenCuota.Name = "lblResumenCuota";
+        lblResumenCuota.Text = "Valor estimado por cuota: --";
 
         grpListaPolizas.Dock = DockStyle.Left;
         grpListaPolizas.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
@@ -566,6 +607,7 @@ partial class FormPrincipal
         ((System.ComponentModel.ISupportInitialize)dgvPolizas).EndInit();
         ((System.ComponentModel.ISupportInitialize)dgvCuotasPoliza).EndInit();
         ((System.ComponentModel.ISupportInitialize)nudPolCuotas).EndInit();
+        ((System.ComponentModel.ISupportInitialize)errorProvider).EndInit();
         statusStrip.ResumeLayout(false);
         statusStrip.PerformLayout();
         ResumeLayout(false);
