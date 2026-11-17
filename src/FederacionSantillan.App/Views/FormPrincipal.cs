@@ -376,6 +376,50 @@ public partial class FormPrincipal : Form
         help.ShowDialog(this);
     }
 
+    private void btnOpciones_Click(object sender, EventArgs e)
+    {
+        using var verify = new FormVerificarPassword();
+        if (verify.ShowDialog(this) != DialogResult.OK) return;
+
+        using var options = new FormOpciones();
+        if (options.ShowDialog(this) == DialogResult.OK)
+            ApplyAccessibilityTheme();
+    }
+
+    private void ApplyAccessibilityTheme()
+    {
+        var palette = AccessibilityTheme.GetCurrentPalette();
+        panelTop.BackColor = palette.HeaderBack;
+        tabAlertas.BackColor = palette.SurfaceBack;
+        tabAsegurados.BackColor = palette.SurfaceBack;
+        tabPolizas.BackColor = palette.SurfaceBack;
+
+        cardVencidas.BackColor = palette.OverdueCardBack;
+        lblKpiVencidasTitulo.ForeColor = palette.OverdueCardFore;
+        lblKpiVencidasValor.ForeColor = palette.OverdueCardFore;
+        grpVencidas.ForeColor = palette.OverdueCardFore;
+
+        cardPorVencer.BackColor = palette.UpcomingCardBack;
+        lblKpiPorVencerTitulo.ForeColor = palette.UpcomingCardFore;
+        lblKpiPorVencerValor.ForeColor = palette.UpcomingCardFore;
+        grpPorVencer.ForeColor = palette.UpcomingCardFore;
+
+        btnPagarVencida.BackColor = palette.PrimaryAction;
+        btnPagarPorVencer.BackColor = palette.PrimaryAction;
+        btnWhatsAppAviso.BackColor = palette.PrimaryAction;
+        btnAsegGuardar.BackColor = palette.PrimaryAction;
+        btnEmitirPoliza.BackColor = palette.PrimaryAction;
+        btnAsegEliminar.BackColor = palette.DangerAction;
+        btnCerrarSesion.BackColor = palette.DangerAction;
+
+        tabMain.Font = new Font("Segoe UI", palette.BaseFontSize);
+        foreach (DataGridView dgv in new[] { dgvVencidas, dgvPorVencer, dgvAsegurados, dgvPolizas, dgvCuotasPoliza })
+        {
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = palette.HeaderBack;
+            dgv.DefaultCellStyle.Font = new Font("Segoe UI", palette.BaseFontSize);
+        }
+    }
+
     private void btnCerrarSesion_Click(object sender, EventArgs e)
     {
         _authController.SignOut();

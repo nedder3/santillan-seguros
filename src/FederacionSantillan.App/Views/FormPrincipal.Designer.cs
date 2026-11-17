@@ -6,6 +6,7 @@ partial class FormPrincipal
     private Panel panelTop;
     private Label lblBrand;
     private Label lblUsuarioActivo;
+    private Button btnOpciones;
     private Button btnAyuda;
     private Button btnCerrarSesion;
     private TabControl tabMain;
@@ -92,6 +93,7 @@ partial class FormPrincipal
         panelTop = new Panel();
         lblBrand = new Label();
         lblUsuarioActivo = new Label();
+        btnOpciones = new Button();
         btnAyuda = new Button();
         btnCerrarSesion = new Button();
         tabMain = new TabControl();
@@ -195,6 +197,7 @@ partial class FormPrincipal
 
         // panelTop
         panelTop.BackColor = Color.FromArgb(15, 76, 129);
+        panelTop.Controls.Add(btnOpciones);
         panelTop.Controls.Add(btnAyuda);
         panelTop.Controls.Add(btnCerrarSesion);
         panelTop.Controls.Add(lblUsuarioActivo);
@@ -215,9 +218,24 @@ partial class FormPrincipal
         lblUsuarioActivo.AutoSize = true;
         lblUsuarioActivo.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
         lblUsuarioActivo.ForeColor = Color.FromArgb(219, 234, 254);
-        lblUsuarioActivo.Location = new Point(600, 19);
+        lblUsuarioActivo.Location = new Point(495, 19);
         lblUsuarioActivo.Name = "lblUsuarioActivo";
         lblUsuarioActivo.Text = "Usuario: --";
+
+        btnOpciones.AccessibleName = "Opciones";
+        btnOpciones.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnOpciones.BackColor = Color.FromArgb(51, 65, 85);
+        btnOpciones.Cursor = Cursors.Hand;
+        btnOpciones.FlatAppearance.BorderSize = 0;
+        btnOpciones.FlatStyle = FlatStyle.Flat;
+        btnOpciones.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnOpciones.ForeColor = Color.White;
+        btnOpciones.Location = new Point(770, 12);
+        btnOpciones.Name = "btnOpciones";
+        btnOpciones.Size = new Size(96, 32);
+        btnOpciones.TabIndex = 0;
+        btnOpciones.Text = "Opciones";
+        btnOpciones.Click += btnOpciones_Click;
 
         btnAyuda.AccessibleName = "Ayuda";
         btnAyuda.Anchor = AnchorStyles.Top | AnchorStyles.Right;
