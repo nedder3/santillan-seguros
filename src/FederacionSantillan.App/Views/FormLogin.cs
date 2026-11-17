@@ -20,19 +20,19 @@ public partial class FormLogin : Form
 
     private void FormLogin_Load(object sender, EventArgs e)
     {
-        VerificarConexionBaseDeDatos();
+        CheckDatabaseConnection();
         txtUsuario.Focus();
     }
 
-    private void VerificarConexionBaseDeDatos()
+    private void CheckDatabaseConnection()
     {
         try
         {
-            bool conectada = ConnectionFactory.TestConnection(out string error);
-            lblEstadoDb.Text = conectada
+            bool connected = ConnectionFactory.TestConnection(out string error);
+            lblEstadoDb.Text = connected
                 ? "Base de datos: conectada (MariaDB - santillan_seguros)"
                 : $"Sin conexión a MariaDB: {error}";
-            lblEstadoDb.ForeColor = conectada ? Color.FromArgb(21, 128, 61) : Color.FromArgb(185, 28, 28);
+            lblEstadoDb.ForeColor = connected ? Color.FromArgb(21, 128, 61) : Color.FromArgb(185, 28, 28);
         }
         catch (Exception ex)
         {
@@ -56,9 +56,9 @@ public partial class FormLogin : Form
     private void btnIngresar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        GlobalExceptionHandler.Ejecutar(() =>
+        GlobalExceptionHandler.Execute(() =>
         {
-            _authController.IniciarSesion(txtUsuario.Text, txtPassword.Text);
+            _authController.SignIn(txtUsuario.Text, txtPassword.Text);
             DialogResult = DialogResult.OK;
             Close();
         }, txtPassword);
@@ -66,7 +66,7 @@ public partial class FormLogin : Form
 
     private void btnCrearUsuario_Click(object sender, EventArgs e)
     {
-        GlobalExceptionHandler.Ejecutar(() =>
+        GlobalExceptionHandler.Execute(() =>
         {
             using var formReg = new FormRegistroUsuario();
             formReg.ShowDialog(this);

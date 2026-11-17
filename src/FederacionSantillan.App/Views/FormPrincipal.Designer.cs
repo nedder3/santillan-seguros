@@ -25,7 +25,10 @@ partial class FormPrincipal
     private Label lblKpiPorVencerValor;
     private ComboBox cmbMetodoPagoAlerta;
     private Label lblMetodoPagoAlerta;
+    private ComboBox cmbDiasAnticipacion;
     private Button btnRefrescarAlertas;
+    private Button btnWhatsAppAviso;
+    private Button btnExportarCsv;
     private GroupBox grpVencidas;
     private DataGridView dgvVencidas;
     private Button btnPagarVencida;
@@ -110,7 +113,10 @@ partial class FormPrincipal
         lblKpiPorVencerValor = new Label();
         lblMetodoPagoAlerta = new Label();
         cmbMetodoPagoAlerta = new ComboBox();
+        cmbDiasAnticipacion = new ComboBox();
         btnRefrescarAlertas = new Button();
+        btnWhatsAppAviso = new Button();
+        btnExportarCsv = new Button();
         grpVencidas = new GroupBox();
         dgvVencidas = new DataGridView();
         btnPagarVencida = new Button();
@@ -267,7 +273,10 @@ partial class FormPrincipal
 
         panelKpis.Dock = DockStyle.Top;
         panelKpis.Height = 86;
+        panelKpis.Controls.Add(btnExportarCsv);
+        panelKpis.Controls.Add(btnWhatsAppAviso);
         panelKpis.Controls.Add(btnRefrescarAlertas);
+        panelKpis.Controls.Add(cmbDiasAnticipacion);
         panelKpis.Controls.Add(cmbMetodoPagoAlerta);
         panelKpis.Controls.Add(lblMetodoPagoAlerta);
         panelKpis.Controls.Add(cardPorVencer);
@@ -318,24 +327,58 @@ partial class FormPrincipal
 
         cmbMetodoPagoAlerta.DropDownStyle = ComboBoxStyle.DropDownList;
         cmbMetodoPagoAlerta.Items.AddRange(new object[] { "Transferencia", "Efectivo", "Débito Automático", "MercadoPago" });
-        cmbMetodoPagoAlerta.Location = new Point(580, 36);
+        cmbMetodoPagoAlerta.Location = new Point(568, 36);
         cmbMetodoPagoAlerta.SelectedIndex = 0;
-        cmbMetodoPagoAlerta.Size = new Size(200, 24);
+        cmbMetodoPagoAlerta.Size = new Size(155, 24);
         cmbMetodoPagoAlerta.TabIndex = 0;
+
+        cmbDiasAnticipacion.DropDownStyle = ComboBoxStyle.DropDownList;
+        cmbDiasAnticipacion.Items.AddRange(new object[] { "7 días", "15 días", "30 días" });
+        cmbDiasAnticipacion.Location = new Point(732, 36);
+        cmbDiasAnticipacion.SelectedIndex = 1;
+        cmbDiasAnticipacion.Size = new Size(82, 24);
+        cmbDiasAnticipacion.TabIndex = 1;
+        cmbDiasAnticipacion.SelectedIndexChanged += btnRefrescarAlertas_Click;
 
         btnRefrescarAlertas.AccessibleName = "Actualizar Alertas";
         btnRefrescarAlertas.BackColor = Color.FromArgb(29, 78, 216);
         btnRefrescarAlertas.Cursor = Cursors.Hand;
         btnRefrescarAlertas.FlatAppearance.BorderSize = 0;
         btnRefrescarAlertas.FlatStyle = FlatStyle.Flat;
-        btnRefrescarAlertas.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        btnRefrescarAlertas.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
         btnRefrescarAlertas.ForeColor = Color.White;
-        btnRefrescarAlertas.Location = new Point(800, 26);
-        btnRefrescarAlertas.Size = new Size(190, 38);
-        btnRefrescarAlertas.TabIndex = 1;
-        btnRefrescarAlertas.Text = "  Actualizar Alertas";
+        btnRefrescarAlertas.Location = new Point(822, 8);
+        btnRefrescarAlertas.Size = new Size(135, 30);
+        btnRefrescarAlertas.TabIndex = 2;
+        btnRefrescarAlertas.Text = "  Actualizar";
         btnRefrescarAlertas.TextImageRelation = TextImageRelation.ImageBeforeText;
         btnRefrescarAlertas.Click += btnRefrescarAlertas_Click;
+
+        btnWhatsAppAviso.AccessibleName = "Copiar Aviso WhatsApp";
+        btnWhatsAppAviso.BackColor = Color.FromArgb(21, 128, 61);
+        btnWhatsAppAviso.Cursor = Cursors.Hand;
+        btnWhatsAppAviso.FlatAppearance.BorderSize = 0;
+        btnWhatsAppAviso.FlatStyle = FlatStyle.Flat;
+        btnWhatsAppAviso.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+        btnWhatsAppAviso.ForeColor = Color.White;
+        btnWhatsAppAviso.Location = new Point(822, 44);
+        btnWhatsAppAviso.Size = new Size(135, 30);
+        btnWhatsAppAviso.TabIndex = 3;
+        btnWhatsAppAviso.Text = "Aviso WhatsApp";
+        btnWhatsAppAviso.Click += btnWhatsAppAviso_Click;
+
+        btnExportarCsv.AccessibleName = "Exportar Morosos CSV";
+        btnExportarCsv.BackColor = Color.FromArgb(71, 85, 105);
+        btnExportarCsv.Cursor = Cursors.Hand;
+        btnExportarCsv.FlatAppearance.BorderSize = 0;
+        btnExportarCsv.FlatStyle = FlatStyle.Flat;
+        btnExportarCsv.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+        btnExportarCsv.ForeColor = Color.White;
+        btnExportarCsv.Location = new Point(964, 44);
+        btnExportarCsv.Size = new Size(125, 30);
+        btnExportarCsv.TabIndex = 4;
+        btnExportarCsv.Text = "Exportar CSV";
+        btnExportarCsv.Click += btnExportarCsv_Click;
 
         // Grilla Vencidas
         grpVencidas.Dock = DockStyle.Top;

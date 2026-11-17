@@ -1,33 +1,33 @@
-using FederacionSantillan.Core.Exceptions;
+using FederacionSantillan.Model.Exceptions;
 
 namespace FederacionSantillan.App.Handlers;
 
 public static class GlobalExceptionHandler
 {
-    public static void Ejecutar(Action accion, Control focoEnError = null)
+    public static void Execute(Action action, Control focusOnError = null)
     {
         try
         {
-            accion();
+            action();
         }
-        catch (EntidadDuplicadaException ex)
+        catch (DuplicateEntityException ex)
         {
             MessageBox.Show(ex.Message, "Registro Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            focoEnError?.Focus();
+            focusOnError?.Focus();
         }
-        catch (NegocioException ex)
+        catch (BusinessRuleException ex)
         {
             MessageBox.Show(ex.Message, "Validación de Datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            focoEnError?.Focus();
+            focusOnError?.Focus();
         }
-        catch (PersistenciaException ex)
+        catch (PersistenceException ex)
         {
             MessageBox.Show(ex.Message, "Error de Base de Datos", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                MensajesSistema.Formatear(MensajesSistema.ErrorPersistenciaGenerico, ex.Message),
+                SystemMessages.Format(SystemMessages.GenericPersistenceError, ex.Message),
                 "Error Inesperado",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);

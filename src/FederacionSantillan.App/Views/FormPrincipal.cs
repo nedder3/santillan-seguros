@@ -1,16 +1,18 @@
 using FederacionSantillan.App.Controllers;
 using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
-using FederacionSantillan.Core.DTOs;
+using FederacionSantillan.Model;
+using FederacionSantillan.Model.DTOs;
 
 namespace FederacionSantillan.App.Views;
 
 public partial class FormPrincipal : Form
 {
     private readonly AuthController _authController = new AuthController();
-    private readonly CarteraController _carteraController = new CarteraController();
-    private readonly NotificacionController _notificacionController = new NotificacionController();
-    private int _aseguradoSeleccionadoId = 0;
+    private readonly PortfolioController _portfolioController = new PortfolioController();
+    private readonly NotificationController _notificationController = new NotificationController();
+    private AlertsDashboardData _currentAlerts = new AlertsDashboardData();
+    private int _selectedInsuredId = 0;
 
     public FormPrincipal()
     {
@@ -20,13 +22,13 @@ public partial class FormPrincipal : Form
         btnRefrescarAlertas.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(30, 58, 138), "refresh");
         btnAsegGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "check");
         btnEmitirPoliza.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "plus");
-        ConfigurarGrillas();
+        ConfigureGrids();
     }
 
-    private void ConfigurarGrillas()
+    private void ConfigureGrids()
     {
-        DataGridView[] grillas = { dgvVencidas, dgvPorVencer, dgvAsegurados, dgvPolizas, dgvCuotasPoliza };
-        foreach (var dgv in grillas)
+        DataGridView[] grids = { dgvVencidas, dgvPorVencer, dgvAsegurados, dgvPolizas, dgvCuotasPoliza };
+        foreach (var dgv in grids)
         {
             dgv.RowHeadersVisible = false;
             dgv.BorderStyle = BorderStyle.None;
@@ -47,105 +49,159 @@ public partial class FormPrincipal : Form
 
     private void FormPrincipal_Load(object sender, EventArgs e)
     {
-        if (AuthController.UsuarioActual != null)
+        if (AuthController.CurrentUser != null)
         {
-            lblUsuarioActivo.Text = $"Conectado: {AuthController.UsuarioActual.obtenerNombreCompleto()} ({AuthController.UsuarioActual.obtenerRol()})";
-            toolStripStatusLabel.Text = $"Sesión activa: {AuthController.UsuarioActual.obtenerUsername()} | Motor: MariaDB";
+            lblUsuarioActivo.Text = $"Conectado: {AuthController.CurrentUser.getFullName()} ({AuthController.CurrentUser.getRole()})";
+            toolStripStatusLabel.Text = $"Sesión activa: {AuthController.CurrentUser.getUsername()} | Motor: MariaDB";
         }
-        RecargarTodo();
+        ReloadAll();
     }
 
-    private void RecargarTodo() => GlobalExceptionHandler.Ejecutar(() =>
+    private void ReloadAll() => GlobalExceptionHandler.Execute(() =>
     {
-        CargarAlertas();
-        CargarAsegurados();
-        CargarCombosPolizas();
-        CargarPolizas();
+        LoadAlerts();
+        LoadInsureds();
+        LoadPolicyCombos();
+        LoadPolicies();
     });
 
-    private void CargarAlertas()
+    private int GetSelectedDaysAhead() => cmbDiasAnticipacion.SelectedIndex switch
     {
-        var vencidas = _notificacionController.ObtenerCuotasVencidas();
-        var porVencer = _notificacionController.ObtenerCuotasPorVencer(15);
+        0 => 7,
+        2 => 30,
+        _ => 15
+    };
 
-        lblKpiVencidasValor.Text = $"{vencidas.Count} cuotas (${vencidas.Sum(c => c.Monto):N0})";
-        lblKpiPorVencerValor.Text = $"{porVencer.Count} cuotas (${porVencer.Sum(c => c.Monto):N0})";
+    private void LoadAlerts()
+    {
+        int days = GetSelectedDaysAhead();
+        _currentAlerts = _notificationController.LoadAlertsDashboard(days);
 
-        dgvVencidas.DataSource = vencidas.Select(c => new
+        lblKpiVencidasValor.Text = $"{_currentAlerts.Overdue.Count} cuotas (${_currentAlerts.OverdueTotal:N0})";
+        lblKpiPorVencerValor.Text = $"{_currentAlerts.Upcoming.Count} cuotas (${_currentAlerts.UpcomingTotal:N0})";
+
+        dgvVencidas.DataSource = _currentAlerts.Overdue.Select(c => new
         {
-            IdCuota = c.IdCuota,
-            Poliza = c.NumeroPolizaRef,
-            Asegurado = c.AseguradoNombreRef,
-            Telefono = c.AseguradoTelefonoRef,
-            Ramo = c.RamoNombreRef,
-            Cuota = $"#{c.NumeroCuota}",
-            Monto = c.Monto.ToString("C2"),
-            Vencimiento = c.FechaVencimiento.ToString("dd/MM/yyyy"),
-            DiasAtraso = $"{c.diasDeAtraso()} días"
+            InstallmentId = c.InstallmentId,
+            Poliza = c.PolicyNumberRef,
+            Asegurado = c.InsuredNameRef,
+            Telefono = c.InsuredPhoneRef,
+            Ramo = c.BranchNameRef,
+            Cuota = $"#{c.InstallmentNumber}",
+            Monto = c.Amount.ToString("C2"),
+            Vencimiento = c.DueDate.ToString("dd/MM/yyyy"),
+            DiasAtraso = $"{c.getDaysOverdue()} días"
         }).ToList();
 
-        if (dgvVencidas.Columns["IdCuota"] != null) dgvVencidas.Columns["IdCuota"].Visible = false;
+        if (dgvVencidas.Columns["InstallmentId"] != null) dgvVencidas.Columns["InstallmentId"].Visible = false;
 
-        dgvPorVencer.DataSource = porVencer.Select(c => new
+        dgvPorVencer.DataSource = _currentAlerts.Upcoming.Select(c => new
         {
-            IdCuota = c.IdCuota,
-            Poliza = c.NumeroPolizaRef,
-            Asegurado = c.AseguradoNombreRef,
-            Telefono = c.AseguradoTelefonoRef,
-            Ramo = c.RamoNombreRef,
-            Cuota = $"#{c.NumeroCuota}",
-            Monto = c.Monto.ToString("C2"),
-            Vencimiento = c.FechaVencimiento.ToString("dd/MM/yyyy"),
-            Faltan = $"{c.diasParaVencer()} días"
+            InstallmentId = c.InstallmentId,
+            Poliza = c.PolicyNumberRef,
+            Asegurado = c.InsuredNameRef,
+            Telefono = c.InsuredPhoneRef,
+            Ramo = c.BranchNameRef,
+            Cuota = $"#{c.InstallmentNumber}",
+            Monto = c.Amount.ToString("C2"),
+            Vencimiento = c.DueDate.ToString("dd/MM/yyyy"),
+            Faltan = $"{c.getDaysUntilDue()} días"
         }).ToList();
 
-        if (dgvPorVencer.Columns["IdCuota"] != null) dgvPorVencer.Columns["IdCuota"].Visible = false;
+        if (dgvPorVencer.Columns["InstallmentId"] != null) dgvPorVencer.Columns["InstallmentId"].Visible = false;
 
-        string user = AuthController.UsuarioActual?.obtenerUsername() ?? "sesion";
-        toolStripStatusLabel.Text = $"Sesión activa: {user} | Actualizado: {DateTime.Now:HH:mm:ss} | Motor: MariaDB";
+        string user = AuthController.CurrentUser?.getUsername() ?? "sesion";
+        toolStripStatusLabel.Text = $"Sesión activa: {user} | Actualizado: {DateTime.Now:HH:mm:ss} | Ventana: {days} días | MariaDB";
     }
 
     private void btnRefrescarAlertas_Click(object sender, EventArgs e) =>
-        GlobalExceptionHandler.Ejecutar(CargarAlertas);
+        GlobalExceptionHandler.Execute(LoadAlerts);
 
-    private void btnPagarVencida_Click(object sender, EventArgs e) => ProcesarPagoDesdeGrilla(dgvVencidas);
+    private void btnPagarVencida_Click(object sender, EventArgs e) => ProcessPaymentFromGrid(dgvVencidas);
 
-    private void btnPagarPorVencer_Click(object sender, EventArgs e) => ProcesarPagoDesdeGrilla(dgvPorVencer);
+    private void btnPagarPorVencer_Click(object sender, EventArgs e) => ProcessPaymentFromGrid(dgvPorVencer);
 
-    private void ProcesarPagoDesdeGrilla(DataGridView grilla)
+    private void ProcessPaymentFromGrid(DataGridView grid)
     {
-        if (grilla.CurrentRow == null)
+        if (grid.CurrentRow == null)
         {
             MessageBox.Show("Seleccione una cuota de la lista para registrar su pago.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
-        int idCuota = Convert.ToInt32(grilla.CurrentRow.Cells["IdCuota"].Value);
-        string asegurado = grilla.CurrentRow.Cells["Asegurado"].Value?.ToString();
-        string metodo = cmbMetodoPagoAlerta.SelectedItem?.ToString() ?? "Transferencia";
+        int installmentId = Convert.ToInt32(grid.CurrentRow.Cells["InstallmentId"].Value);
+        string insuredName = grid.CurrentRow.Cells["Asegurado"].Value?.ToString();
+        string method = cmbMetodoPagoAlerta.SelectedItem?.ToString() ?? "Transferencia";
 
-        if (MessageBox.Show($"¿Confirma registrar el pago de la cuota seleccionada para {asegurado} vía {metodo}?", "Confirmar Cobro", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+        if (MessageBox.Show($"¿Confirma registrar el pago de la cuota seleccionada para {insuredName} vía {method}?", "Confirmar Cobro", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             return;
 
-        GlobalExceptionHandler.Ejecutar(() =>
+        GlobalExceptionHandler.Execute(() =>
         {
-            string mensaje = _notificacionController.RegistrarPagoCuota(idCuota, metodo);
-            MessageBox.Show(mensaje, "Cobro Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            RecargarTodo();
+            string msg = _notificationController.RegisterInstallmentPayment(installmentId, method);
+            MessageBox.Show(msg, "Cobro Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ReloadAll();
         });
     }
 
-    private void CargarAsegurados()
+    private void btnWhatsAppAviso_Click(object sender, EventArgs e)
     {
-        var lista = _carteraController.ListarAsegurados(txtBuscarAseg.Text);
-        dgvAsegurados.DataSource = lista.Select(a => new
+        DataGridView activeGrid = dgvVencidas.Focused || dgvPorVencer.CurrentRow == null ? dgvVencidas : dgvPorVencer;
+        if (activeGrid.CurrentRow == null) activeGrid = dgvPorVencer.CurrentRow != null ? dgvPorVencer : dgvVencidas;
+
+        if (activeGrid.CurrentRow == null)
         {
-            Id = a.obtenerCodigo(),
-            DNI_CUIT = a.obtenerDni(),
-            Nombre = a.obtenerNombre(),
-            Telefono = a.obtenerTelefono(),
-            Email = a.obtenerEmail(),
-            Domicilio = a.obtenerDomicilio()
+            MessageBox.Show("Seleccione una cuota vencida o por vencer para generar el aviso.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        int installmentId = Convert.ToInt32(activeGrid.CurrentRow.Cells["InstallmentId"].Value);
+        if (!_currentAlerts.InstallmentIndex.TryGetValue(installmentId, out Installment installment))
+            return;
+
+        GlobalExceptionHandler.Execute(() =>
+        {
+            string reminder = _notificationController.LogAndBuildWhatsAppReminder(installment);
+            Clipboard.SetText(reminder);
+            MessageBox.Show($"Mensaje copiado al portapapeles y registrado en MariaDB:\n\n{reminder}", "Aviso WhatsApp Listo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        });
+    }
+
+    private void btnExportarCsv_Click(object sender, EventArgs e)
+    {
+        if (_currentAlerts.Overdue.Count == 0)
+        {
+            MessageBox.Show("No hay cuotas vencidas para exportar.", "Exportar CSV", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        using var sfd = new SaveFileDialog
+        {
+            Filter = "Archivos CSV (*.csv)|*.csv",
+            FileName = $"morosos_santillan_{DateTime.Today:yyyyMMdd}.csv"
+        };
+
+        if (sfd.ShowDialog(this) != DialogResult.OK) return;
+
+        GlobalExceptionHandler.Execute(() =>
+        {
+            string csv = _notificationController.ExportOverdueToCsv(_currentAlerts.Overdue);
+            File.WriteAllText(sfd.FileName, csv, System.Text.Encoding.UTF8);
+            MessageBox.Show($"Listado exportado correctamente a:\n{sfd.FileName}", "Exportación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        });
+    }
+
+    private void LoadInsureds()
+    {
+        var list = _portfolioController.ListInsureds(txtBuscarAseg.Text);
+        dgvAsegurados.DataSource = list.Select(a => new
+        {
+            Id = a.getInsuredId(),
+            DNI_CUIT = a.getTaxId(),
+            Nombre = a.getFullName(),
+            Telefono = a.getPhone(),
+            Email = a.getEmail(),
+            Domicilio = a.getAddress()
         }).ToList();
 
         if (dgvAsegurados.Columns["Id"] != null) dgvAsegurados.Columns["Id"].Visible = false;
@@ -153,14 +209,14 @@ public partial class FormPrincipal : Form
 
     private void txtBuscarAseg_TextChanged(object sender, EventArgs e)
     {
-        try { CargarAsegurados(); }
+        try { LoadInsureds(); }
         catch { }
     }
 
     private void dgvAsegurados_SelectionChanged(object sender, EventArgs e)
     {
         if (dgvAsegurados.CurrentRow == null) return;
-        _aseguradoSeleccionadoId = Convert.ToInt32(dgvAsegurados.CurrentRow.Cells["Id"].Value);
+        _selectedInsuredId = Convert.ToInt32(dgvAsegurados.CurrentRow.Cells["Id"].Value);
         txtAsegDni.Text = dgvAsegurados.CurrentRow.Cells["DNI_CUIT"].Value?.ToString();
         txtAsegNombre.Text = dgvAsegurados.CurrentRow.Cells["Nombre"].Value?.ToString();
         txtAsegTel.Text = dgvAsegurados.CurrentRow.Cells["Telefono"].Value?.ToString();
@@ -168,11 +224,11 @@ public partial class FormPrincipal : Form
         txtAsegDom.Text = dgvAsegurados.CurrentRow.Cells["Domicilio"].Value?.ToString();
     }
 
-    private void btnAsegNuevo_Click(object sender, EventArgs e) => LimpiarFormularioAsegurado();
+    private void btnAsegNuevo_Click(object sender, EventArgs e) => ClearInsuredForm();
 
-    private void LimpiarFormularioAsegurado()
+    private void ClearInsuredForm()
     {
-        _aseguradoSeleccionadoId = 0;
+        _selectedInsuredId = 0;
         txtAsegDni.Clear();
         txtAsegNombre.Clear();
         txtAsegTel.Clear();
@@ -184,28 +240,28 @@ public partial class FormPrincipal : Form
     private void btnAsegGuardar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        var dto = new AseguradoInputDTO
+        var dto = new InsuredInputDto
         {
-            Id = _aseguradoSeleccionadoId,
-            DniCuit = txtAsegDni.Text,
-            ApellidoNombre = txtAsegNombre.Text,
-            Telefono = txtAsegTel.Text,
+            Id = _selectedInsuredId,
+            TaxId = txtAsegDni.Text,
+            FullName = txtAsegNombre.Text,
+            Phone = txtAsegTel.Text,
             Email = txtAsegEmail.Text,
-            Domicilio = txtAsegDom.Text
+            Address = txtAsegDom.Text
         };
 
-        GlobalExceptionHandler.Ejecutar(() =>
+        GlobalExceptionHandler.Execute(() =>
         {
-            string mensaje = _carteraController.GuardarAsegurado(dto);
-            MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LimpiarFormularioAsegurado();
-            RecargarTodo();
+            string msg = _portfolioController.SaveInsured(dto);
+            MessageBox.Show(msg, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ClearInsuredForm();
+            ReloadAll();
         }, txtAsegDni);
     }
 
     private void btnAsegEliminar_Click(object sender, EventArgs e)
     {
-        if (_aseguradoSeleccionadoId <= 0)
+        if (_selectedInsuredId <= 0)
         {
             MessageBox.Show("Seleccione un asegurado de la grilla.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
@@ -213,41 +269,41 @@ public partial class FormPrincipal : Form
         if (MessageBox.Show("¿Desea dar de baja este asegurado?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             return;
 
-        GlobalExceptionHandler.Ejecutar(() =>
+        GlobalExceptionHandler.Execute(() =>
         {
-            _carteraController.EliminarAsegurado(_aseguradoSeleccionadoId);
+            _portfolioController.DeleteInsured(_selectedInsuredId);
             MessageBox.Show("Asegurado dado de baja correctamente.", "Baja Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LimpiarFormularioAsegurado();
-            RecargarTodo();
+            ClearInsuredForm();
+            ReloadAll();
         });
     }
 
-    private void CargarCombosPolizas()
+    private void LoadPolicyCombos()
     {
-        cmbPolAsegurado.DataSource = _carteraController.ListarAsegurados();
-        cmbPolAsegurado.DisplayMember = "Nombre";
-        cmbPolAsegurado.ValueMember = "Codigo";
+        cmbPolAsegurado.DataSource = _portfolioController.ListInsureds();
+        cmbPolAsegurado.DisplayMember = "FullName";
+        cmbPolAsegurado.ValueMember = "InsuredId";
 
-        cmbPolRamo.DataSource = _carteraController.ListarRamos();
-        cmbPolRamo.DisplayMember = "Nombre";
-        cmbPolRamo.ValueMember = "IdRamo";
+        cmbPolRamo.DataSource = _portfolioController.ListBranches();
+        cmbPolRamo.DisplayMember = "Name";
+        cmbPolRamo.ValueMember = "BranchId";
     }
 
-    private void CargarPolizas()
+    private void LoadPolicies()
     {
-        var polizas = _carteraController.ListarPolizas();
-        dgvPolizas.DataSource = polizas.Select(p => new
+        var policies = _portfolioController.ListPolicies();
+        dgvPolizas.DataSource = policies.Select(p => new
         {
-            IdPoliza = p.IdPoliza,
-            Numero = p.NumeroPoliza,
-            Asegurado = p.AseguradoNombre,
-            Ramo = p.RamoNombre,
-            Bien = p.BienAsegurado,
-            Prima = p.PrimaTotal.ToString("C2"),
-            Estado = p.Estado
+            PolicyId = p.PolicyId,
+            Numero = p.PolicyNumber,
+            Asegurado = p.InsuredName,
+            Ramo = p.BranchName,
+            Bien = p.InsuredAsset,
+            Prima = p.TotalPremium.ToString("C2"),
+            Estado = p.Status
         }).ToList();
 
-        if (dgvPolizas.Columns["IdPoliza"] != null) dgvPolizas.Columns["IdPoliza"].Visible = false;
+        if (dgvPolizas.Columns["PolicyId"] != null) dgvPolizas.Columns["PolicyId"].Visible = false;
     }
 
     private void dgvPolizas_SelectionChanged(object sender, EventArgs e)
@@ -255,15 +311,15 @@ public partial class FormPrincipal : Form
         try
         {
             if (dgvPolizas.CurrentRow == null) return;
-            int idPoliza = Convert.ToInt32(dgvPolizas.CurrentRow.Cells["IdPoliza"].Value);
-            var cuotas = _carteraController.ListarCuotasPorPoliza(idPoliza);
-            dgvCuotasPoliza.DataSource = cuotas.Select(c => new
+            int policyId = Convert.ToInt32(dgvPolizas.CurrentRow.Cells["PolicyId"].Value);
+            var installments = _portfolioController.ListInstallmentsByPolicy(policyId);
+            dgvCuotasPoliza.DataSource = installments.Select(c => new
             {
-                Cuota = $"#{c.NumeroCuota}",
-                Monto = c.Monto.ToString("C2"),
-                Vencimiento = c.FechaVencimiento.ToString("dd/MM/yyyy"),
-                Estado = c.Estado,
-                Pago = c.FechaPago.HasValue ? c.FechaPago.Value.ToString("dd/MM/yyyy") : "-"
+                Cuota = $"#{c.InstallmentNumber}",
+                Monto = c.Amount.ToString("C2"),
+                Vencimiento = c.DueDate.ToString("dd/MM/yyyy"),
+                Estado = c.Status,
+                Pago = c.PaymentDate.HasValue ? c.PaymentDate.Value.ToString("dd/MM/yyyy") : "-"
             }).ToList();
         }
         catch { }
@@ -272,10 +328,10 @@ public partial class FormPrincipal : Form
     private void ActualizarPreviewCuota_Event(object sender, EventArgs e)
     {
         errorProvider.SetError(txtPolPrima, string.Empty);
-        if (decimal.TryParse(txtPolPrima.Text, out decimal prima) && prima > 0 && nudPolCuotas.Value > 0)
+        if (decimal.TryParse(txtPolPrima.Text, out decimal premium) && premium > 0 && nudPolCuotas.Value > 0)
         {
-            decimal valorCuota = prima / nudPolCuotas.Value;
-            lblResumenCuota.Text = $"Valor estimado por cuota: {valorCuota:C2} ({(int)nudPolCuotas.Value} cuotas)";
+            decimal installmentValue = premium / nudPolCuotas.Value;
+            lblResumenCuota.Text = $"Valor estimado por cuota: {installmentValue:C2} ({(int)nudPolCuotas.Value} cuotas)";
         }
         else
         {
@@ -286,43 +342,43 @@ public partial class FormPrincipal : Form
     private void btnEmitirPoliza_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        int.TryParse(txtPolNum.Text, out int numPoliza);
-        decimal.TryParse(txtPolPrima.Text, out decimal prima);
+        int.TryParse(txtPolNum.Text, out int policyNumber);
+        decimal.TryParse(txtPolPrima.Text, out decimal premium);
 
-        var dto = new PolizaInputDTO
+        var dto = new PolicyInputDto
         {
-            NumeroPoliza = numPoliza,
-            IdAsegurado = cmbPolAsegurado.SelectedValue != null ? Convert.ToInt32(cmbPolAsegurado.SelectedValue) : 0,
-            IdRamo = cmbPolRamo.SelectedValue != null ? Convert.ToInt32(cmbPolRamo.SelectedValue) : 0,
-            Compania = "Federación Patronal Seguros",
-            BienAsegurado = txtPolBien.Text,
-            PrimaTotal = prima,
-            CantidadCuotas = (int)nudPolCuotas.Value,
-            FechaInicio = DateTime.Today,
-            FechaFin = DateTime.Today.AddYears(1),
-            PrimerVencimiento = dtpPolPrimerVto.Value
+            PolicyNumber = policyNumber,
+            InsuredId = cmbPolAsegurado.SelectedValue != null ? Convert.ToInt32(cmbPolAsegurado.SelectedValue) : 0,
+            BranchId = cmbPolRamo.SelectedValue != null ? Convert.ToInt32(cmbPolRamo.SelectedValue) : 0,
+            Company = "Federación Patronal Seguros",
+            InsuredAsset = txtPolBien.Text,
+            TotalPremium = premium,
+            InstallmentsCount = (int)nudPolCuotas.Value,
+            StartDate = DateTime.Today,
+            EndDate = DateTime.Today.AddYears(1),
+            FirstDueDate = dtpPolPrimerVto.Value
         };
 
-        GlobalExceptionHandler.Ejecutar(() =>
+        GlobalExceptionHandler.Execute(() =>
         {
-            string mensaje = _carteraController.EmitirPoliza(dto);
-            MessageBox.Show(mensaje, "Póliza Emitida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string msg = _portfolioController.IssuePolicy(dto);
+            MessageBox.Show(msg, "Póliza Emitida", MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtPolNum.Clear();
             txtPolBien.Clear();
             txtPolPrima.Clear();
-            RecargarTodo();
+            ReloadAll();
         }, txtPolNum);
     }
 
     private void btnAyuda_Click(object sender, EventArgs e)
     {
-        using var ayuda = new FormAyuda();
-        ayuda.ShowDialog(this);
+        using var help = new FormAyuda();
+        help.ShowDialog(this);
     }
 
     private void btnCerrarSesion_Click(object sender, EventArgs e)
     {
-        _authController.CerrarSesion();
+        _authController.SignOut();
         DialogResult = DialogResult.Retry;
         Close();
     }
