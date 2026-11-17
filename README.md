@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ Federación Santillán Seguros
+# Federación Santillán Seguros
 ### Sistema de Gestión de Cartera, Cobranzas y Alertas de Vencimientos
 
 ![C# .NET 8](https://img.shields.io/badge/C%23-.NET%208%20WinForms-512BD4?style=for-the-badge&logo=dotnet)
@@ -16,7 +16,7 @@
 
 ---
 
-## 📋 Resumen Ejecutivo
+## Resumen Ejecutivo
 
 Sistema de escritorio desarrollado en **C# (.NET 8 Windows Forms)** con persistencia en **MariaDB** bajo arquitectura **MVC en 3 Capas** (`Views WinForms` $\rightarrow$ `Controllers` $\rightarrow$ `Data DAOs` + `Core Entidades`). Resuelve la gestión diaria de cartera de asegurados, emisión transaccional de pólizas con generación automática de plan de cuotas y un **tablero en vivo de alertas de mora (cuotas vencidas) y vencimientos próximos (15 días)**.
 
@@ -26,7 +26,7 @@ Sistema de escritorio desarrollado en **C# (.NET 8 Windows Forms)** con persiste
 
 ---
 
-## 🏗️ Arquitectura 3 Capas + MVC
+## Arquitectura 3 Capas + MVC
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -55,7 +55,7 @@ Sistema de escritorio desarrollado en **C# (.NET 8 Windows Forms)** con persiste
 
 ---
 
-## 🚀 Guía de Inicio Rápido (Docker + DBeaver + Visual Studio)
+## Guía de Inicio Rápido (Docker + DBeaver + Visual Studio)
 
 ### 1. Levantar MariaDB con Docker
 ```bash
@@ -75,7 +75,7 @@ docker compose up -d
 
 ---
 
-## 📁 Documentación y Diagramas (Listos para PDF)
+## Documentación y Diagramas (Listos para PDF)
 * `diagramas/*.drawio`: DER (3FN), Diagrama de Clases UML (MVC), Casos de Uso, Secuencia y Contexto.
 * `docs/01_Estudio_Factibilidad_y_Requerimientos.md`
 * `docs/02_Fundamentacion_DER_y_Diccionario.md`
