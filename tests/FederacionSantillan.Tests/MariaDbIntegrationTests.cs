@@ -7,12 +7,13 @@ namespace FederacionSantillan.Tests;
 public class MariaDbIntegrationTests
 {
     [Fact]
-    public void ConexionMariaDb_Y_LecturaDeRamos_FuncionanConDockerActivo()
+    public void Given_RunningMariaDbContainer_When_QueryingBranches_Then_ReturnsSeededCatalog()
     {
         if (!ConnectionFactory.TestConnection(out _))
             return;
 
-        var ramos = new RamoDAO().ObtenerTodos();
-        Assert.NotEmpty(ramos);
+        var branches = new BranchDao().GetAll();
+
+        Assert.NotEmpty(branches);
     }
 }

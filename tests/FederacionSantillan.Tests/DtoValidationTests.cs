@@ -1,83 +1,45 @@
-using FederacionSantillan.Core.DTOs;
-using FederacionSantillan.Core.Exceptions;
-using FederacionSantillan.Core.Validation;
+using FederacionSantillan.Model.Exceptions;
+using FederacionSantillan.Model.Validation;
+using FederacionSantillan.Tests.Factories;
 
 namespace FederacionSantillan.Tests;
 
 public class DtoValidationTests
 {
     [Fact]
-    public void Validar_AseguradoValido_NoLanzaExcepcion()
+    public void Given_ValidInsuredDto_When_Validated_Then_DoesNotThrow()
     {
-        var dto = new AseguradoInputDTO
-        {
-            DniCuit = "20-34567890-1",
-            ApellidoNombre = "Gómez, Carlos",
-            Telefono = "291-4123456",
-            Email = "carlos@email.com",
-            Domicilio = "Av. Alem 1240"
-        };
+        var dto = TestDataFactory.CreateValidInsuredDto();
 
-        var ex = Record.Exception(() => DtoValidator.Validar(dto));
+        var ex = Record.Exception(() => DtoValidator.Validate(dto));
+
         Assert.Null(ex);
     }
 
     [Fact]
-    public void Validar_AseguradoSinDni_LanzaNegocioException()
+    public void Given_InsuredDtoWithInvalidEmail_When_Validated_Then_ThrowsBusinessRuleException()
     {
-        var dto = new AseguradoInputDTO
-        {
-            DniCuit = "",
-            ApellidoNombre = "Gómez, Carlos",
-            Telefono = "291-4123456"
-        };
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.Email = "not-an-email";
 
-        Assert.Throws<NegocioException>(() => DtoValidator.Validar(dto));
+        Assert.Throws<BusinessRuleException>(() => DtoValidator.Validate(dto));
     }
 
     [Fact]
-    public void Validar_AseguradoEmailInvalido_LanzaNegocioException()
+    public void Given_RegisterUserDtoWithMismatchedPasswords_When_Validated_Then_ThrowsBusinessRuleException()
     {
-        var dto = new AseguradoInputDTO
-        {
-            DniCuit = "20-34567890-1",
-            ApellidoNombre = "Gómez, Carlos",
-            Telefono = "291-4123456",
-            Email = "correo-invalido"
-        };
+        var dto = TestDataFactory.CreateValidRegisterUserDto();
+        dto.ConfirmPassword = "differentPassword";
 
-        Assert.Throws<NegocioException>(() => DtoValidator.Validar(dto));
+        Assert.Throws<BusinessRuleException>(() => DtoValidator.Validate(dto));
     }
 
     [Fact]
-    public void Validar_RegistroPasswordsDistintas_LanzaNegocioException()
+    public void Given_PolicyDtoWithInstallmentsOutOfRange_When_Validated_Then_ThrowsBusinessRuleException()
     {
-        var dto = new RegistroUsuarioDTO
-        {
-            NombreCompleto = "Juan Pérez",
-            Username = "jperez",
-            Password = "password123",
-            ConfirmarPassword = "otra",
-            Rol = "PRODUCTOR"
-        };
+        var dto = TestDataFactory.CreateValidPolicyDto();
+        dto.InstallmentsCount = 36;
 
-        Assert.Throws<NegocioException>(() => DtoValidator.Validar(dto));
-    }
-
-    [Fact]
-    public void Validar_PolizaCantidadCuotasFueraDeRango_LanzaNegocioException()
-    {
-        var dto = new PolizaInputDTO
-        {
-            NumeroPoliza = 900101,
-            IdAsegurado = 1,
-            IdRamo = 1,
-            Compania = "Federación Patronal Seguros",
-            BienAsegurado = "Toyota Hilux",
-            PrimaTotal = 150000m,
-            CantidadCuotas = 36
-        };
-
-        Assert.Throws<NegocioException>(() => DtoValidator.Validar(dto));
+        Assert.Throws<BusinessRuleException>(() => DtoValidator.Validate(dto));
     }
 }

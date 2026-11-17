@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FederacionSantillan.Core\FederacionSantillan.Core.csproj" />
+    <ProjectReference Include="..\..\src\FederacionSantillan.Model\FederacionSantillan.Model.csproj" />
     <ProjectReference Include="..\..\src\FederacionSantillan.Data\FederacionSantillan.Data.csproj" />
   </ItemGroup>
 
