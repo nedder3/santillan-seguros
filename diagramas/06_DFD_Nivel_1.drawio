@@ -32,16 +32,16 @@
         </mxCell>
 
         <!-- Almacenes de Datos (Notación DFD abierta a la derecha) -->
-        <mxCell id="d1" value="D1 | usuarios" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#0f4c81;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="d1" value="D1 | users" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#0f4c81;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="660" y="100" width="180" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="d2" value="D2 | asegurados" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#15803d;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="d2" value="D2 | insureds" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#15803d;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="660" y="250" width="180" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="d3" value="D3 | polizas / ramos" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#d97706;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="d3" value="D3 | policies / branches" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#d97706;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="660" y="395" width="180" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="d4" value="D4 | cuotas / notificaciones" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#b91c1c;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="d4" value="D4 | installments / notifications" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#b91c1c;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="660" y="550" width="210" height="45" as="geometry" />
         </mxCell>
 

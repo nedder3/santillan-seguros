@@ -2,7 +2,7 @@
 
 ## 1. Fuentes Públicas y Estándares de Referencia (Respaldo Académico e Industrial)
 
-El diseño de la base de datos `santillan_seguros` (normalizada en **Tercera Forma Normal - 3FN**) no es arbitrario; se fundamenta en tres fuentes públicas verificables del dominio asegurador:
+El diseño de la base de datos `santillan_seguros` (normalizada en **Tercera Forma Normal - 3FN**) se fundamenta en tres fuentes públicas verificables del dominio asegurador:
 
 1. **Marco Legal Argentino — Ley N° 22.400 (Régimen de Productores Asesores de Seguros - SSN):**
    * Fuente oficial: [InfoLEG - Ministerio de Justicia de la Nación](http://servicios.infoleg.gob.ar/infolegInternet/anexos/20000-24999/20968/texact.htm)
@@ -10,35 +10,35 @@ El diseño de la base de datos `santillan_seguros` (normalizada en **Tercera For
 2. **Database Answers Canonical Insurance Model (*Insurance Policies - Car, Home and Life*):**
    * Modelo de referencia público para sistemas de seguros que establece la estructura jerárquica estándar: `Customer/Party` $\rightarrow$ `Policy` $\rightarrow$ `Policy_Installments/Billing` $\rightarrow$ `Payments`.
 3. **Estándar Internacional ACORD (*Insurance Data Model*):**
-   * Define la separación estricta entre la entidad **Póliza** (contrato de cobertura) y las entidades de **Facturación/Cuotas** (`Billing/Installment`), evitando almacenar montos o estados de pago repetidos dentro de la tabla maestra de pólizas.
+   * Define la separación estricta entre la entidad **Póliza** (`policies`) y las entidades de **Facturación/Cuotas** (`installments`), evitando almacenar montos o estados de pago repetidos dentro de la tabla maestra de pólizas.
 
 ---
 
-## 2. Justificación de Cada Relación del DER
+## 2. Justificación de Cada Relación del DER (3FN e Integridad Referencial)
 
 | Relación | Cardinalidad | Fundamentación Técnica y de Negocio |
 | :--- | :---: | :--- |
-| **`asegurados` $\rightarrow$ `polizas`** | **1 : N** | Un asegurado (persona física o jurídica identificada por `dni_cuit`) puede contratar múltiples pólizas vigentes o históricas (ej. auto + hogar + vida). Cada póliza pertenece a un único titular (`FK id_asegurado`, `ON DELETE RESTRICT` para preservar integridad histórica). |
-| **`ramos` $\rightarrow$ `polizas`** | **1 : N** | Normalización 3FN según clasificación oficial de la SSN (Automotor, Combinado Familiar, Vida, RC, Caución). Evita redundancia textual en la tabla `polizas` mediante `FK id_ramo`. |
-| **`polizas` $\rightarrow$ `cuotas`** | **1 : N** | Según estándar ACORD Billing, una póliza anual o semestral se fracciona en `N` cuotas mensuales independientes (`numero_cuota`, `fecha_vencimiento`, `estado`). Restricción `UNIQUE (id_poliza, numero_cuota)` impide cuotas duplicadas. |
-| **`cuotas` $\rightarrow$ `notificaciones`** | **1 : N** | Una cuota próxima a vencer o en mora puede disparar uno o más registros de alerta (`POR_VENCER`, `VENCIDA`) para auditar cuándo fue notificado el cliente. |
-| **`usuarios`** | **Independiente** | Entidad de control de acceso y auditoría de operadores (`ADMIN`, `PRODUCTOR`, `OPERADOR`), almacenando contraseñas con hash SHA-256 (`password_hash`). |
+| **`insureds` $\rightarrow$ `policies`** | **1 : N** | Un asegurado (`tax_id` único) puede contratar múltiples pólizas vigentes o históricas (ej. auto + hogar + vida). Cada póliza pertenece a un único titular (`FK insured_id`, `ON DELETE RESTRICT` para preservar integridad histórica). |
+| **`branches` $\rightarrow$ `policies`** | **1 : N** | Normalización 3FN según clasificación oficial de la SSN (Automotor, Combinado Familiar, Vida, RC, Caución). Evita redundancia textual en `policies` mediante `FK branch_id`. |
+| **`policies` $\rightarrow$ `installments`** | **1 : N** | Según estándar ACORD Billing, una póliza se fracciona en `N` cuotas mensuales independientes (`installment_number`, `due_date`, `status`). Restricción `UNIQUE (policy_id, installment_number)` e índice compuesto `(due_date, status)` para consultas en $O(\log N)$. |
+| **`installments` $\rightarrow$ `notifications`** | **1 : N** | Una cuota próxima a vencer o en mora dispara registros de auditoría (`UPCOMING`, `OVERDUE`) para registrar cada aviso enviado al asegurado. |
+| **`users`** | **Independiente** | Entidad de control de acceso y auditoría de operadores (`ADMIN`, `PRODUCTOR`, `OPERADOR`), almacenando contraseñas con hash SHA-256 (`password_hash`). |
 
 ---
 
 ## 3. Diccionario de Datos (Tablas MariaDB)
 
-* **`usuarios`:** `id_usuario` (PK, INT AI), `username` (VARCHAR 50, UQ), `password_hash` (VARCHAR 64), `nombre_completo` (VARCHAR 120), `rol` (ENUM), `activo` (BOOLEAN), `fecha_creacion` (DATETIME).
-* **`ramos`:** `id_ramo` (PK, INT AI), `codigo` (VARCHAR 20, UQ), `nombre` (VARCHAR 80), `descripcion` (VARCHAR 255).
-* **`asegurados`:** `id_asegurado` (PK, INT AI), `dni_cuit` (VARCHAR 20, UQ), `apellido_nombre` (VARCHAR 120), `telefono` (VARCHAR 30), `email` (VARCHAR 120), `domicilio` (VARCHAR 180), `activo` (BOOLEAN).
-* **`polizas`:** `id_poliza` (PK, INT AI), `numero_poliza` (INT, UQ), `id_asegurado` (FK), `id_ramo` (FK), `compania` (VARCHAR 80), `bien_asegurado` (VARCHAR 180), `prima_total` (DECIMAL 12,2), `cantidad_cuotas` (INT), `fecha_inicio` (DATE), `fecha_fin` (DATE), `estado` (ENUM).
-* **`cuotas`:** `id_cuota` (PK, INT AI), `id_poliza` (FK), `numero_cuota` (INT), `monto` (DECIMAL 12,2), `fecha_vencimiento` (DATE), `estado` (ENUM), `fecha_pago` (DATETIME), `metodo_pago` (VARCHAR 50), `observaciones` (VARCHAR 255).
-* **`notificaciones`:** `id_notificacion` (PK, INT AI), `id_cuota` (FK), `tipo_alerta` (ENUM), `mensaje` (VARCHAR 255), `fecha_generacion` (DATETIME), `leida` (BOOLEAN).
+* **`users`:** `user_id` (PK, INT AI), `username` (VARCHAR 50, UQ), `password_hash` (VARCHAR 64), `full_name` (VARCHAR 120), `role` (ENUM), `active` (BOOLEAN), `created_at` (DATETIME).
+* **`branches`:** `branch_id` (PK, INT AI), `code` (VARCHAR 20, UQ), `name` (VARCHAR 80), `description` (VARCHAR 255).
+* **`insureds`:** `insured_id` (PK, INT AI), `tax_id` (VARCHAR 20, UQ), `full_name` (VARCHAR 120), `phone` (VARCHAR 30), `email` (VARCHAR 120), `address` (VARCHAR 180), `active` (BOOLEAN).
+* **`policies`:** `policy_id` (PK, INT AI), `policy_number` (INT, UQ), `insured_id` (FK), `branch_id` (FK), `company` (VARCHAR 80), `insured_asset` (VARCHAR 180), `total_premium` (DECIMAL 12,2), `installments_count` (INT), `start_date` (DATE), `end_date` (DATE), `status` (ENUM).
+* **`installments`:** `installment_id` (PK, INT AI), `policy_id` (FK), `installment_number` (INT), `amount` (DECIMAL 12,2), `due_date` (DATE), `status` (ENUM: `PENDING`, `PAID`, `OVERDUE`), `payment_date` (DATETIME), `payment_method` (VARCHAR 50), `notes` (VARCHAR 255).
+* **`notifications`:** `notification_id` (PK, INT AI), `installment_id` (FK), `alert_type` (ENUM: `UPCOMING`, `OVERDUE`), `message` (VARCHAR 255), `generated_at` (DATETIME), `sent` (BOOLEAN).
 
 ---
 
 ## 4. Especificación Estructurada de Procesos (DEP)
 
-* **DEP-01 (Emisión de Póliza):** Validar número único $\rightarrow$ Iniciar transacción SQL $\rightarrow$ Insertar en `polizas` $\rightarrow$ Bucle `i = 1..cantidad_cuotas` calculando `monto = prima_total / cantidad_cuotas` y `fecha_vencimiento = primer_vto + (i-1) meses` $\rightarrow$ Insertar en `cuotas` $\rightarrow$ Commit.
-* **DEP-02 (Motor de Alertas):** Sincronizar cuotas `PENDIENTE` con `fecha_vencimiento < CURDATE()` a `VENCIDA` $\rightarrow$ Consultar `VENCIDA` (rojo) y `PENDIENTE` dentro de los próximos 15 días (amarillo) $\rightarrow$ Mostrar en panel principal.
-* **DEP-03 (Imputación de Pago):** Seleccionar cuota $\rightarrow$ Confirmar medio de pago $\rightarrow$ Ejecutar `UPDATE cuotas SET estado='PAGADA', fecha_pago=NOW()` $\rightarrow$ Refrescar KPIs y grillas.
+* **DEP-01 (Emisión de Póliza):** Validar DTO (`PolicyInputDto`) $\rightarrow$ Iniciar transacción SQL $\rightarrow$ Insertar en `policies` $\rightarrow$ Bucle `i = 1..installments_count` calculando `amount = total_premium / installments_count` y `due_date = first_due_date + (i-1) meses` $\rightarrow$ Insertar en `installments` $\rightarrow$ Commit.
+* **DEP-02 (Motor de Alertas):** Sincronizar cuotas `PENDING` con `due_date < CURDATE()` a `OVERDUE` $\rightarrow$ Consultar `OVERDUE` y `PENDING` dentro de la ventana de días $\rightarrow$ Calcular KPIs en una pasada $O(N)$ e indexar en `Dictionary` $O(1)$.
+* **DEP-03 (Imputación de Pago y Respaldo SQL):** Registrar pago (`UPDATE installments SET status='PAID', payment_date=NOW()`) o exportar DUMP SQL completo (`DatabaseBackupDao`) con `SET FOREIGN_KEY_CHECKS` desde `FormOpciones` protegido por contraseña.
