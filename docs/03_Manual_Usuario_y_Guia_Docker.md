@@ -31,6 +31,7 @@ Si la app WinForms corre dentro de la VM Windows y Docker corre en macOS:
 ## Parte B: Manual de Usuario del Sistema
 
 ### 1. Inicio de Sesión (`FormLogin`)
+> **[CAPTURA 1: Pegar aquí captura de `FormLogin` mostrando el usuario, contraseña enmascarada con `*` y estado de conexión MariaDB]**
 * Ingrese con las credenciales precargadas:
   * **Productor:** usuario `santillan` / contraseña `seguros2026`
   * **Administrador:** usuario `admin` / contraseña `admin123`
@@ -38,15 +39,22 @@ Si la app WinForms corre dentro de la VM Windows y Docker corre en macOS:
 * Use la tecla `TAB` para navegar entre los campos y `ENTER` para ingresar.
 
 ### 2. Alta de Nuevo Usuario (`FormRegistroUsuario`)
+> **[CAPTURA 2: Pegar aquí captura de `FormRegistroUsuario`]**
 * Desde el login, presione **Nuevo Usuario**.
 * Complete Nombre y Apellido, Nombre de Usuario, Contraseña, Confirmación y Rol (`PRODUCTOR`, `OPERADOR`, `ADMIN`).
 
 ### 3. Panel Principal — Notificaciones y Vencimientos (`FormPrincipal`)
+> **[CAPTURA 3: Pegar aquí captura de la pestaña principal "Notificaciones de Vencimientos" con los KPIs en rojo y amarillo]**
 * **Pestaña 1 (Notificaciones):**
   * Muestra automáticamente los KPIs de **Cuotas Vencidas** (Morosos) y **Cuotas Por Vencer (15 días)**.
   * Seleccione una fila, elija el medio de pago (*Transferencia*, *Efectivo*, *Débito Automático*, *MercadoPago*) y presione **Registrar Pago**.
 * **Pestaña 2 (Cartera de Asegurados):**
+  > **[CAPTURA 4: Pegar aquí captura de la pestaña "Cartera de Asegurados"]**
   * Alta, edición, baja lógica y búsqueda instantánea por Nombre o DNI/CUIT.
 * **Pestaña 3 (Pólizas y Plan de Cuotas):**
+  > **[CAPTURA 5: Pegar aquí captura de la pestaña "Pólizas y Plan de Cuotas"]**
   * Emita nuevas pólizas eligiendo Asegurado, Ramo, Bien Asegurado, Prima Total, Cantidad de Cuotas y 1er Vencimiento.
   * El sistema genera automáticamente todas las cuotas mensuales en MariaDB.
+* **Centro de Ayuda (`FormAyuda`):**
+  > **[CAPTURA 6: Pegar aquí captura del botón `Ayuda (?)` y la ventana `FormAyuda`]**
+  * Accesible desde el botón superior `Ayuda (?)`, detalla funcionalidades, atajos de teclado (`TAB`, `ENTER`, `ESC`) y arquitectura.
