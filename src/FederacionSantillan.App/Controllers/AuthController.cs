@@ -41,6 +41,14 @@ public class AuthController
 
     public void SignOut() => CurrentUser = null;
 
+    public bool VerifyCurrentPassword(string password)
+    {
+        if (CurrentUser == null || string.IsNullOrWhiteSpace(password))
+            return false;
+
+        return string.Equals(CurrentUser.getPasswordHash(), ComputeSha256(password), StringComparison.OrdinalIgnoreCase);
+    }
+
     public static string ComputeSha256(string text)
     {
         byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(text));
