@@ -1,0 +1,66 @@
+<mxfile host="app.diagrams.net" modified="2026-11-17T14:25:00.000Z" agent="Antigravity" version="21.0.0" type="device">
+  <diagram id="dfd_nivel_1" name="DFD Nivel 1 - Desglose de Procesos">
+    <mxGraphModel dx="1300" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="820" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="DIAGRAMA DE FLUJO DE DATOS (DFD NIVEL 1) - FEDERACIÓN SANTILLÁN SEGUROS" style="text;html=1;align=center;fontStyle=1;fontSize=15;fontColor=#0f4c81;" vertex="1" parent="1">
+          <mxGeometry x="200" y="15" width="800" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Entidades Externas -->
+        <mxCell id="ext_pas" value="Productor Asesor&#xa;(PAS / Operador)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1d4ed8;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="290" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_aseg" value="Asegurado / Cliente" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#15803d;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="540" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Procesos (Círculos DFD) -->
+        <mxCell id="p1" value="1.0&#xa;Autenticar y&#xa;Registrar Usuarios" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2563eb;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="2.0&#xa;Gestionar Cartera&#xa;de Asegurados" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="3.0&#xa;Emitir Pólizas y&#xa;Plan de Cuotas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="380" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="4.0&#xa;Detectar Alertas y&#xa;Registrar Cobros" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#b91c1c;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="530" width="160" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Almacenes de Datos (Notación DFD abierta a la derecha) -->
+        <mxCell id="d1" value="D1 | usuarios" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#0f4c81;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="100" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="D2 | asegurados" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#15803d;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="250" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="D3 | polizas / ramos" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#d97706;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="395" width="180" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="D4 | cuotas / notificaciones" style="shape=partialRectangle;whiteSpace=wrap;html=1;top=1;bottom=1;left=1;right=0;fillColor=#f8fafc;strokeColor=#b91c1c;strokeWidth=2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="550" width="210" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Flujos PAS <-> Procesos -->
+        <mxCell id="f_pas_p1" value="Credenciales / Alta" style="endArrow=classic;html=1;" edge="1" parent="1" source="ext_pas" target="p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_pas_p2" value="Datos Asegurado" style="endArrow=classic;html=1;" edge="1" parent="1" source="ext_pas" target="p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_pas_p3" value="Datos Póliza" style="endArrow=classic;html=1;" edge="1" parent="1" source="ext_pas" target="p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_pas_p4" value="Pago / Consulta" style="endArrow=classic;html=1;" edge="1" parent="1" source="ext_pas" target="p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Flujos Procesos <-> Almacenes -->
+        <mxCell id="f_p1_d1" value="Valida / Inserta" style="endArrow=classic;startArrow=classic;html=1;" edge="1" parent="1" source="p1" target="d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_p2_d2" value="ABM / Consulta" style="endArrow=classic;startArrow=classic;html=1;" edge="1" parent="1" source="p2" target="d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_p3_d2" value="Lee Titular" style="endArrow=classic;html=1;dashed=1;" edge="1" parent="1" source="d2" target="p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_p3_d3" value="Inserta Póliza" style="endArrow=classic;html=1;" edge="1" parent="1" source="p3" target="d3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_p3_d4" value="Genera N Cuotas" style="endArrow=classic;html=1;" edge="1" parent="1" source="p3" target="d4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_p4_d4" value="Actualiza Vencidas / Pagos" style="endArrow=classic;startArrow=classic;html=1;" edge="1" parent="1" source="p4" target="d4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f_p4_aseg" value="Aviso de Vencimiento / Recibo" style="endArrow=classic;html=1;" edge="1" parent="1" source="d4" target="ext_aseg"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
