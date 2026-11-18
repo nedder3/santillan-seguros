@@ -1,17 +1,18 @@
+using FederacionSantillan.App.Advice;
 using FederacionSantillan.App.Controllers;
-using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
-using FederacionSantillan.Model;
-using FederacionSantillan.Model.DTOs;
+using FederacionSantillan.Model.DTOs.Requests;
+using FederacionSantillan.Model.DTOs.Responses;
+using FederacionSantillan.Model.Entities;
 
 namespace FederacionSantillan.App.Views;
 
 public partial class FormPrincipal : Form
 {
-    private readonly AuthController _authController = new AuthController();
-    private readonly PortfolioController _portfolioController = new PortfolioController();
-    private readonly NotificationController _notificationController = new NotificationController();
-    private AlertsDashboardData _currentAlerts = new AlertsDashboardData();
+    private readonly AuthController _authController = new();
+    private readonly PortfolioController _portfolioController = new();
+    private readonly NotificationController _notificationController = new();
+    private AlertsDashboardResponseDto _currentAlerts = new();
     private int _selectedInsuredId = 0;
 
     public FormPrincipal()
@@ -57,7 +58,7 @@ public partial class FormPrincipal : Form
         ReloadAll();
     }
 
-    private void ReloadAll() => GlobalExceptionHandler.Execute(() =>
+    private void ReloadAll() => ControllerPipeline.Execute(() =>
     {
         LoadAlerts();
         LoadInsureds();
@@ -115,7 +116,7 @@ public partial class FormPrincipal : Form
     }
 
     private void btnRefrescarAlertas_Click(object sender, EventArgs e) =>
-        GlobalExceptionHandler.Execute(LoadAlerts);
+        ControllerPipeline.Execute(LoadAlerts);
 
     private void btnPagarVencida_Click(object sender, EventArgs e) => ProcessPaymentFromGrid(dgvVencidas);
 
@@ -129,16 +130,19 @@ public partial class FormPrincipal : Form
             return;
         }
 
-        int installmentId = Convert.ToInt32(grid.CurrentRow.Cells["InstallmentId"].Value);
+        var dto = new PaymentRequestDto
+        {
+            InstallmentId = Convert.ToInt32(grid.CurrentRow.Cells["InstallmentId"].Value),
+            PaymentMethod = cmbMetodoPagoAlerta.SelectedItem?.ToString() ?? "Transferencia"
+        };
         string insuredName = grid.CurrentRow.Cells["Asegurado"].Value?.ToString();
-        string method = cmbMetodoPagoAlerta.SelectedItem?.ToString() ?? "Transferencia";
 
-        if (MessageBox.Show($"¿Confirma registrar el pago de la cuota seleccionada para {insuredName} vía {method}?", "Confirmar Cobro", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+        if (MessageBox.Show($"¿Confirma registrar el pago de la cuota seleccionada para {insuredName} vía {dto.PaymentMethod}?", "Confirmar Cobro", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             return;
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(dto, req =>
         {
-            string msg = _notificationController.RegisterInstallmentPayment(installmentId, method);
+            string msg = _notificationController.RegisterInstallmentPayment(req);
             MessageBox.Show(msg, "Cobro Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             ReloadAll();
         });
@@ -159,7 +163,7 @@ public partial class FormPrincipal : Form
         if (!_currentAlerts.InstallmentIndex.TryGetValue(installmentId, out Installment installment))
             return;
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(() =>
         {
             string reminder = _notificationController.LogAndBuildWhatsAppReminder(installment);
             Clipboard.SetText(reminder);
@@ -183,7 +187,7 @@ public partial class FormPrincipal : Form
 
         if (sfd.ShowDialog(this) != DialogResult.OK) return;
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(() =>
         {
             string csv = _notificationController.ExportOverdueToCsv(_currentAlerts.Overdue);
             File.WriteAllText(sfd.FileName, csv, System.Text.Encoding.UTF8);
@@ -207,11 +211,8 @@ public partial class FormPrincipal : Form
         if (dgvAsegurados.Columns["Id"] != null) dgvAsegurados.Columns["Id"].Visible = false;
     }
 
-    private void txtBuscarAseg_TextChanged(object sender, EventArgs e)
-    {
-        try { LoadInsureds(); }
-        catch { }
-    }
+    private void txtBuscarAseg_TextChanged(object sender, EventArgs e) =>
+        ControllerPipeline.Execute(LoadInsureds);
 
     private void dgvAsegurados_SelectionChanged(object sender, EventArgs e)
     {
@@ -240,7 +241,7 @@ public partial class FormPrincipal : Form
     private void btnAsegGuardar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        var dto = new InsuredInputDto
+        var dto = new InsuredRequestDto
         {
             Id = _selectedInsuredId,
             TaxId = txtAsegDni.Text,
@@ -250,9 +251,9 @@ public partial class FormPrincipal : Form
             Address = txtAsegDom.Text
         };
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(dto, req =>
         {
-            string msg = _portfolioController.SaveInsured(dto);
+            string msg = _portfolioController.SaveInsured(req);
             MessageBox.Show(msg, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             ClearInsuredForm();
             ReloadAll();
@@ -269,7 +270,7 @@ public partial class FormPrincipal : Form
         if (MessageBox.Show("¿Desea dar de baja este asegurado?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             return;
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(() =>
         {
             _portfolioController.DeleteInsured(_selectedInsuredId);
             MessageBox.Show("Asegurado dado de baja correctamente.", "Baja Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -308,10 +309,10 @@ public partial class FormPrincipal : Form
 
     private void dgvPolizas_SelectionChanged(object sender, EventArgs e)
     {
-        try
+        if (dgvPolizas.CurrentRow == null) return;
+        int policyId = Convert.ToInt32(dgvPolizas.CurrentRow.Cells["PolicyId"].Value);
+        ControllerPipeline.Execute(() =>
         {
-            if (dgvPolizas.CurrentRow == null) return;
-            int policyId = Convert.ToInt32(dgvPolizas.CurrentRow.Cells["PolicyId"].Value);
             var installments = _portfolioController.ListInstallmentsByPolicy(policyId);
             dgvCuotasPoliza.DataSource = installments.Select(c => new
             {
@@ -321,8 +322,7 @@ public partial class FormPrincipal : Form
                 Estado = c.Status,
                 Pago = c.PaymentDate.HasValue ? c.PaymentDate.Value.ToString("dd/MM/yyyy") : "-"
             }).ToList();
-        }
-        catch { }
+        });
     }
 
     private void ActualizarPreviewCuota_Event(object sender, EventArgs e)
@@ -345,23 +345,18 @@ public partial class FormPrincipal : Form
         int.TryParse(txtPolNum.Text, out int policyNumber);
         decimal.TryParse(txtPolPrima.Text, out decimal premium);
 
-        var dto = new PolicyInputDto
-        {
-            PolicyNumber = policyNumber,
-            InsuredId = cmbPolAsegurado.SelectedValue != null ? Convert.ToInt32(cmbPolAsegurado.SelectedValue) : 0,
-            BranchId = cmbPolRamo.SelectedValue != null ? Convert.ToInt32(cmbPolRamo.SelectedValue) : 0,
-            Company = "Federación Patronal Seguros",
-            InsuredAsset = txtPolBien.Text,
-            TotalPremium = premium,
-            InstallmentsCount = (int)nudPolCuotas.Value,
-            StartDate = DateTime.Today,
-            EndDate = DateTime.Today.AddYears(1),
-            FirstDueDate = dtpPolPrimerVto.Value
-        };
+        var dto = new PolicyInputDtoFactory().Create(
+            policyNumber,
+            cmbPolAsegurado.SelectedValue != null ? Convert.ToInt32(cmbPolAsegurado.SelectedValue) : 0,
+            cmbPolRamo.SelectedValue != null ? Convert.ToInt32(cmbPolRamo.SelectedValue) : 0,
+            txtPolBien.Text,
+            premium,
+            (int)nudPolCuotas.Value,
+            dtpPolPrimerVto.Value);
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(dto, req =>
         {
-            string msg = _portfolioController.IssuePolicy(dto);
+            string msg = _portfolioController.IssuePolicy(req);
             MessageBox.Show(msg, "Póliza Emitida", MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtPolNum.Clear();
             txtPolBien.Clear();
@@ -426,4 +421,22 @@ public partial class FormPrincipal : Form
         DialogResult = DialogResult.Retry;
         Close();
     }
+}
+
+internal sealed class PolicyInputDtoFactory
+{
+    public PolicyRequestDto Create(int number, int insuredId, int branchId, string asset, decimal premium, int count, DateTime firstDue) =>
+        new()
+        {
+            PolicyNumber = number,
+            InsuredId = insuredId,
+            BranchId = branchId,
+            Company = "Federación Patronal Seguros",
+            InsuredAsset = asset,
+            TotalPremium = premium,
+            InstallmentsCount = count,
+            StartDate = DateTime.Today,
+            EndDate = DateTime.Today.AddYears(1),
+            FirstDueDate = firstDue
+        };
 }

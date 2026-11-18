@@ -1,13 +1,14 @@
+using FederacionSantillan.App.Advice;
 using FederacionSantillan.App.Controllers;
-using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
-using FederacionSantillan.Data;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Model.DTOs.Requests;
 
 namespace FederacionSantillan.App.Views;
 
 public partial class FormLogin : Form
 {
-    private readonly AuthController _authController = new AuthController();
+    private readonly AuthController _authController = new();
 
     public FormLogin()
     {
@@ -26,19 +27,11 @@ public partial class FormLogin : Form
 
     private void CheckDatabaseConnection()
     {
-        try
-        {
-            bool connected = ConnectionFactory.TestConnection(out string error);
-            lblEstadoDb.Text = connected
-                ? "Base de datos: conectada (MariaDB - santillan_seguros)"
-                : $"Sin conexión a MariaDB: {error}";
-            lblEstadoDb.ForeColor = connected ? Color.FromArgb(21, 128, 61) : Color.FromArgb(185, 28, 28);
-        }
-        catch (Exception ex)
-        {
-            lblEstadoDb.Text = $"Error de red: {ex.Message}";
-            lblEstadoDb.ForeColor = Color.FromArgb(185, 28, 28);
-        }
+        bool connected = ConnectionFactory.TestConnection(out string error);
+        lblEstadoDb.Text = connected
+            ? "Base de datos: conectada (MariaDB - santillan_seguros)"
+            : $"Sin conexión a MariaDB: {error}";
+        lblEstadoDb.ForeColor = connected ? Color.FromArgb(21, 128, 61) : Color.FromArgb(185, 28, 28);
     }
 
     private void Campos_TextChanged(object sender, EventArgs e)
@@ -56,22 +49,22 @@ public partial class FormLogin : Form
     private void btnIngresar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        GlobalExceptionHandler.Execute(() =>
+        var dto = new SignInRequestDto { Username = txtUsuario.Text, Password = txtPassword.Text };
+
+        ControllerPipeline.Execute(dto, req =>
         {
-            _authController.SignIn(txtUsuario.Text, txtPassword.Text);
+            _authController.SignIn(req);
             DialogResult = DialogResult.OK;
             Close();
         }, txtPassword);
     }
 
-    private void btnCrearUsuario_Click(object sender, EventArgs e)
-    {
-        GlobalExceptionHandler.Execute(() =>
+    private void btnCrearUsuario_Click(object sender, EventArgs e) =>
+        ControllerPipeline.Execute(() =>
         {
             using var formReg = new FormRegistroUsuario();
             formReg.ShowDialog(this);
         });
-    }
 
     private void btnSalir_Click(object sender, EventArgs e)
     {

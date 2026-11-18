@@ -1,13 +1,13 @@
+using FederacionSantillan.App.Advice;
 using FederacionSantillan.App.Controllers;
-using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
-using FederacionSantillan.Model.DTOs;
+using FederacionSantillan.Model.DTOs.Requests;
 
 namespace FederacionSantillan.App.Views;
 
 public partial class FormRegistroUsuario : Form
 {
-    private readonly AuthController _authController = new AuthController();
+    private readonly AuthController _authController = new();
 
     public FormRegistroUsuario()
     {
@@ -26,7 +26,7 @@ public partial class FormRegistroUsuario : Form
     private void btnGuardar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
-        var dto = new RegisterUserDto
+        var dto = new RegisterUserRequestDto
         {
             FullName = txtNombreCompleto.Text,
             Username = txtUsername.Text,
@@ -35,9 +35,9 @@ public partial class FormRegistroUsuario : Form
             Role = cmbRol.SelectedItem?.ToString() ?? "PRODUCTOR"
         };
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(dto, req =>
         {
-            _authController.RegisterUser(dto);
+            _authController.RegisterUser(req);
             MessageBox.Show("Usuario registrado exitosamente. Ya puede iniciar sesión.", "Usuario Creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
             Close();

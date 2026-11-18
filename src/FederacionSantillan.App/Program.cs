@@ -1,3 +1,4 @@
+using FederacionSantillan.App.Advice;
 using FederacionSantillan.App.Views;
 
 namespace FederacionSantillan.App;
@@ -9,29 +10,20 @@ internal static class Program
     {
         ApplicationConfiguration.Initialize();
 
-        // Manejador global para evitar salidas abruptas o excepciones no controladas (Rúbrica)
-        Application.ThreadException += (sender, args) =>
-        {
-            MessageBox.Show(
-                $"Ocurrió un error inesperado: {args.Exception.Message}\n\nVerifique la conexión con MariaDB.",
-                "Federación Santillán Seguros - Aviso",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        };
+        Application.ThreadException += (_, args) => ControllerAdvice.Handle(args.Exception);
 
-        bool continuar = true;
-        while (continuar)
+        bool keepRunning = true;
+        while (keepRunning)
         {
             using var login = new FormLogin();
             if (login.ShowDialog() == DialogResult.OK)
             {
-                using var principal = new FormPrincipal();
-                var res = principal.ShowDialog();
-                continuar = (res == DialogResult.Retry); // Retry = Cerrar sesión y volver al Login
+                using var main = new FormPrincipal();
+                keepRunning = main.ShowDialog() == DialogResult.Retry;
             }
             else
             {
-                continuar = false;
+                keepRunning = false;
             }
         }
     }

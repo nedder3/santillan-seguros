@@ -1,12 +1,12 @@
+using FederacionSantillan.App.Advice;
 using FederacionSantillan.App.Controllers;
-using FederacionSantillan.App.Handlers;
 using FederacionSantillan.App.Helpers;
 
 namespace FederacionSantillan.App.Views;
 
 public partial class FormOpciones : Form
 {
-    private readonly SettingsController _settingsController = new SettingsController();
+    private readonly SettingsController _settingsController = new();
 
     public FormOpciones()
     {
@@ -30,7 +30,7 @@ public partial class FormOpciones : Form
 
         if (sfd.ShowDialog(this) != DialogResult.OK) return;
 
-        GlobalExceptionHandler.Execute(() =>
+        ControllerPipeline.Execute(() =>
         {
             string sqlDump = _settingsController.GenerateDatabaseSqlDump();
             File.WriteAllText(sfd.FileName, sqlDump, System.Text.Encoding.UTF8);
