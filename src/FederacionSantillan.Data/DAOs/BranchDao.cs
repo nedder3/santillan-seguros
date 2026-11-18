@@ -1,4 +1,6 @@
-using FederacionSantillan.Model;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
+using FederacionSantillan.Model.Entities;
 using MySqlConnector;
 
 namespace FederacionSantillan.Data.DAOs;

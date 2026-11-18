@@ -1,30 +1,18 @@
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
+using FederacionSantillan.Model.DTOs.Requests;
+using FederacionSantillan.Model.DTOs.Responses;
 using FederacionSantillan.Model.Exceptions;
 using MySqlConnector;
 
 namespace FederacionSantillan.Data.DAOs;
 
-public class PolicySummaryDto
-{
-    public int PolicyId { get; set; }
-    public int PolicyNumber { get; set; }
-    public int InsuredId { get; set; }
-    public string InsuredName { get; set; }
-    public string BranchName { get; set; }
-    public string Company { get; set; }
-    public string InsuredAsset { get; set; }
-    public decimal TotalPremium { get; set; }
-    public int InstallmentsCount { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public string Status { get; set; }
-}
-
 public class PolicyDao
 {
-    public List<PolicySummaryDto> GetAll(string filter = "") =>
+    public List<PolicyResponseDto> GetAll(string filter = "") =>
         DbExceptionTranslator.Execute(() =>
         {
-            var list = new List<PolicySummaryDto>();
+            var list = new List<PolicyResponseDto>();
             const string sql = @"
                 SELECT p.policy_id, p.policy_number, p.insured_id,
                        i.full_name AS insured_name,
@@ -48,7 +36,7 @@ public class PolicyDao
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(new PolicySummaryDto
+                list.Add(new PolicyResponseDto
                 {
                     PolicyId = reader.GetInt32("policy_id"),
                     PolicyNumber = reader.GetInt32("policy_number"),
@@ -78,12 +66,12 @@ public class PolicyDao
             return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         });
 
-    public int IssuePolicyWithInstallments(
-        int policyNumber, int insuredId, int branchId, string company,
-        string insuredAsset, decimal totalPremium, int installmentsCount,
-        DateTime startDate, DateTime endDate, DateTime firstDueDate) =>
+    public string IssuePolicyWithInstallments(PolicyRequestDto dto) =>
         DbExceptionTranslator.Execute(() =>
         {
+            if (ExistsPolicyNumber(dto.PolicyNumber))
+                throw new DuplicateResourceException(SystemMessages.Format(SystemMessages.DuplicatePolicyNumber, dto.PolicyNumber));
+
             using var conn = ConnectionFactory.CreateConnection();
             conn.Open();
             using var tx = conn.BeginTransaction();
@@ -98,26 +86,26 @@ public class PolicyDao
                 int policyId;
                 using (var cmd = new MySqlCommand(sqlPolicy, conn, tx))
                 {
-                    cmd.Parameters.AddWithValue("@num", policyNumber);
-                    cmd.Parameters.AddWithValue("@insuredId", insuredId);
-                    cmd.Parameters.AddWithValue("@branchId", branchId);
-                    cmd.Parameters.AddWithValue("@company", company);
-                    cmd.Parameters.AddWithValue("@asset", insuredAsset);
-                    cmd.Parameters.AddWithValue("@premium", totalPremium);
-                    cmd.Parameters.AddWithValue("@count", installmentsCount);
-                    cmd.Parameters.AddWithValue("@start", startDate.Date);
-                    cmd.Parameters.AddWithValue("@end", endDate.Date);
+                    cmd.Parameters.AddWithValue("@num", dto.PolicyNumber);
+                    cmd.Parameters.AddWithValue("@insuredId", dto.InsuredId);
+                    cmd.Parameters.AddWithValue("@branchId", dto.BranchId);
+                    cmd.Parameters.AddWithValue("@company", dto.Company.Trim());
+                    cmd.Parameters.AddWithValue("@asset", dto.InsuredAsset.Trim());
+                    cmd.Parameters.AddWithValue("@premium", dto.TotalPremium);
+                    cmd.Parameters.AddWithValue("@count", dto.InstallmentsCount);
+                    cmd.Parameters.AddWithValue("@start", dto.StartDate.Date);
+                    cmd.Parameters.AddWithValue("@end", dto.EndDate.Date);
                     policyId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                decimal installmentAmount = Math.Round(totalPremium / installmentsCount, 2);
+                decimal installmentAmount = Math.Round(dto.TotalPremium / dto.InstallmentsCount, 2);
                 const string sqlInstallment = @"
                     INSERT INTO installments (policy_id, installment_number, amount, due_date, status)
                     VALUES (@policyId, @num, @amount, @dueDate, @status);";
 
-                for (int i = 1; i <= installmentsCount; i++)
+                for (int i = 1; i <= dto.InstallmentsCount; i++)
                 {
-                    DateTime dueDate = firstDueDate.AddMonths(i - 1).Date;
+                    DateTime dueDate = dto.FirstDueDate.AddMonths(i - 1).Date;
                     string status = dueDate < DateTime.Today ? "OVERDUE" : "PENDING";
 
                     using var cmdInst = new MySqlCommand(sqlInstallment, conn, tx);
@@ -130,12 +118,12 @@ public class PolicyDao
                 }
 
                 tx.Commit();
-                return policyId;
+                return $"Póliza #{dto.PolicyNumber} emitida con {dto.InstallmentsCount} cuotas generadas.";
             }
             catch
             {
                 tx.Rollback();
                 throw;
             }
-        }, SystemMessages.Format(SystemMessages.DuplicatePolicyNumber, policyNumber));
+        }, SystemMessages.Format(SystemMessages.DuplicatePolicyNumber, dto.PolicyNumber));
 }

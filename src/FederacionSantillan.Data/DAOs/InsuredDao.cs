@@ -1,4 +1,7 @@
-using FederacionSantillan.Model;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
+using FederacionSantillan.Model.DTOs.Requests;
+using FederacionSantillan.Model.Entities;
 using FederacionSantillan.Model.Exceptions;
 using MySqlConnector;
 
@@ -42,6 +45,24 @@ public class InsuredDao
             }
             return list;
         });
+
+    public string Save(InsuredRequestDto dto) =>
+        DbExceptionTranslator.Execute(() =>
+        {
+            string taxId = dto.TaxId.Trim();
+            if (ExistsTaxId(taxId, dto.Id))
+                throw new DuplicateResourceException(SystemMessages.Format(SystemMessages.DuplicateTaxId, taxId));
+
+            var insured = new Insured(dto.Id, taxId, dto.FullName.Trim(), dto.Phone.Trim(), dto.Email?.Trim(), dto.Address?.Trim());
+            if (dto.Id == 0)
+            {
+                Insert(insured);
+                return "Asegurado registrado correctamente.";
+            }
+
+            Update(insured);
+            return "Datos del asegurado actualizados correctamente.";
+        }, SystemMessages.Format(SystemMessages.DuplicateTaxId, dto.TaxId?.Trim()));
 
     public bool ExistsTaxId(string taxId, int excludeId = 0) =>
         DbExceptionTranslator.Execute(() =>
@@ -95,14 +116,17 @@ public class InsuredDao
             return cmd.ExecuteNonQuery() > 0;
         }, SystemMessages.Format(SystemMessages.DuplicateTaxId, insured.getTaxId()));
 
-    public bool SoftDelete(int insuredId) =>
+    public void SoftDelete(int insuredId) =>
         DbExceptionTranslator.Execute(() =>
         {
+            if (insuredId <= 0)
+                throw new ValidationException(SystemMessages.SelectionRequired);
+
             const string sql = "UPDATE insureds SET active = FALSE WHERE insured_id = @id;";
             using var conn = ConnectionFactory.CreateConnection();
             conn.Open();
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@id", insuredId);
-            return cmd.ExecuteNonQuery() > 0;
+            cmd.ExecuteNonQuery();
         });
 }

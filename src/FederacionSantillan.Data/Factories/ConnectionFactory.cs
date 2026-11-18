@@ -1,12 +1,8 @@
 using System.Text.Json;
 using MySqlConnector;
 
-namespace FederacionSantillan.Data;
+namespace FederacionSantillan.Data.Factories;
 
-/// <summary>
-/// Fábrica de conexiones a MariaDB/MySQL (Capa de Acceso a Datos - 3 Capas).
-/// Lee la cadena de conexión desde appsettings.json o usa el contenedor Docker local por defecto.
-/// </summary>
 public static class ConnectionFactory
 {
     private const string DefaultConnectionString =
@@ -28,27 +24,24 @@ public static class ConnectionFactory
                 }
             }
         }
-        catch
-        {
-            // Fallback seguro a la configuración por defecto si el JSON está ausente o malformado
-        }
+        catch { }
         return DefaultConnectionString;
     }
 
-    public static MySqlConnection CreateConnection() => new MySqlConnection(GetConnectionString());
+    public static MySqlConnection CreateConnection() => new(GetConnectionString());
 
-    public static bool TestConnection(out string mensajeError)
+    public static bool TestConnection(out string errorMessage)
     {
         try
         {
             using var conn = CreateConnection();
             conn.Open();
-            mensajeError = string.Empty;
+            errorMessage = string.Empty;
             return true;
         }
         catch (Exception ex)
         {
-            mensajeError = ex.Message;
+            errorMessage = ex.Message;
             return false;
         }
     }

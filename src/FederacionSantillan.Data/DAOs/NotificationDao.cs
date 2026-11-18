@@ -1,13 +1,22 @@
-using FederacionSantillan.Model;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
+using FederacionSantillan.Model.Entities;
+using FederacionSantillan.Model.Exceptions;
 using MySqlConnector;
 
 namespace FederacionSantillan.Data.DAOs;
 
 public class NotificationDao
 {
-    public bool LogNotification(Notification notification) =>
+    public string LogAndBuildWhatsAppReminder(Installment installment) =>
         DbExceptionTranslator.Execute(() =>
         {
+            if (installment == null)
+                throw new ValidationException(SystemMessages.SelectionRequired);
+
+            string message = installment.buildWhatsAppReminderText();
+            string alertType = installment.isOverdue() ? "OVERDUE" : "UPCOMING";
+
             const string sql = @"
                 INSERT INTO notifications (installment_id, alert_type, message, generated_at, sent)
                 VALUES (@installmentId, @alertType, @message, NOW(), TRUE);";
@@ -15,9 +24,11 @@ public class NotificationDao
             using var conn = ConnectionFactory.CreateConnection();
             conn.Open();
             using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@installmentId", notification.Installment.getInstallmentId());
-            cmd.Parameters.AddWithValue("@alertType", notification.AlertType);
-            cmd.Parameters.AddWithValue("@message", notification.Message);
-            return cmd.ExecuteNonQuery() > 0;
+            cmd.Parameters.AddWithValue("@installmentId", installment.getInstallmentId());
+            cmd.Parameters.AddWithValue("@alertType", alertType);
+            cmd.Parameters.AddWithValue("@message", message);
+            cmd.ExecuteNonQuery();
+
+            return message;
         });
 }

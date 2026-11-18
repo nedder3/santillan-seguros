@@ -1,4 +1,10 @@
-using FederacionSantillan.Model;
+using System.Text;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
+using FederacionSantillan.Model.DTOs.Requests;
+using FederacionSantillan.Model.DTOs.Responses;
+using FederacionSantillan.Model.Entities;
+using FederacionSantillan.Model.Exceptions;
 using MySqlConnector;
 
 namespace FederacionSantillan.Data.DAOs;
@@ -18,6 +24,36 @@ public class InstallmentDao
             using var cmd = new MySqlCommand(sql, conn);
             cmd.ExecuteNonQuery();
         });
+
+    public AlertsDashboardResponseDto LoadAlertsDashboard(int daysAhead = 15)
+    {
+        var overdue = GetOverdue();
+        var upcoming = GetUpcoming(daysAhead);
+        var index = new Dictionary<int, Installment>(overdue.Count + upcoming.Count);
+
+        decimal overdueSum = 0m;
+        for (int i = 0; i < overdue.Count; i++)
+        {
+            overdueSum += overdue[i].Amount;
+            index[overdue[i].InstallmentId] = overdue[i];
+        }
+
+        decimal upcomingSum = 0m;
+        for (int i = 0; i < upcoming.Count; i++)
+        {
+            upcomingSum += upcoming[i].Amount;
+            index[upcoming[i].InstallmentId] = upcoming[i];
+        }
+
+        return new AlertsDashboardResponseDto
+        {
+            Overdue = overdue,
+            Upcoming = upcoming,
+            OverdueTotal = overdueSum,
+            UpcomingTotal = upcomingSum,
+            InstallmentIndex = index
+        };
+    }
 
     public List<Installment> GetByPolicy(int policyId) =>
         ExecuteInstallmentQuery(@"
@@ -65,7 +101,7 @@ public class InstallmentDao
             ORDER BY c.due_date ASC;",
             cmd => cmd.Parameters.AddWithValue("@days", daysAhead));
 
-    public bool RegisterPayment(int installmentId, string paymentMethod, string notes = "") =>
+    public string RegisterPayment(PaymentRequestDto dto) =>
         DbExceptionTranslator.Execute(() =>
         {
             const string sql = @"
@@ -79,11 +115,34 @@ public class InstallmentDao
             using var conn = ConnectionFactory.CreateConnection();
             conn.Open();
             using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@id", installmentId);
-            cmd.Parameters.AddWithValue("@method", paymentMethod);
-            cmd.Parameters.AddWithValue("@notes", notes ?? string.Empty);
-            return cmd.ExecuteNonQuery() > 0;
+            cmd.Parameters.AddWithValue("@id", dto.InstallmentId);
+            cmd.Parameters.AddWithValue("@method", dto.PaymentMethod);
+            cmd.Parameters.AddWithValue("@notes", dto.Notes ?? string.Empty);
+
+            if (cmd.ExecuteNonQuery() == 0)
+                throw new ValidationException(SystemMessages.InstallmentAlreadyPaid);
+
+            return "Pago registrado correctamente. La alerta fue saldada.";
         });
+
+    public static string ExportToCsv(IReadOnlyList<Installment> installments)
+    {
+        var sb = new StringBuilder(installments.Count * 96 + 80);
+        sb.AppendLine("Poliza;Asegurado;Telefono;Ramo;Cuota;Monto;Vencimiento;DiasAtraso");
+        for (int i = 0; i < installments.Count; i++)
+        {
+            var c = installments[i];
+            sb.Append(c.PolicyNumberRef).Append(';')
+              .Append('"').Append(c.InsuredNameRef?.Replace("\"", "'")).Append("\";")
+              .Append(c.InsuredPhoneRef).Append(';')
+              .Append(c.BranchNameRef).Append(';')
+              .Append(c.InstallmentNumber).Append(';')
+              .Append(c.Amount.ToString("F2")).Append(';')
+              .Append(c.DueDate.ToString("dd/MM/yyyy")).Append(';')
+              .AppendLine(c.getDaysOverdue().ToString());
+        }
+        return sb.ToString();
+    }
 
     private List<Installment> ExecuteInstallmentQuery(string sql, Action<MySqlCommand> configureParams = null) =>
         DbExceptionTranslator.Execute(() =>

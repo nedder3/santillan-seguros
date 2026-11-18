@@ -1,4 +1,9 @@
-using FederacionSantillan.Model;
+using System.Security.Cryptography;
+using System.Text;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
+using FederacionSantillan.Model.DTOs.Requests;
+using FederacionSantillan.Model.Entities;
 using FederacionSantillan.Model.Exceptions;
 using MySqlConnector;
 
@@ -6,7 +11,7 @@ namespace FederacionSantillan.Data.DAOs;
 
 public class UserDao
 {
-    public User Authenticate(string username, string passwordHash) =>
+    public User Authenticate(SignInRequestDto dto) =>
         DbExceptionTranslator.Execute(() =>
         {
             const string sql = @"
@@ -18,11 +23,12 @@ public class UserDao
             using var conn = ConnectionFactory.CreateConnection();
             conn.Open();
             using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@username", username);
-            cmd.Parameters.AddWithValue("@passwordHash", passwordHash);
+            cmd.Parameters.AddWithValue("@username", dto.Username.Trim());
+            cmd.Parameters.AddWithValue("@passwordHash", ComputeSha256(dto.Password));
 
             using var reader = cmd.ExecuteReader();
-            if (!reader.Read()) return null;
+            if (!reader.Read())
+                throw new ValidationException(SystemMessages.InvalidCredentials);
 
             return new User(
                 reader.GetInt32("user_id"),
@@ -36,6 +42,27 @@ public class UserDao
             };
         });
 
+    public void Register(RegisterUserRequestDto dto) =>
+        DbExceptionTranslator.Execute(() =>
+        {
+            string cleanUser = dto.Username.Trim();
+            if (ExistsUsername(cleanUser))
+                throw new DuplicateResourceException(SystemMessages.Format(SystemMessages.DuplicateUsername, cleanUser));
+
+            const string sql = @"
+                INSERT INTO users (username, password_hash, full_name, role, active)
+                VALUES (@username, @passwordHash, @fullName, @role, TRUE);";
+
+            using var conn = ConnectionFactory.CreateConnection();
+            conn.Open();
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@username", cleanUser);
+            cmd.Parameters.AddWithValue("@passwordHash", ComputeSha256(dto.Password));
+            cmd.Parameters.AddWithValue("@fullName", dto.FullName.Trim());
+            cmd.Parameters.AddWithValue("@role", dto.Role);
+            cmd.ExecuteNonQuery();
+        }, SystemMessages.Format(SystemMessages.DuplicateUsername, dto.Username?.Trim()));
+
     public bool ExistsUsername(string username) =>
         DbExceptionTranslator.Execute(() =>
         {
@@ -47,20 +74,6 @@ public class UserDao
             return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         });
 
-    public bool Register(User user) =>
-        DbExceptionTranslator.Execute(() =>
-        {
-            const string sql = @"
-                INSERT INTO users (username, password_hash, full_name, role, active)
-                VALUES (@username, @passwordHash, @fullName, @role, TRUE);";
-
-            using var conn = ConnectionFactory.CreateConnection();
-            conn.Open();
-            using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@username", user.getUsername());
-            cmd.Parameters.AddWithValue("@passwordHash", user.getPasswordHash());
-            cmd.Parameters.AddWithValue("@fullName", user.getFullName());
-            cmd.Parameters.AddWithValue("@role", user.getRole());
-            return cmd.ExecuteNonQuery() > 0;
-        }, SystemMessages.Format(SystemMessages.DuplicateUsername, user.getUsername()));
+    public static string ComputeSha256(string text) =>
+        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text ?? string.Empty))).ToLowerInvariant();
 }

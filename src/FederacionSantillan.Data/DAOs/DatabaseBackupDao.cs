@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Text;
+using FederacionSantillan.Data.Factories;
+using FederacionSantillan.Data.Translators;
 using MySqlConnector;
 
 namespace FederacionSantillan.Data.DAOs;
@@ -45,9 +47,8 @@ public class DatabaseBackupDao
         using var reader = cmd.ExecuteReader();
         if (!reader.Read()) return;
 
-        string createSql = reader.GetString(1);
         sb.AppendLine($"DROP TABLE IF EXISTS `{table}`;");
-        sb.AppendLine($"{createSql};");
+        sb.AppendLine($"{reader.GetString(1)};");
         sb.AppendLine();
     }
 
