@@ -1,36 +1,21 @@
-using FederacionSantillan.Model.Abstractions;
+using FederacionSantillan.Model.Interfaces;
 
-namespace FederacionSantillan.Model;
+namespace FederacionSantillan.Model.Entities;
 
-public class Policy : ICopiable<Policy>, IClonable<Policy>, IEquatableDomain<Policy>, IIdentifiable<int>
+public class Policy(
+    int id, int number, Insured holder, Branch branch,
+    string company, string asset, decimal premium, int installmentsCount,
+    CustomDate startDate, CustomDate endDate, string status = "ACTIVE")
+    : ICopiable<Policy>, IClonable<Policy>, IEquatableDomain<Policy>, IIdentifiable<int>
 {
-    private int policyId, policyNumber, installmentsCount;
-    private string company, insuredAsset, status;
-    private decimal totalPremium;
-    private CustomDate startDate, endDate;
-    private Insured holder;
-    private Branch branch;
+    private int policyId = id, policyNumber = number, installmentsCount = installmentsCount;
+    private string company = company, insuredAsset = asset, status = status;
+    private decimal totalPremium = premium;
+    private CustomDate startDate = startDate, endDate = endDate;
+    private Insured holder = holder;
+    private Branch branch = branch;
 
     public int Id => policyId;
-
-    public Policy(
-        int id, int number, Insured holder, Branch branch,
-        string company, string asset, decimal premium, int installmentsCount,
-        CustomDate startDate, CustomDate endDate, string status = "ACTIVE")
-    {
-        policyId = id;
-        policyNumber = number;
-        this.holder = holder;
-        this.branch = branch;
-        this.company = company;
-        insuredAsset = asset;
-        totalPremium = premium;
-        this.installmentsCount = installmentsCount;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
-    }
-
     public int PolicyId { get => policyId; set => policyId = value; }
     public int PolicyNumber { get => policyNumber; set => policyNumber = value; }
     public Insured Holder { get => holder; set => holder = value; }
@@ -59,13 +44,8 @@ public class Policy : ICopiable<Policy>, IClonable<Policy>, IEquatableDomain<Pol
     public void copy(Policy other)
     {
         if (other == null) return;
-        policyId = other.policyId;
-        policyNumber = other.policyNumber;
-        company = other.company;
-        insuredAsset = other.insuredAsset;
-        totalPremium = other.totalPremium;
-        installmentsCount = other.installmentsCount;
-        status = other.status;
+        (policyId, policyNumber, company, insuredAsset, totalPremium, installmentsCount, status) =
+            (other.policyId, other.policyNumber, other.company, other.insuredAsset, other.totalPremium, other.installmentsCount, other.status);
         if (holder != null && other.holder != null) holder.copy(other.holder);
         if (branch != null && other.branch != null) branch.copy(other.branch);
         if (startDate != null && other.startDate != null) startDate.copy(other.startDate);
@@ -73,17 +53,17 @@ public class Policy : ICopiable<Policy>, IClonable<Policy>, IEquatableDomain<Pol
     }
 
     public Policy clone() =>
-        new Policy(
+        new(
             policyId,
             policyNumber,
-            holder != null ? holder.clone() : null,
-            branch != null ? branch.clone() : null,
+            holder?.clone(),
+            branch?.clone(),
             company,
             insuredAsset,
             totalPremium,
             installmentsCount,
-            startDate != null ? startDate.clone() : null,
-            endDate != null ? endDate.clone() : null,
+            startDate?.clone(),
+            endDate?.clone(),
             status);
 
     public bool equals(Policy other) =>

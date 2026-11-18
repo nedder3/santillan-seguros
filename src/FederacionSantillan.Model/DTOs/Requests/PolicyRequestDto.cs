@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using FederacionSantillan.Model.Exceptions;
 
-namespace FederacionSantillan.Model.DTOs;
+namespace FederacionSantillan.Model.DTOs.Requests;
 
-public class PolicyInputDto
+public class PolicyRequestDto : IValidatableObject
 {
     [Range(1, int.MaxValue, ErrorMessage = "El número de póliza debe ser mayor a cero.")]
     public int PolicyNumber { get; set; }
@@ -26,7 +27,13 @@ public class PolicyInputDto
     [Range(1, 24, ErrorMessage = "La cantidad de cuotas debe estar entre 1 y 24.")]
     public int InstallmentsCount { get; set; }
 
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public DateTime FirstDueDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.Today;
+    public DateTime EndDate { get; set; } = DateTime.Today.AddYears(1);
+    public DateTime FirstDueDate { get; set; } = DateTime.Today.AddMonths(1);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (EndDate <= StartDate)
+            yield return new ValidationResult(SystemMessages.InvalidPolicyDates, new[] { nameof(EndDate) });
+    }
 }

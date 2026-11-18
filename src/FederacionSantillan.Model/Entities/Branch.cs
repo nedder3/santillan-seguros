@@ -1,22 +1,14 @@
-using FederacionSantillan.Model.Abstractions;
+using FederacionSantillan.Model.Interfaces;
 
-namespace FederacionSantillan.Model;
+namespace FederacionSantillan.Model.Entities;
 
-public class Branch : ICopiable<Branch>, IClonable<Branch>, IEquatableDomain<Branch>, IIdentifiable<int>
+public class Branch(int id, string code, string name, string description)
+    : ICopiable<Branch>, IClonable<Branch>, IEquatableDomain<Branch>, IIdentifiable<int>
 {
-    private int branchId;
-    private string code, name, description;
+    private int branchId = id;
+    private string code = code, name = name, description = description;
 
     public int Id => branchId;
-
-    public Branch(int id, string code, string name, string description)
-    {
-        branchId = id;
-        this.code = code;
-        this.name = name;
-        this.description = description;
-    }
-
     public int BranchId { get => branchId; set => branchId = value; }
     public string Code { get => code; set => code = value; }
     public string Name { get => name; set => name = value; }
@@ -34,16 +26,13 @@ public class Branch : ICopiable<Branch>, IClonable<Branch>, IEquatableDomain<Bra
     public void copy(Branch other)
     {
         if (other == null) return;
-        branchId = other.branchId;
-        code = other.code;
-        name = other.name;
-        description = other.description;
+        (branchId, code, name, description) = (other.branchId, other.code, other.name, other.description);
     }
 
-    public Branch clone() => new Branch(branchId, code, name, description);
+    public Branch clone() => new(branchId, code, name, description);
 
     public bool equals(Branch other) =>
-        other != null && branchId == other.branchId && code == other.code && name == other.name;
+        other != null && (branchId, code, name) == (other.branchId, other.code, other.name);
 
     public override string ToString() => $"{name} ({code})";
 }

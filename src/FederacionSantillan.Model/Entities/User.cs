@@ -1,28 +1,18 @@
-using FederacionSantillan.Model.Abstractions;
+using FederacionSantillan.Model.Interfaces;
 
-namespace FederacionSantillan.Model;
+namespace FederacionSantillan.Model.Entities;
 
-public class User : ICopiable<User>, IClonable<User>, IEquatableDomain<User>, IIdentifiable<int>
+public class User(int id, string username, string passwordHash, string fullName, string role)
+    : ICopiable<User>, IClonable<User>, IEquatableDomain<User>, IIdentifiable<int>
 {
-    private int userId;
-    private string username, passwordHash, fullName, role;
-    private bool active;
-
-    public int Id => userId;
-
-    public User(int id, string username, string passwordHash, string fullName, string role)
-    {
-        userId = id;
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.fullName = fullName;
-        this.role = role;
-        active = true;
-    }
+    private int userId = id;
+    private string username = username, passwordHash = passwordHash, fullName = fullName, role = role;
+    private bool active = true;
 
     public User(string username, string passwordHash, string fullName, string role)
         : this(0, username, passwordHash, fullName, role) { }
 
+    public int Id => userId;
     public int UserId { get => userId; set => userId = value; }
     public string Username { get => username; set => username = value; }
     public string PasswordHash { get => passwordHash; set => passwordHash = value; }
@@ -46,18 +36,14 @@ public class User : ICopiable<User>, IClonable<User>, IEquatableDomain<User>, II
     public void copy(User other)
     {
         if (other == null) return;
-        userId = other.userId;
-        username = other.username;
-        passwordHash = other.passwordHash;
-        fullName = other.fullName;
-        role = other.role;
-        active = other.active;
+        (userId, username, passwordHash, fullName, role, active) =
+            (other.userId, other.username, other.passwordHash, other.fullName, other.role, other.active);
     }
 
-    public User clone() => new User(userId, username, passwordHash, fullName, role) { active = active };
+    public User clone() => new(userId, username, passwordHash, fullName, role) { active = active };
 
     public bool equals(User other) =>
-        other != null && userId == other.userId && username == other.username && role == other.role;
+        other != null && (userId, username, role) == (other.userId, other.username, other.role);
 
     public override string ToString() => $"{fullName} (@{username} - {role})";
 }

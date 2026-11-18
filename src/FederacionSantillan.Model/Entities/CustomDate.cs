@@ -1,17 +1,10 @@
-using FederacionSantillan.Model.Abstractions;
+using FederacionSantillan.Model.Interfaces;
 
-namespace FederacionSantillan.Model;
+namespace FederacionSantillan.Model.Entities;
 
-public class CustomDate : ICopiable<CustomDate>, IClonable<CustomDate>, IEquatableDomain<CustomDate>
+public class CustomDate(int d, int m, int y) : ICopiable<CustomDate>, IClonable<CustomDate>, IEquatableDomain<CustomDate>
 {
-    private int day, month, year;
-
-    public CustomDate(int d, int m, int y)
-    {
-        day = d;
-        month = m;
-        year = y;
-    }
+    private int day = d, month = m, year = y;
 
     public int Day { get => day; set => day = value; }
     public int Month { get => month; set => month = value; }
@@ -27,18 +20,16 @@ public class CustomDate : ICopiable<CustomDate>, IClonable<CustomDate>, IEquatab
     public void copy(CustomDate other)
     {
         if (other == null) return;
-        day = other.day;
-        month = other.month;
-        year = other.year;
+        (day, month, year) = (other.day, other.month, other.year);
     }
 
-    public CustomDate clone() => new CustomDate(day, month, year);
+    public CustomDate clone() => new(day, month, year);
 
     public bool equals(CustomDate other) =>
-        other != null && day == other.day && month == other.month && year == other.year;
+        other != null && (day, month, year) == (other.day, other.month, other.year);
 
     public bool isValid() =>
-        year > 1900 && month >= 1 && month <= 12 && day >= 1 && day <= 31;
+        year > 1900 && month is >= 1 and <= 12 && day is >= 1 and <= 31;
 
     public override string ToString() => $"{day:D2}/{month:D2}/{year}";
 }

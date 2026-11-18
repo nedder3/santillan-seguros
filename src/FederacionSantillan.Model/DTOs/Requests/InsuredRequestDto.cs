@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FederacionSantillan.Model.DTOs;
+namespace FederacionSantillan.Model.DTOs.Requests;
 
-public class InsuredInputDto
+public class InsuredRequestDto
 {
     public int Id { get; set; }
 

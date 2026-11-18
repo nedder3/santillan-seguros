@@ -1,29 +1,18 @@
-using FederacionSantillan.Model.Abstractions;
+using FederacionSantillan.Model.Interfaces;
 
-namespace FederacionSantillan.Model;
+namespace FederacionSantillan.Model.Entities;
 
-public class Insured : ICopiable<Insured>, IClonable<Insured>, IEquatableDomain<Insured>, IIdentifiable<int>
+public class Insured(int id, string taxId, string fullName, string phone, string email = "", string address = "")
+    : ICopiable<Insured>, IClonable<Insured>, IEquatableDomain<Insured>, IIdentifiable<int>
 {
-    private int insuredId;
-    private string taxId, fullName, phone, email, address;
-    private bool active;
+    private int insuredId = id;
+    private string taxId = taxId, fullName = fullName, phone = phone;
+    private string email = email ?? string.Empty, address = address ?? string.Empty;
+    private bool active = true;
+
+    public Insured(int id) : this(id, "NO_TAX_ID", "NO_NAME", "NO_PHONE") { }
 
     public int Id => insuredId;
-
-    public Insured(int id)
-        : this(id, "NO_TAX_ID", "NO_NAME", "NO_PHONE", string.Empty, string.Empty) { }
-
-    public Insured(int id, string taxId, string fullName, string phone, string email = "", string address = "")
-    {
-        insuredId = id;
-        this.taxId = taxId;
-        this.fullName = fullName;
-        this.phone = phone;
-        this.email = email ?? string.Empty;
-        this.address = address ?? string.Empty;
-        active = true;
-    }
-
     public int InsuredId { get => insuredId; set => insuredId = value; }
     public string TaxId { get => taxId; set => taxId = value; }
     public string FullName { get => fullName; set => fullName = value; }
@@ -48,19 +37,14 @@ public class Insured : ICopiable<Insured>, IClonable<Insured>, IEquatableDomain<
     public void copy(Insured other)
     {
         if (other == null) return;
-        insuredId = other.insuredId;
-        taxId = other.taxId;
-        fullName = other.fullName;
-        phone = other.phone;
-        email = other.email;
-        address = other.address;
-        active = other.active;
+        (insuredId, taxId, fullName, phone, email, address, active) =
+            (other.insuredId, other.taxId, other.fullName, other.phone, other.email, other.address, other.active);
     }
 
-    public Insured clone() => new Insured(insuredId, taxId, fullName, phone, email, address) { active = active };
+    public Insured clone() => new(insuredId, taxId, fullName, phone, email, address) { active = active };
 
     public bool equals(Insured other) =>
-        other != null && insuredId == other.insuredId && taxId == other.taxId;
+        other != null && (insuredId, taxId) == (other.insuredId, other.taxId);
 
     public override string ToString() => $"[{insuredId}] {fullName} (CUIT/DNI: {taxId}, Tel: {phone})";
 }

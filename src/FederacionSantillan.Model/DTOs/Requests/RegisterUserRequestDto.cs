@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FederacionSantillan.Model.DTOs;
+namespace FederacionSantillan.Model.DTOs.Requests;
 
-public class RegisterUserDto
+public class RegisterUserRequestDto
 {
     [Required(ErrorMessage = "El nombre completo es obligatorio.")]
     [StringLength(120, MinimumLength = 3, ErrorMessage = "El nombre completo debe tener entre 3 y 120 caracteres.")]
