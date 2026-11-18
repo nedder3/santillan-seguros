@@ -30,25 +30,25 @@ Sistema de escritorio desarrollado en **C# (.NET 8 Windows Forms)** con persiste
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ CAPA VISTA (FederacionSantillan.App/Views - WinForms Designer)          │
-│ FormLogin • FormRegistroUsuario • FormPrincipal • FormOpciones • Ayuda  │
-│ Interceptor: GlobalExceptionHandler (@ControllerAdvice pattern)         │
+│ PRESENTATION LAYER (FederacionSantillan.App - WinForms Designer)        │
+│ Views: FormLogin • FormRegistroUsuario • FormPrincipal • FormOpciones   │
+│ Advice: ControllerAdvice + ControllerPipeline (@Valid + Error Handling) │
 └───────────────────────────────────┬─────────────────────────────────────┘
-                                    │ Arma DTO y delega
+                                    │ Dispatches validated Request DTO
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ CAPA CONTROLADOR (FederacionSantillan.App/Controllers - MVC)            │
+│ CONTROLLER LAYER (FederacionSantillan.App/Controllers - C# 12 =>)       │
 │ AuthController • PortfolioController • NotificationController • Settings│
 └───────────────────┬───────────────────────────────────┬─────────────────┘
-                    │ Valida DTOs y Entidades           │ SQL Parametrizado
+                    │ Uses Entities & DTOs              │ Delegates SQL
                     ▼                                   ▼
 ┌───────────────────────────────────┐   ┌─────────────────────────────────┐
-│ CAPA MODELO (.Model)              │   │ ACCESO A DATOS (.Data/DAOs)     │
-│ User, Insured, Branch, Policy,    │   │ ConnectionFactory,              │
-│ Installment, Notification, Date   │   │ DbExceptionTranslator, UserDao, │
-│ DTOs (DataAnnotations),           │   │ InsuredDao, BranchDao,          │
-│ DtoValidator, DomainExceptions    │   │ PolicyDao, InstallmentDao,      │
-│ (copy / clone / equals en prof.)  │   │ NotificationDao, BackupDao      │
+│ MODEL LAYER (.Model)              │   │ DATA ACCESS LAYER (.Data)       │
+│ Entities/ (User, Insured, Policy, │   │ Factories/ConnectionFactory     │
+│   Installment, Branch, CustomDate)│   │ Translators/DbExceptionTransl.  │
+│ Interfaces/ (ICopiable, IClonable)│   │ DAOs/ (UserDao, InsuredDao,     │
+│ DTOs/Requests & DTOs/Responses    │   │   BranchDao, PolicyDao,         │
+│ Exceptions/ (AppException, etc.)  │   │   InstallmentDao, BackupDao)    │
 └───────────────────────────────────┘   └───────────────┬─────────────────┘
                                                         ▼
                                             ┌───────────────────────┐
@@ -60,9 +60,8 @@ Sistema de escritorio desarrollado en **C# (.NET 8 Windows Forms)** con persiste
 
 ## Guía de Inicio Rápido (Docker + DBeaver + Visual Studio)
 
-### 1. Levantar MariaDB con Docker
+### 1. Levantar MariaDB con Docker (desde la raíz)
 ```bash
-cd docker
 docker compose up -d
 ```
 *(O importar `database/santillan_seguros_completo.sql` directamente en **DBeaver**).*
@@ -79,9 +78,13 @@ docker compose up -d
 
 ---
 
-## Documentación y Diagramas (Listos para PDF)
-* `diagramas/*.drawio`: DER (3FN), Diagrama de Clases UML (MVC), Casos de Uso, Secuencia, Contexto y DFD Nivel 1.
-* `src/FederacionSantillan.Model/ModelClassDiagram.cd`: Diagrama de Clases nativo de Visual Studio.
-* `docs/01_Estudio_Factibilidad_y_Requerimientos.md`
-* `docs/02_Fundamentacion_DER_y_Diccionario.md`
-* `docs/03_Manual_Usuario_y_Guia_Docker.md`
+## Diagramas Nativos de Visual Studio (.cd) y Documentación
+* **Visual Studio Class Designer (`.cd`):**
+  * `src/FederacionSantillan.Model/ModelClassDiagram.cd`
+  * `src/FederacionSantillan.Data/DataLayerDiagram.cd`
+  * `src/FederacionSantillan.App/MvcArchitectureDiagram.cd`
+* **DER en vivo (DBeaver):** Doble clic sobre `santillan_seguros` en DBeaver $\rightarrow$ pestaña *ER Diagram*.
+* **Documentación Formal (`docs/`):**
+  * `docs/01_Estudio_Factibilidad_y_Requerimientos.md`
+  * `docs/02_Fundamentacion_DER_y_Diccionario.md`
+  * `docs/03_Manual_Usuario_y_Guia_Docker.md`

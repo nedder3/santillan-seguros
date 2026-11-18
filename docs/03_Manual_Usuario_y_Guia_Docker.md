@@ -3,7 +3,7 @@
 ## Parte A: Despliegue de Base de Datos con Docker en Mac y DBeaver
 
 ### 1. Levantar MariaDB en Mac con Docker
-En una terminal dentro de la carpeta `docker/` del repositorio:
+En una terminal en la raíz del repositorio:
 ```bash
 docker compose up -d
 ```
