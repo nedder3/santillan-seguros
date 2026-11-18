@@ -1,27 +1,27 @@
-using FederacionSantillan.Model;
-using FederacionSantillan.Model.DTOs;
+using FederacionSantillan.Model.DTOs.Requests;
+using FederacionSantillan.Model.Entities;
 
 namespace FederacionSantillan.Tests.Factories;
 
 public static class TestDataFactory
 {
     public static CustomDate CreateDate(int day = 15, int month = 6, int year = 2026) =>
-        new CustomDate(day, month, year);
+        new(day, month, year);
 
     public static Insured CreateInsured(int id = 1, string taxId = "20-34567890-1", string name = "Carlos Gomez") =>
-        new Insured(id, taxId, name, "291-4123456", "carlos@email.com", "Av. Alem 1240");
+        new(id, taxId, name, "291-4123456", "carlos@email.com", "Av. Alem 1240");
 
     public static Branch CreateBranch(int id = 1, string code = "AUTO", string name = "Automotor") =>
-        new Branch(id, code, name, "Vehicle coverage");
+        new(id, code, name, "Vehicle coverage");
 
     public static Policy CreatePolicy(int id = 1, int number = 900101) =>
-        new Policy(
+        new(
             id, number, CreateInsured(), CreateBranch(),
             "Federacion Patronal Seguros", "Toyota Hilux 2022",
             360000m, 6, CreateDate(1, 1, 2026), CreateDate(1, 1, 2027));
 
     public static Installment CreateInstallment(int id = 1, int daysOffset = -5, string status = "PENDING") =>
-        new Installment(id, 1, 1, 60000m, DateTime.Today.AddDays(daysOffset), status)
+        new(id, 1, 1, 60000m, DateTime.Today.AddDays(daysOffset), status)
         {
             PolicyNumberRef = 900101,
             InsuredNameRef = "Carlos Gomez",
@@ -29,8 +29,8 @@ public static class TestDataFactory
             BranchNameRef = "Automotor"
         };
 
-    public static InsuredInputDto CreateValidInsuredDto() =>
-        new InsuredInputDto
+    public static InsuredRequestDto CreateValidInsuredDto() =>
+        new()
         {
             TaxId = "20-34567890-1",
             FullName = "Carlos Gomez",
@@ -39,8 +39,8 @@ public static class TestDataFactory
             Address = "Av. Alem 1240"
         };
 
-    public static RegisterUserDto CreateValidRegisterUserDto() =>
-        new RegisterUserDto
+    public static RegisterUserRequestDto CreateValidRegisterUserDto() =>
+        new()
         {
             FullName = "Ariel Santillan",
             Username = "asantillan",
@@ -49,8 +49,8 @@ public static class TestDataFactory
             Role = "PRODUCTOR"
         };
 
-    public static PolicyInputDto CreateValidPolicyDto() =>
-        new PolicyInputDto
+    public static PolicyRequestDto CreateValidPolicyDto() =>
+        new()
         {
             PolicyNumber = 900555,
             InsuredId = 1,

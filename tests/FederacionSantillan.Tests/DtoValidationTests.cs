@@ -1,45 +1,60 @@
-using FederacionSantillan.Model.Exceptions;
-using FederacionSantillan.Model.Validation;
+using System.ComponentModel.DataAnnotations;
 using FederacionSantillan.Tests.Factories;
 
 namespace FederacionSantillan.Tests;
 
 public class DtoValidationTests
 {
-    [Fact]
-    public void Given_ValidInsuredDto_When_Validated_Then_DoesNotThrow()
+    private static bool ValidateDto(object dto, out List<ValidationResult> results)
     {
-        var dto = TestDataFactory.CreateValidInsuredDto();
-
-        var ex = Record.Exception(() => DtoValidator.Validate(dto));
-
-        Assert.Null(ex);
+        results = new List<ValidationResult>();
+        return Validator.TryValidateObject(dto, new ValidationContext(dto), results, validateAllProperties: true);
     }
 
     [Fact]
-    public void Given_InsuredDtoWithInvalidEmail_When_Validated_Then_ThrowsBusinessRuleException()
+    public void Given_ValidInsuredDto_When_Validated_Then_ReturnsTrue()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.True(valid);
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Given_InsuredDtoWithInvalidEmail_When_Validated_Then_ReturnsFalse()
     {
         var dto = TestDataFactory.CreateValidInsuredDto();
         dto.Email = "not-an-email";
 
-        Assert.Throws<BusinessRuleException>(() => DtoValidator.Validate(dto));
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.NotEmpty(errors);
     }
 
     [Fact]
-    public void Given_RegisterUserDtoWithMismatchedPasswords_When_Validated_Then_ThrowsBusinessRuleException()
+    public void Given_RegisterUserDtoWithMismatchedPasswords_When_Validated_Then_ReturnsFalse()
     {
         var dto = TestDataFactory.CreateValidRegisterUserDto();
         dto.ConfirmPassword = "differentPassword";
 
-        Assert.Throws<BusinessRuleException>(() => DtoValidator.Validate(dto));
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.NotEmpty(errors);
     }
 
     [Fact]
-    public void Given_PolicyDtoWithInstallmentsOutOfRange_When_Validated_Then_ThrowsBusinessRuleException()
+    public void Given_PolicyDtoWithEndDateBeforeStartDate_When_Validated_Then_FailsIValidatableObjectRule()
     {
         var dto = TestDataFactory.CreateValidPolicyDto();
-        dto.InstallmentsCount = 36;
+        dto.EndDate = dto.StartDate.AddDays(-1);
 
-        Assert.Throws<BusinessRuleException>(() => DtoValidator.Validate(dto));
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.EndDate)));
     }
 }

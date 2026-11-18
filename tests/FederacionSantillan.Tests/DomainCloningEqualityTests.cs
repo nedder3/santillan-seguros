@@ -1,4 +1,4 @@
-using FederacionSantillan.Model;
+using FederacionSantillan.Model.Entities;
 using FederacionSantillan.Tests.Factories;
 
 namespace FederacionSantillan.Tests;
