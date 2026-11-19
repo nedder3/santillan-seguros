@@ -7,7 +7,7 @@
 ![MariaDB 11.4](https://img.shields.io/badge/MariaDB-11.4%20(3FN%20InnoDB)-003545?style=for-the-badge&logo=mariadb)
 ![Architecture](https://img.shields.io/badge/Architecture-3--Layer%20MVC%20%2B%20SOLID-0F4C81?style=for-the-badge)
 ![Docker](https://img.shields.io/badge/Docker-Compose%20Ready-2496ED?style=for-the-badge&logo=docker)
-![Tests](https://img.shields.io/badge/Tests-12%2F12%20Passing%20(FIRST%20%2B%20Gherkin)-15803D?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-18%2F18%20Passing%20(FIRST%20%2B%20Gherkin)-15803D?style=for-the-badge)
 ![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?style=for-the-badge)
 
 **Proyecto Final 2026 — I.S.F.T. N° 191 (Bahía Blanca) — TS en Desarrollo de Software**  
@@ -177,7 +177,8 @@ sequenceDiagram
 | :---: | :--- | :--- | :--- |
 | **`200 / OK`** | Operación SQL / Validación exitosa | *(Ninguna)* | Actualiza grillas, KPIs y confirma acción. |
 | **`400 / Validation`** | `Validator.TryValidateObject` / `IValidatableObject` | `ValidationException` | Marca el campo con `ErrorProvider` + `MessageBoxIcon.Warning`. |
-| **`404 / Not Found`** | Registro inexistente o credenciales inválidas | `ResourceNotFoundException` | Informa recurso o usuario no encontrado (`MessageBoxIcon.Warning`). |
+| **`401 / Unauthorized`** | Usuario inexistente o contraseña incorrecta | `InvalidCredentialsException` | Alerta genérica *"Credenciales inválidas."* sin revelar la existencia del usuario (`MessageBoxIcon.Warning`). |
+| **`404 / Not Found`** | Registro de negocio inexistente | `ResourceNotFoundException` | Informa recurso no encontrado (`MessageBoxIcon.Warning`). |
 | **`409 / Conflict (1062)`** | `MySqlErrorCode.DuplicateKeyEntry` (`1062`) | `DuplicateResourceException` | Informa DNI/CUIT, usuario o N° de póliza duplicado. |
 | **`503 / Unavailable (1042)`** | `MySqlErrorCode.UnableToConnectToHost` (`1042` / `0`) | `DatabaseUnavailableException` | Alerta caída o falta de conexión con el servidor MariaDB (`MessageBoxIcon.Error`). |
 
@@ -224,7 +225,7 @@ dotnet restore FederacionSantillan.sln
 dotnet build FederacionSantillan.sln --configuration Release
 dotnet test FederacionSantillan.sln --logger "console;verbosity=normal"
 ```
-> **Resultado verificado:** `12/12 tests passing` (clonación profunda `clone()` / `copy()` / `equals()`, facturación y cálculo de mora en `Installment`, validaciones declarativas en DTOs e integración en vivo contra MariaDB).
+> **Resultado verificado:** `18/18 tests passing` (clonación profunda `clone()` / `copy()` / `equals()`, facturación y cálculo de mora en `Installment`, validaciones declarativas en DTOs, autenticación segura sin fuga de información e integración en vivo contra MariaDB).
 
 ### Paso 4: Ejecutar la Aplicación Desktop (Visual Studio o CLI)
 * **Desde Visual Studio 2022+:** Abrir `FederacionSantillan.sln`, definir `FederacionSantillan.App` como *Startup Project* y presionar `F5`.
