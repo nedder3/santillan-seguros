@@ -39,6 +39,8 @@ partial class FormPrincipal
 
     // Tab 2: Asegurados
     private GroupBox grpFormAsegurado;
+    private Label lblTipoDoc;
+    private ComboBox cmbTipoDoc;
     private Label lblAsegDni;
     private TextBox txtAsegDni;
     private Label lblAsegNombre;
@@ -128,6 +130,8 @@ partial class FormPrincipal
 
         // Tab 2 controls
         grpFormAsegurado = new GroupBox();
+        lblTipoDoc = new Label();
+        cmbTipoDoc = new ComboBox();
         lblAsegDni = new Label();
         txtAsegDni = new TextBox();
         lblAsegNombre = new Label();
@@ -488,37 +492,109 @@ partial class FormPrincipal
         grpFormAsegurado.Controls.Add(lblAsegNombre);
         grpFormAsegurado.Controls.Add(txtAsegDni);
         grpFormAsegurado.Controls.Add(lblAsegDni);
+        grpFormAsegurado.Controls.Add(cmbTipoDoc);
+        grpFormAsegurado.Controls.Add(lblTipoDoc);
 
-        lblAsegDni.AutoSize = true; lblAsegDni.Location = new Point(16, 32); lblAsegDni.Text = "DNI / CUIT:";
-        txtAsegDni.Font = new Font("Segoe UI", 9.5F); txtAsegDni.Location = new Point(16, 52); txtAsegDni.Size = new Size(295, 24); txtAsegDni.TabIndex = 0;
+        lblTipoDoc.AutoSize = true;
+        lblTipoDoc.Location = new Point(16, 28);
+        lblTipoDoc.Text = "Tipo:";
 
-        lblAsegNombre.AutoSize = true; lblAsegNombre.Location = new Point(16, 86); lblAsegNombre.Text = "Apellido y Nombre / Razón Social:";
-        txtAsegNombre.Font = new Font("Segoe UI", 9.5F); txtAsegNombre.Location = new Point(16, 106); txtAsegNombre.Size = new Size(295, 24); txtAsegNombre.TabIndex = 1;
+        cmbTipoDoc.AccessibleName = "Tipo de Documento";
+        cmbTipoDoc.DropDownStyle = ComboBoxStyle.DropDownList;
+        cmbTipoDoc.Font = new Font("Segoe UI", 9.5F);
+        cmbTipoDoc.Items.AddRange(new object[] { "DNI", "CUIT" });
+        cmbTipoDoc.Location = new Point(16, 48);
+        cmbTipoDoc.Name = "cmbTipoDoc";
+        cmbTipoDoc.SelectedIndex = 0;
+        cmbTipoDoc.Size = new Size(82, 24);
+        cmbTipoDoc.TabIndex = 0;
 
-        lblAsegTel.AutoSize = true; lblAsegTel.Location = new Point(16, 140); lblAsegTel.Text = "Teléfono / WhatsApp:";
-        txtAsegTel.Font = new Font("Segoe UI", 9.5F); txtAsegTel.Location = new Point(16, 160); txtAsegTel.Size = new Size(295, 24); txtAsegTel.TabIndex = 2;
+        lblAsegDni.AutoSize = true;
+        lblAsegDni.Location = new Point(106, 28);
+        lblAsegDni.Text = "N° Documento / CUIT:";
 
-        lblAsegEmail.AutoSize = true; lblAsegEmail.Location = new Point(16, 194); lblAsegEmail.Text = "Email:";
-        txtAsegEmail.Font = new Font("Segoe UI", 9.5F); txtAsegEmail.Location = new Point(16, 214); txtAsegEmail.Size = new Size(295, 24); txtAsegEmail.TabIndex = 3;
+        txtAsegDni.AccessibleName = "Número de Documento o CUIT";
+        txtAsegDni.Font = new Font("Segoe UI", 9.5F);
+        txtAsegDni.Location = new Point(106, 48);
+        txtAsegDni.MaxLength = 8;
+        txtAsegDni.Name = "txtAsegDni";
+        txtAsegDni.Size = new Size(205, 24);
+        txtAsegDni.TabIndex = 1;
 
-        lblAsegDom.AutoSize = true; lblAsegDom.Location = new Point(16, 248); lblAsegDom.Text = "Domicilio:";
-        txtAsegDom.Font = new Font("Segoe UI", 9.5F); txtAsegDom.Location = new Point(16, 268); txtAsegDom.Size = new Size(295, 24); txtAsegDom.TabIndex = 4;
+        lblAsegNombre.AutoSize = true;
+        lblAsegNombre.Location = new Point(16, 82);
+        lblAsegNombre.Text = "Apellido y Nombre / Razón Social:";
+
+        txtAsegNombre.Font = new Font("Segoe UI", 9.5F);
+        txtAsegNombre.Location = new Point(16, 102);
+        txtAsegNombre.MaxLength = 120;
+        txtAsegNombre.Size = new Size(295, 24);
+        txtAsegNombre.TabIndex = 2;
+
+        lblAsegTel.AutoSize = true;
+        lblAsegTel.Location = new Point(16, 136);
+        lblAsegTel.Text = "Teléfono / WhatsApp (Solo números):";
+
+        txtAsegTel.Font = new Font("Segoe UI", 9.5F);
+        txtAsegTel.Location = new Point(16, 156);
+        txtAsegTel.MaxLength = 15;
+        txtAsegTel.Size = new Size(295, 24);
+        txtAsegTel.TabIndex = 3;
+
+        lblAsegEmail.AutoSize = true;
+        lblAsegEmail.Location = new Point(16, 190);
+        lblAsegEmail.Text = "Email:";
+
+        txtAsegEmail.Font = new Font("Segoe UI", 9.5F);
+        txtAsegEmail.Location = new Point(16, 210);
+        txtAsegEmail.MaxLength = 120;
+        txtAsegEmail.Size = new Size(295, 24);
+        txtAsegEmail.TabIndex = 4;
+
+        lblAsegDom.AutoSize = true;
+        lblAsegDom.Location = new Point(16, 244);
+        lblAsegDom.Text = "Domicilio:";
+
+        txtAsegDom.Font = new Font("Segoe UI", 9.5F);
+        txtAsegDom.Location = new Point(16, 264);
+        txtAsegDom.MaxLength = 180;
+        txtAsegDom.Size = new Size(295, 24);
+        txtAsegDom.TabIndex = 5;
 
         btnAsegGuardar.AccessibleName = "Guardar Asegurado";
-        btnAsegGuardar.BackColor = Color.FromArgb(21, 128, 61); btnAsegGuardar.Cursor = Cursors.Hand; btnAsegGuardar.FlatStyle = FlatStyle.Flat; btnAsegGuardar.FlatAppearance.BorderSize = 0;
-        btnAsegGuardar.ForeColor = Color.White; btnAsegGuardar.Location = new Point(16, 315); btnAsegGuardar.Size = new Size(295, 36); btnAsegGuardar.TabIndex = 5;
-        btnAsegGuardar.Text = "  Guardar Asegurado"; btnAsegGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
+        btnAsegGuardar.BackColor = Color.FromArgb(21, 128, 61);
+        btnAsegGuardar.Cursor = Cursors.Hand;
+        btnAsegGuardar.FlatStyle = FlatStyle.Flat;
+        btnAsegGuardar.FlatAppearance.BorderSize = 0;
+        btnAsegGuardar.ForeColor = Color.White;
+        btnAsegGuardar.Location = new Point(16, 310);
+        btnAsegGuardar.Size = new Size(295, 36);
+        btnAsegGuardar.TabIndex = 6;
+        btnAsegGuardar.Text = "  Guardar Asegurado";
+        btnAsegGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
         btnAsegGuardar.Click += btnAsegGuardar_Click;
 
         btnAsegNuevo.AccessibleName = "Limpiar formulario para nuevo asegurado";
-        btnAsegNuevo.BackColor = Color.FromArgb(29, 78, 216); btnAsegNuevo.Cursor = Cursors.Hand; btnAsegNuevo.FlatStyle = FlatStyle.Flat; btnAsegNuevo.FlatAppearance.BorderSize = 0;
-        btnAsegNuevo.ForeColor = Color.White; btnAsegNuevo.Location = new Point(16, 360); btnAsegNuevo.Size = new Size(142, 34); btnAsegNuevo.TabIndex = 6;
+        btnAsegNuevo.BackColor = Color.FromArgb(29, 78, 216);
+        btnAsegNuevo.Cursor = Cursors.Hand;
+        btnAsegNuevo.FlatStyle = FlatStyle.Flat;
+        btnAsegNuevo.FlatAppearance.BorderSize = 0;
+        btnAsegNuevo.ForeColor = Color.White;
+        btnAsegNuevo.Location = new Point(16, 355);
+        btnAsegNuevo.Size = new Size(142, 34);
+        btnAsegNuevo.TabIndex = 7;
         btnAsegNuevo.Text = "Limpiar / Nuevo";
         btnAsegNuevo.Click += btnAsegNuevo_Click;
 
         btnAsegEliminar.AccessibleName = "Dar de baja asegurado seleccionado";
-        btnAsegEliminar.BackColor = Color.FromArgb(185, 28, 28); btnAsegEliminar.Cursor = Cursors.Hand; btnAsegEliminar.FlatStyle = FlatStyle.Flat; btnAsegEliminar.FlatAppearance.BorderSize = 0;
-        btnAsegEliminar.ForeColor = Color.White; btnAsegEliminar.Location = new Point(169, 360); btnAsegEliminar.Size = new Size(142, 34); btnAsegEliminar.TabIndex = 7;
+        btnAsegEliminar.BackColor = Color.FromArgb(185, 28, 28);
+        btnAsegEliminar.Cursor = Cursors.Hand;
+        btnAsegEliminar.FlatStyle = FlatStyle.Flat;
+        btnAsegEliminar.FlatAppearance.BorderSize = 0;
+        btnAsegEliminar.ForeColor = Color.White;
+        btnAsegEliminar.Location = new Point(169, 355);
+        btnAsegEliminar.Size = new Size(142, 34);
+        btnAsegEliminar.TabIndex = 8;
         btnAsegEliminar.Text = "Dar de Baja";
         btnAsegEliminar.Click += btnAsegEliminar_Click;
 

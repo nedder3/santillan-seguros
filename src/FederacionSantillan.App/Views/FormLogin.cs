@@ -28,10 +28,16 @@ public partial class FormLogin : Form
     private void CheckDatabaseConnection()
     {
         bool connected = ConnectionFactory.TestConnection(out string error);
-        lblEstadoDb.Text = connected
-            ? "Base de datos: conectada (MariaDB - santillan_seguros)"
-            : $"Sin conexión a MariaDB: {error}";
-        lblEstadoDb.ForeColor = connected ? Color.FromArgb(21, 128, 61) : Color.FromArgb(185, 28, 28);
+        if (connected)
+        {
+            lblEstadoDb.Visible = false;
+        }
+        else
+        {
+            lblEstadoDb.Text = $"Sin conexión con el servidor de datos: {error}";
+            lblEstadoDb.ForeColor = Color.FromArgb(185, 28, 28);
+            lblEstadoDb.Visible = true;
+        }
     }
 
     private void Campos_TextChanged(object sender, EventArgs e)

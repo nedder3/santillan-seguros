@@ -4,6 +4,7 @@ using FederacionSantillan.App.Helpers;
 using FederacionSantillan.Model.DTOs.Requests;
 using FederacionSantillan.Model.DTOs.Responses;
 using FederacionSantillan.Model.Entities;
+using FederacionSantillan.Model.Validators;
 
 namespace FederacionSantillan.App.Views;
 
@@ -62,13 +63,22 @@ public partial class FormPrincipal : Form
 
         txtAsegTel.KeyPress += (_, e) =>
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar is not ('-' or '+' or ' ' or '(' or ')'))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
+        };
+
+        cmbTipoDoc.SelectedIndex = 0;
+        cmbTipoDoc.SelectedIndexChanged += (_, _) =>
+        {
+            bool isCuit = cmbTipoDoc.SelectedItem?.ToString() == "CUIT";
+            txtAsegDni.MaxLength = isCuit ? 13 : 8;
+            lblAsegDni.Text = isCuit ? "CUIT (11 dígitos):" : "DNI (7 u 8 dígitos):";
         };
 
         txtAsegDni.KeyPress += (_, e) =>
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '-')
+            bool isCuit = cmbTipoDoc.SelectedItem?.ToString() == "CUIT";
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (!isCuit || e.KeyChar != '-'))
                 e.Handled = true;
         };
 
@@ -137,6 +147,8 @@ public partial class FormPrincipal : Form
 
         lblKpiVencidasValor.Text = $"{_currentAlerts.Overdue.Count} cuotas (${_currentAlerts.OverdueTotal:N0})";
         lblKpiPorVencerValor.Text = $"{_currentAlerts.Upcoming.Count} cuotas (${_currentAlerts.UpcomingTotal:N0})";
+        lblKpiPorVencerTitulo.Text = $"POR VENCER (PRÓXIMOS {days} DÍAS)";
+        grpPorVencer.Text = $"Cuotas Próximas a Vencer (Próximos {days} días)";
 
         dgvVencidas.DataSource = _currentAlerts.Overdue.Select(c => new
         {
@@ -275,11 +287,18 @@ public partial class FormPrincipal : Form
     {
         if (dgvAsegurados.CurrentRow == null) return;
         _selectedInsuredId = Convert.ToInt32(dgvAsegurados.CurrentRow.Cells["Id"].Value);
-        txtAsegDni.Text = dgvAsegurados.CurrentRow.Cells["DNI_CUIT"].Value?.ToString();
+        string taxId = dgvAsegurados.CurrentRow.Cells["DNI_CUIT"].Value?.ToString() ?? string.Empty;
+        txtAsegDni.Text = taxId;
         txtAsegNombre.Text = dgvAsegurados.CurrentRow.Cells["Nombre"].Value?.ToString();
         txtAsegTel.Text = dgvAsegurados.CurrentRow.Cells["Telefono"].Value?.ToString();
         txtAsegEmail.Text = dgvAsegurados.CurrentRow.Cells["Email"].Value?.ToString();
         txtAsegDom.Text = dgvAsegurados.CurrentRow.Cells["Domicilio"].Value?.ToString();
+
+        string digits = new string(taxId.Where(char.IsDigit).ToArray());
+        if (digits.Length == 11 || taxId.Contains('-'))
+            cmbTipoDoc.SelectedItem = "CUIT";
+        else
+            cmbTipoDoc.SelectedItem = "DNI";
     }
 
     private void btnAsegNuevo_Click(object sender, EventArgs e) => ClearInsuredForm();
@@ -287,6 +306,7 @@ public partial class FormPrincipal : Form
     private void ClearInsuredForm()
     {
         _selectedInsuredId = 0;
+        cmbTipoDoc.SelectedIndex = 0;
         txtAsegDni.Clear();
         txtAsegNombre.Clear();
         txtAsegTel.Clear();
@@ -298,14 +318,19 @@ public partial class FormPrincipal : Form
     private void btnAsegGuardar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
+        string docType = cmbTipoDoc.SelectedItem?.ToString() ?? "DNI";
+        string rawDoc = txtAsegDni.Text?.Trim() ?? string.Empty;
+        string formattedTaxId = (docType == "CUIT") ? ArgentineDocumentValidator.FormatCuit(rawDoc) : rawDoc;
+
         var dto = new InsuredRequestDto
         {
             Id = _selectedInsuredId,
-            TaxId = txtAsegDni.Text,
-            FullName = txtAsegNombre.Text,
-            Phone = txtAsegTel.Text,
-            Email = txtAsegEmail.Text,
-            Address = txtAsegDom.Text
+            DocumentType = docType,
+            TaxId = formattedTaxId,
+            FullName = txtAsegNombre.Text?.Trim(),
+            Phone = txtAsegTel.Text?.Trim(),
+            Email = txtAsegEmail.Text?.Trim(),
+            Address = txtAsegDom.Text?.Trim()
         };
 
         ControllerPipeline.Execute(dto, req =>
