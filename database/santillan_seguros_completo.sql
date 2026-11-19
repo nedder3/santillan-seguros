@@ -81,7 +81,8 @@ CREATE TABLE IF NOT EXISTS installments (
     CONSTRAINT fk_installment_policy FOREIGN KEY (policy_id)
         REFERENCES policies(policy_id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT uq_policy_installment UNIQUE (policy_id, installment_number),
-    INDEX idx_installment_due_status (due_date, status)
+    INDEX idx_installment_due_status (due_date, status),
+    INDEX idx_installment_status_due (status, due_date)
 ) ENGINE=InnoDB;
 
 -- 6. Collection Notifications Log (Audit trail of client reminders)

@@ -20,7 +20,7 @@ El diseño de la base de datos `santillan_seguros` (normalizada en **Tercera For
 | :--- | :---: | :--- |
 | **`insureds` $\rightarrow$ `policies`** | **1 : N** | Un asegurado (`tax_id` único) puede contratar múltiples pólizas vigentes o históricas (ej. auto + hogar + vida). Cada póliza pertenece a un único titular (`FK insured_id`, `ON DELETE RESTRICT` para preservar integridad histórica). |
 | **`branches` $\rightarrow$ `policies`** | **1 : N** | Normalización 3FN según clasificación oficial de la SSN (Automotor, Combinado Familiar, Vida, RC, Caución). Evita redundancia textual en `policies` mediante `FK branch_id`. |
-| **`policies` $\rightarrow$ `installments`** | **1 : N** | Según estándar ACORD Billing, una póliza se fracciona en `N` cuotas mensuales independientes (`installment_number`, `due_date`, `status`). Restricción `UNIQUE (policy_id, installment_number)` e índice compuesto `(due_date, status)` para consultas en $O(\log N)$. |
+| **`policies` $\rightarrow$ `installments`** | **1 : N** | Según estándar ACORD Billing, una póliza se fracciona en `N` cuotas mensuales independientes (`installment_number`, `due_date`, `status`). Restricción `UNIQUE (policy_id, installment_number)` e índices compuestos B-Tree `(due_date, status)` y `(status, due_date)` para optimizar consultas de morosidad y vencimientos en $\mathcal{O}(\log M + K)$. |
 | **`installments` $\rightarrow$ `notifications`** | **1 : N** | Una cuota próxima a vencer o en mora dispara registros de auditoría (`UPCOMING`, `OVERDUE`) para registrar cada aviso enviado al asegurado. |
 | **`users`** | **Independiente** | Entidad de control de acceso y auditoría de operadores (`ADMIN`, `PRODUCTOR`, `OPERADOR`), almacenando contraseñas con hash SHA-256 (`password_hash`). |
 
@@ -40,5 +40,5 @@ El diseño de la base de datos `santillan_seguros` (normalizada en **Tercera For
 ## 4. Especificación Estructurada de Procesos (DEP)
 
 * **DEP-01 (Emisión de Póliza):** Validar DTO (`PolicyInputDto`) $\rightarrow$ Iniciar transacción SQL $\rightarrow$ Insertar en `policies` $\rightarrow$ Bucle `i = 1..installments_count` calculando `amount = total_premium / installments_count` y `due_date = first_due_date + (i-1) meses` $\rightarrow$ Insertar en `installments` $\rightarrow$ Commit.
-* **DEP-02 (Motor de Alertas):** Sincronizar cuotas `PENDING` con `due_date < CURDATE()` a `OVERDUE` $\rightarrow$ Consultar `OVERDUE` y `PENDING` dentro de la ventana de días $\rightarrow$ Calcular KPIs en una pasada $O(N)$ e indexar en `Dictionary` $O(1)$.
+* **DEP-02 (Motor de Alertas):** Sincronizar cuotas `PENDING` con `due_date < CURDATE()` a `OVERDUE` $\rightarrow$ Consultar `OVERDUE` vía índice B-Tree `(status, due_date)` y `PENDING` vía `(due_date, status)` en tiempo $\mathcal{O}(\log M + K)$ $\rightarrow$ Calcular KPIs en una pasada $\mathcal{O}(K)$ e indexar en `Dictionary` $\mathcal{O}(1)$.
 * **DEP-03 (Imputación de Pago y Respaldo SQL):** Registrar pago (`UPDATE installments SET status='PAID', payment_date=NOW()`) o exportar DUMP SQL completo (`DatabaseBackupDao`) con `SET FOREIGN_KEY_CHECKS` desde `FormOpciones` protegido por contraseña.
