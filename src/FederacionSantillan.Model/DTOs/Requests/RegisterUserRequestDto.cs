@@ -4,8 +4,9 @@ namespace FederacionSantillan.Model.DTOs.Requests;
 
 public class RegisterUserRequestDto : IValidatableObject
 {
-    [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre completo es obligatorio.")]
-    [StringLength(120, MinimumLength = 3, ErrorMessage = "El nombre completo debe tener entre 3 y 120 caracteres.")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre y apellido es obligatorio.")]
+    [StringLength(120, MinimumLength = 3, ErrorMessage = "El nombre y apellido debe tener entre 3 y 120 caracteres.")]
+    [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s.'\-]+$", ErrorMessage = "El nombre y apellido solo puede contener letras y espacios (no se permiten números).")]
     public string FullName { get; set; }
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre de usuario es obligatorio.")]
@@ -28,7 +29,9 @@ public class RegisterUserRequestDto : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (string.IsNullOrWhiteSpace(FullName))
-            yield return new ValidationResult("El nombre completo es obligatorio.", new[] { nameof(FullName) });
+            yield return new ValidationResult("El nombre y apellido es obligatorio.", new[] { nameof(FullName) });
+        else if (FullName.Any(char.IsDigit))
+            yield return new ValidationResult("El nombre y apellido no puede contener números.", new[] { nameof(FullName) });
 
         if (string.IsNullOrWhiteSpace(Username))
             yield return new ValidationResult("El nombre de usuario es obligatorio.", new[] { nameof(Username) });

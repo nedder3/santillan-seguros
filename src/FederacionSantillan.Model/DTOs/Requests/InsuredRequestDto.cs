@@ -38,7 +38,17 @@ public class InsuredRequestDto : IValidatableObject
             yield return new ValidationResult(docError, new[] { nameof(TaxId) });
 
         if (string.IsNullOrWhiteSpace(FullName))
+        {
             yield return new ValidationResult("El apellido y nombre es obligatorio.", new[] { nameof(FullName) });
+        }
+        else
+        {
+            if (!FullName.Any(char.IsLetter))
+                yield return new ValidationResult("El apellido y nombre / razón social debe contener letras.", new[] { nameof(FullName) });
+
+            if (string.Equals(DocumentType, "DNI", StringComparison.OrdinalIgnoreCase) && FullName.Any(char.IsDigit))
+                yield return new ValidationResult("Para personas físicas (DNI), el nombre y apellido no puede contener números.", new[] { nameof(FullName) });
+        }
 
         if (string.IsNullOrWhiteSpace(Phone))
             yield return new ValidationResult("El teléfono o WhatsApp es obligatorio.", new[] { nameof(Phone) });

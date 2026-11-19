@@ -38,6 +38,8 @@ public class PolicyRequestDto : IValidatableObject
 
         if (string.IsNullOrWhiteSpace(InsuredAsset))
             yield return new ValidationResult("Debe describir el bien asegurado.", new[] { nameof(InsuredAsset) });
+        else if (!InsuredAsset.Any(char.IsLetter))
+            yield return new ValidationResult("La descripción del bien debe contener texto descriptivo.", new[] { nameof(InsuredAsset) });
 
         if (FirstDueDate.Date < StartDate.Date)
             yield return new ValidationResult(SystemMessages.InvalidFirstDueDate, new[] { nameof(FirstDueDate) });
