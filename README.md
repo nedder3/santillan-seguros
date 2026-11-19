@@ -78,13 +78,18 @@ docker compose up -d
 
 ---
 
-## Diagramas Nativos de Visual Studio (.cd) y Documentación
+## Diagramas Nativos de Visual Studio (.cd) y Entregables PDF (`docs/pdf/`)
+* **Entregables PDF Oficiales Listos para Entregar (`docs/pdf/`):**
+  * `docs/pdf/01_Estudio_Factibilidad_y_Entrevista.pdf` (Las 6 preguntas oficiales de relevamiento y estudio de factibilidad técnica, operativa y económica).
+  * `docs/pdf/02_DER_Diccionario_Datos_y_DEPs.pdf` (DER en 3FN respaldado por Ley 22.400 / ACORD, Diccionario de Datos de las 6 tablas y Especificación Estructurada de Procesos DEP).
+  * `docs/pdf/03_Diagramas_UML_y_DFD.pdf` (Diagrama de Clases UML en 3 Capas, Diagrama de Casos de Uso, Diagrama de Secuencia, Diagrama de Contexto DFD Nivel 0 y DFD Nivel 1).
+  * `docs/pdf/04_Manual_de_Usuario.pdf` (Guía paso a paso con las 8 capturas reales de la aplicación WinForms conectada a MariaDB 11.4 en `docs/screenshots/`).
 * **Visual Studio Class Designer (`.cd`):**
   * `src/FederacionSantillan.Model/ModelClassDiagram.cd`
   * `src/FederacionSantillan.Data/DataLayerDiagram.cd`
   * `src/FederacionSantillan.App/MvcArchitectureDiagram.cd`
 * **DER en vivo (DBeaver):** Doble clic sobre `santillan_seguros` en DBeaver $\rightarrow$ pestaña *ER Diagram*.
-* **Documentación Formal (`docs/`):**
+* **Documentación Fuente en Markdown (`docs/`):**
   * `docs/01_Estudio_Factibilidad_y_Requerimientos.md`
   * `docs/02_Fundamentacion_DER_y_Diccionario.md`
   * `docs/03_Manual_Usuario_y_Guia_Docker.md`

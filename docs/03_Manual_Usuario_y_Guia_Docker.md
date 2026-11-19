@@ -31,7 +31,7 @@ Si la app WinForms corre dentro de la VM Windows y Docker corre en macOS:
 ## Parte B: Manual de Usuario del Sistema
 
 ### 1. Inicio de Sesión (`FormLogin`)
-> **[CAPTURA 1: Pegar aquí captura de `FormLogin` mostrando el usuario, contraseña enmascarada con `*` y estado de conexión MariaDB]**
+![FormLogin](screenshots/01_form_login.png)
 * Ingrese con las credenciales precargadas:
   * **Productor:** usuario `santillan` / contraseña `seguros2026`
   * **Administrador:** usuario `admin` / contraseña `admin123`
@@ -39,22 +39,27 @@ Si la app WinForms corre dentro de la VM Windows y Docker corre en macOS:
 * Use la tecla `TAB` para navegar entre los campos y `ENTER` para ingresar.
 
 ### 2. Alta de Nuevo Usuario (`FormRegistroUsuario`)
-> **[CAPTURA 2: Pegar aquí captura de `FormRegistroUsuario`]**
+![FormRegistroUsuario](screenshots/02_form_registro_usuario.png)
 * Desde el login, presione **Nuevo Usuario**.
 * Complete Nombre y Apellido, Nombre de Usuario, Contraseña, Confirmación y Rol (`PRODUCTOR`, `OPERADOR`, `ADMIN`).
 
 ### 3. Panel Principal — Notificaciones y Vencimientos (`FormPrincipal`)
-> **[CAPTURA 3: Pegar aquí captura de la pestaña principal "Notificaciones de Vencimientos" con los KPIs en rojo y amarillo]**
+![FormPrincipal - Alertas](screenshots/03_form_principal_alertas.png)
 * **Pestaña 1 (Notificaciones):**
   * Muestra automáticamente los KPIs de **Cuotas Vencidas** (Morosos) y **Cuotas Por Vencer (15 días)**.
   * Seleccione una fila, elija el medio de pago (*Transferencia*, *Efectivo*, *Débito Automático*, *MercadoPago*) y presione **Registrar Pago**.
+  * Use **Aviso WhatsApp** para copiar el recordatorio personalizado al portapapeles y registrarlo en `notifications`, o **Exportar CSV** para descargar la planilla de morosos.
 * **Pestaña 2 (Cartera de Asegurados):**
-  > **[CAPTURA 4: Pegar aquí captura de la pestaña "Cartera de Asegurados"]**
+  ![FormPrincipal - Asegurados](screenshots/04_form_principal_asegurados.png)
   * Alta, edición, baja lógica y búsqueda instantánea por Nombre o DNI/CUIT.
 * **Pestaña 3 (Pólizas y Plan de Cuotas):**
-  > **[CAPTURA 5: Pegar aquí captura de la pestaña "Pólizas y Plan de Cuotas"]**
+  ![FormPrincipal - Pólizas](screenshots/05_form_principal_polizas.png)
   * Emita nuevas pólizas eligiendo Asegurado, Ramo, Bien Asegurado, Prima Total, Cantidad de Cuotas y 1er Vencimiento.
-  * El sistema genera automáticamente todas las cuotas mensuales en MariaDB.
+  * El sistema genera automáticamente todas las cuotas mensuales en MariaDB dentro de una transacción atómica.
+* **Opciones, Accesibilidad y Respaldo SQL DUMP (`FormVerificarPassword` y `FormOpciones`):**
+  ![FormVerificarPassword](screenshots/06_form_verificar_password.png)
+  ![FormOpciones](screenshots/07_form_opciones.png)
+  * Protegido por verificación de contraseña del usuario activo, permite activar la paleta daltónica **Okabe-Ito / Alto Contraste (WCAG 2.1 AA)**, ampliar la tipografía y exportar un respaldo completo **DUMP SQL (`.sql`)** de MariaDB.
 * **Centro de Ayuda (`FormAyuda`):**
-  > **[CAPTURA 6: Pegar aquí captura del botón `Ayuda (?)` y la ventana `FormAyuda`]**
+  ![FormAyuda](screenshots/08_form_ayuda.png)
   * Accesible desde el botón superior `Ayuda (?)`, detalla funcionalidades, atajos de teclado (`TAB`, `ENTER`, `ESC`) y arquitectura.
