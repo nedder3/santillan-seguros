@@ -9,6 +9,9 @@ public abstract class AppException(string title, string message, Exception inner
 public sealed class ValidationException(string message)
     : AppException("Validación de Datos", message);
 
+public sealed class InvalidCredentialsException(string message = SystemMessages.InvalidCredentials)
+    : AppException("Autenticación", message);
+
 public sealed class DuplicateResourceException(string message, Exception inner = null)
     : AppException("Registro Duplicado", message, inner);
 

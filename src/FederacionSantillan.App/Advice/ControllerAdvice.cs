@@ -7,6 +7,7 @@ public static class ControllerAdvice
 {
     public static ErrorResponseDto Resolve(Exception exception) => exception switch
     {
+        InvalidCredentialsException auth => new(auth.Title, auth.Message, IsFatal: false),
         DuplicateResourceException dup => new(dup.Title, dup.Message, IsFatal: false),
         ValidationException val => new(val.Title, val.Message, IsFatal: false),
         ResourceNotFoundException notFound => new(notFound.Title, notFound.Message, IsFatal: false),

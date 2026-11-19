@@ -1,5 +1,6 @@
 using FederacionSantillan.App.Controllers;
 using FederacionSantillan.App.Helpers;
+using FederacionSantillan.Model.Exceptions;
 
 namespace FederacionSantillan.App.Views;
 
@@ -22,7 +23,7 @@ public partial class FormVerificarPassword : Form
         }
         else
         {
-            MessageBox.Show("Contraseña incorrecta. Acceso denegado.", "Seguridad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(SystemMessages.InvalidCredentials, "Seguridad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             txtPassword.Clear();
             txtPassword.Focus();
         }

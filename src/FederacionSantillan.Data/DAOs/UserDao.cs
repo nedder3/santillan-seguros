@@ -28,7 +28,7 @@ public class UserDao
 
             using var reader = cmd.ExecuteReader();
             if (!reader.Read())
-                throw new ValidationException(SystemMessages.InvalidCredentials);
+                throw new InvalidCredentialsException(SystemMessages.InvalidCredentials);
 
             return new User(
                 reader.GetInt32("user_id"),
