@@ -24,6 +24,7 @@ public partial class FormPrincipal : Form
         btnAsegGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "check");
         btnEmitirPoliza.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "plus");
         ConfigureGrids();
+        ConfigureTabsAndInputGuards();
     }
 
     private void ConfigureGrids()
@@ -32,6 +33,9 @@ public partial class FormPrincipal : Form
         foreach (var dgv in grids)
         {
             dgv.RowHeadersVisible = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.AllowUserToResizeColumns = false;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dgv.BorderStyle = BorderStyle.None;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.GridColor = Color.FromArgb(226, 232, 240);
@@ -46,6 +50,59 @@ public partial class FormPrincipal : Form
             dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
             dgv.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
         }
+    }
+
+    private void ConfigureTabsAndInputGuards()
+    {
+        tabMain.DrawMode = TabDrawMode.OwnerDrawFixed;
+        tabMain.SizeMode = TabSizeMode.Fixed;
+        tabMain.ItemSize = new Size(265, 36);
+        tabMain.Padding = new Point(14, 6);
+        tabMain.DrawItem += TabMain_DrawItem;
+
+        txtAsegTel.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar is not ('-' or '+' or ' ' or '(' or ')'))
+                e.Handled = true;
+        };
+
+        txtAsegDni.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '-')
+                e.Handled = true;
+        };
+
+        txtPolNum.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+        };
+
+        txtPolPrima.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar is not ('.' or ','))
+                e.Handled = true;
+        };
+    }
+
+    private void TabMain_DrawItem(object sender, DrawItemEventArgs e)
+    {
+        var palette = AccessibilityTheme.GetCurrentPalette();
+        bool selected = e.Index == tabMain.SelectedIndex;
+        Color backColor = selected ? palette.HeaderBack : Color.FromArgb(226, 232, 240);
+        Color foreColor = selected ? Color.White : Color.FromArgb(30, 41, 59);
+
+        using var backBrush = new SolidBrush(backColor);
+        using var foreBrush = new SolidBrush(foreColor);
+        using var accentPen = new Pen(palette.PrimaryAction, 3);
+        using var font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+
+        e.Graphics.FillRectangle(backBrush, e.Bounds);
+        if (selected)
+            e.Graphics.DrawLine(accentPen, e.Bounds.Left, e.Bounds.Bottom - 2, e.Bounds.Right, e.Bounds.Bottom - 2);
+
+        var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+        e.Graphics.DrawString(tabMain.TabPages[e.Index].Text, font, foreBrush, e.Bounds, sf);
     }
 
     private void FormPrincipal_Load(object sender, EventArgs e)
@@ -408,6 +465,7 @@ public partial class FormPrincipal : Form
         btnCerrarSesion.BackColor = palette.DangerAction;
 
         tabMain.Font = new Font("Segoe UI", palette.BaseFontSize);
+        tabMain.Invalidate();
         foreach (DataGridView dgv in new[] { dgvVencidas, dgvPorVencer, dgvAsegurados, dgvPolizas, dgvCuotasPoliza })
         {
             dgv.ColumnHeadersDefaultCellStyle.BackColor = palette.HeaderBack;
