@@ -15,6 +15,7 @@ public partial class FormPrincipal : Form
     private readonly NotificationController _notificationController = new();
     private AlertsDashboardResponseDto _currentAlerts = new();
     private int _selectedInsuredId = 0;
+    private bool _isBindingSelection = false;
 
     public FormPrincipal()
     {
@@ -71,14 +72,18 @@ public partial class FormPrincipal : Form
         cmbTipoDoc.SelectedIndexChanged += (_, _) =>
         {
             bool isCuit = cmbTipoDoc.SelectedItem?.ToString() == "CUIT";
-            txtAsegDni.MaxLength = isCuit ? 13 : 8;
-            lblAsegDni.Text = isCuit ? "CUIT (11 dígitos):" : "DNI (7 u 8 dígitos):";
+            txtAsegDni.MaxLength = isCuit ? 11 : 8;
+            lblAsegDni.Text = isCuit ? "CUIT (11 dígitos numéricos):" : "DNI (7 u 8 dígitos numéricos):";
+            if (!_isBindingSelection)
+            {
+                txtAsegDni.Clear();
+                txtAsegDni.Focus();
+            }
         };
 
         txtAsegDni.KeyPress += (_, e) =>
         {
-            bool isCuit = cmbTipoDoc.SelectedItem?.ToString() == "CUIT";
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (!isCuit || e.KeyChar != '-'))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
         };
 
@@ -314,40 +319,59 @@ public partial class FormPrincipal : Form
     private void dgvAsegurados_SelectionChanged(object sender, EventArgs e)
     {
         if (dgvAsegurados.CurrentRow == null) return;
-        _selectedInsuredId = Convert.ToInt32(dgvAsegurados.CurrentRow.Cells["Id"].Value);
-        string taxId = dgvAsegurados.CurrentRow.Cells["DNI_CUIT"].Value?.ToString() ?? string.Empty;
-        txtAsegDni.Text = taxId;
-        txtAsegNombre.Text = dgvAsegurados.CurrentRow.Cells["Nombre"].Value?.ToString();
-        txtAsegTel.Text = dgvAsegurados.CurrentRow.Cells["Telefono"].Value?.ToString();
-        txtAsegEmail.Text = dgvAsegurados.CurrentRow.Cells["Email"].Value?.ToString();
-        txtAsegDom.Text = dgvAsegurados.CurrentRow.Cells["Domicilio"].Value?.ToString();
+        _isBindingSelection = true;
+        try
+        {
+            _selectedInsuredId = Convert.ToInt32(dgvAsegurados.CurrentRow.Cells["Id"].Value);
+            string taxId = dgvAsegurados.CurrentRow.Cells["DNI_CUIT"].Value?.ToString() ?? string.Empty;
+            string digits = new string(taxId.Where(char.IsDigit).ToArray());
 
-        string digits = new string(taxId.Where(char.IsDigit).ToArray());
-        if (digits.Length == 11 || taxId.Contains('-'))
-            cmbTipoDoc.SelectedItem = "CUIT";
-        else
-            cmbTipoDoc.SelectedItem = "DNI";
+            bool isCuit = digits.Length == 11 || taxId.Contains('-');
+            cmbTipoDoc.SelectedItem = isCuit ? "CUIT" : "DNI";
+            txtAsegDni.MaxLength = isCuit ? 11 : 8;
+            lblAsegDni.Text = isCuit ? "CUIT (11 dígitos numéricos):" : "DNI (7 u 8 dígitos numéricos):";
+            txtAsegDni.Text = digits;
+
+            txtAsegNombre.Text = dgvAsegurados.CurrentRow.Cells["Nombre"].Value?.ToString();
+            txtAsegTel.Text = dgvAsegurados.CurrentRow.Cells["Telefono"].Value?.ToString();
+            txtAsegEmail.Text = dgvAsegurados.CurrentRow.Cells["Email"].Value?.ToString();
+            txtAsegDom.Text = dgvAsegurados.CurrentRow.Cells["Domicilio"].Value?.ToString();
+        }
+        finally
+        {
+            _isBindingSelection = false;
+        }
     }
 
     private void btnAsegNuevo_Click(object sender, EventArgs e) => ClearInsuredForm();
 
     private void ClearInsuredForm()
     {
-        _selectedInsuredId = 0;
-        cmbTipoDoc.SelectedIndex = 0;
-        txtAsegDni.Clear();
-        txtAsegNombre.Clear();
-        txtAsegTel.Clear();
-        txtAsegEmail.Clear();
-        txtAsegDom.Clear();
-        txtAsegDni.Focus();
+        _isBindingSelection = true;
+        try
+        {
+            _selectedInsuredId = 0;
+            cmbTipoDoc.SelectedIndex = 0;
+            txtAsegDni.MaxLength = 8;
+            lblAsegDni.Text = "DNI (7 u 8 dígitos numéricos):";
+            txtAsegDni.Clear();
+            txtAsegNombre.Clear();
+            txtAsegTel.Clear();
+            txtAsegEmail.Clear();
+            txtAsegDom.Clear();
+            txtAsegDni.Focus();
+        }
+        finally
+        {
+            _isBindingSelection = false;
+        }
     }
 
     private void btnAsegGuardar_Click(object sender, EventArgs e)
     {
         errorProvider.Clear();
         string docType = cmbTipoDoc.SelectedItem?.ToString() ?? "DNI";
-        string rawDoc = txtAsegDni.Text?.Trim() ?? string.Empty;
+        string rawDoc = new string((txtAsegDni.Text ?? string.Empty).Where(char.IsDigit).ToArray());
         string formattedTaxId = (docType == "CUIT") ? ArgentineDocumentValidator.FormatCuit(rawDoc) : rawDoc;
 
         var dto = new InsuredRequestDto

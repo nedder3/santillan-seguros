@@ -511,7 +511,7 @@ partial class FormPrincipal
 
         lblAsegDni.AutoSize = true;
         lblAsegDni.Location = new Point(106, 28);
-        lblAsegDni.Text = "N° Documento / CUIT:";
+        lblAsegDni.Text = "DNI (7 u 8 dígitos numéricos):";
 
         txtAsegDni.AccessibleName = "Número de Documento o CUIT";
         txtAsegDni.Font = new Font("Segoe UI", 9.5F);
