@@ -47,7 +47,7 @@ partial class FormAyuda
         btnCerrar.Height = 42;
         btnCerrar.TabIndex = 1;
         btnCerrar.Text = "Cerrar Ayuda";
-        btnCerrar.Click += (s, e) => Close();
+        btnCerrar.Click += btnCerrar_Click;
 
         AcceptButton = btnCerrar;
         CancelButton = btnCerrar;

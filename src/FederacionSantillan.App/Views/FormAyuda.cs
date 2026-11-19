@@ -10,6 +10,8 @@ public partial class FormAyuda : Form
         Icon = IconHelper.CrearIconoEscudo();
     }
 
+    private void btnCerrar_Click(object sender, EventArgs e) => Close();
+
     private void FormAyuda_Load(object sender, EventArgs e)
     {
         rtbContenido.Text =

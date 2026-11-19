@@ -35,4 +35,10 @@ public partial class FormVerificarPassword : Form
             txtPassword.Focus();
         }
     }
+
+    private void btnCancelar_Click(object sender, EventArgs e)
+    {
+        DialogResult = DialogResult.Cancel;
+        Close();
+    }
 }

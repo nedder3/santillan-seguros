@@ -57,7 +57,7 @@ partial class FormVerificarPassword
         btnCancelar.Size = new Size(162, 36);
         btnCancelar.TabIndex = 2;
         btnCancelar.Text = "Cancelar";
-        btnCancelar.Click += (s, e) => { DialogResult = DialogResult.Cancel; Close(); };
+        btnCancelar.Click += btnCancelar_Click;
 
         AcceptButton = btnConfirmar;
         CancelButton = btnCancelar;
