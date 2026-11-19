@@ -225,7 +225,7 @@ dotnet restore FederacionSantillan.sln
 dotnet build FederacionSantillan.sln --configuration Release
 dotnet test FederacionSantillan.sln --logger "console;verbosity=normal"
 ```
-> **Resultado verificado:** `26/26 tests passing` (clonación profunda `clone()` / `copy()` / `equals()`, facturación y cálculo de mora en `Installment`, validaciones declarativas en DTOs, validación oficial de DNI y CUIT argentino mediante algoritmo Módulo 11, restricción estricta de caracteres en nombres y usuarios, números telefónicos numéricos, autenticación segura sin fuga de información e integración en vivo contra MariaDB).
+> **Resultado verificado:** `27/27 tests passing` (clonación profunda `clone()` / `copy()` / `equals()`, facturación y cálculo de mora en `Installment`, validaciones declarativas en DTOs, validación oficial de DNI y CUIT argentino 100% numérico puro mediante algoritmo Módulo 11, restricción estricta de caracteres en nombres y usuarios, números telefónicos numéricos, autenticación segura sin fuga de información e integración en vivo contra MariaDB).
 
 ### Paso 4: Ejecutar la Aplicación Desktop (Visual Studio o CLI)
 * **Desde Visual Studio 2022+:** Abrir `FederacionSantillan.sln`, definir `FederacionSantillan.App` como *Startup Project* y presionar `F5`.
