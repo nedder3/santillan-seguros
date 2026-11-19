@@ -11,7 +11,7 @@ COPY src/FederacionSantillan.Data/FederacionSantillan.Data.csproj src/Federacion
 COPY src/FederacionSantillan.App/FederacionSantillan.App.csproj src/FederacionSantillan.App/
 COPY tests/FederacionSantillan.Tests/FederacionSantillan.Tests.csproj tests/FederacionSantillan.Tests/
 
-RUN dotnet restore FederacionSantillan.sln
+RUN dotnet restore FederacionSantillan.sln -p:EnableWindowsTargeting=true
 
 # Copiar código fuente y compilar artefactos para win-x64
 COPY . .
@@ -19,6 +19,7 @@ RUN dotnet publish src/FederacionSantillan.App/FederacionSantillan.App.csproj \
     -c Release \
     -r win-x64 \
     --self-contained true \
+    -p:EnableWindowsTargeting=true \
     -o /app/publish
 
 # ============================================================================
@@ -48,6 +49,8 @@ RUN dpkg --add-architecture i386 && \
         websockify \
         fonts-dejavu-core \
         fonts-liberation \
+        fonts-wine \
+        fontconfig \
         ca-certificates \
         procps \
         bash && \
