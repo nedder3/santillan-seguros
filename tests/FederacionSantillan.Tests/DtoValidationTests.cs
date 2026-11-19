@@ -70,4 +70,43 @@ public class DtoValidationTests
         Assert.False(valid);
         Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.EndDate)));
     }
+
+    [Fact]
+    public void Given_SignInDtoWithEmptyOrWhitespace_When_Validated_Then_ReturnsFalse()
+    {
+        var dto = new FederacionSantillan.Model.DTOs.Requests.SignInRequestDto
+        {
+            Username = "   ",
+            Password = ""
+        };
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.NotEmpty(errors);
+    }
+
+    [Fact]
+    public void Given_RegisterUserDtoWithInvalidCharactersInUsername_When_Validated_Then_ReturnsFalse()
+    {
+        var dto = TestDataFactory.CreateValidRegisterUserDto();
+        dto.Username = "user with spaces!";
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.ErrorMessage.Contains("solo puede contener letras, números"));
+    }
+
+    [Fact]
+    public void Given_PolicyDtoWithFirstDueBeforeStartDate_When_Validated_Then_FailsValidation()
+    {
+        var dto = TestDataFactory.CreateValidPolicyDto();
+        dto.FirstDueDate = dto.StartDate.AddDays(-5);
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.FirstDueDate)));
+    }
 }
