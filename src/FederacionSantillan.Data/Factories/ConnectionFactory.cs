@@ -12,6 +12,13 @@ public static class ConnectionFactory
     {
         try
         {
+            string envConn = Environment.GetEnvironmentVariable("ConnectionStrings__MariaDb")
+                          ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            if (!string.IsNullOrWhiteSpace(envConn))
+            {
+                return envConn;
+            }
+
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             if (File.Exists(configPath))
             {
