@@ -35,5 +35,11 @@ public class PolicyRequestDto : IValidatableObject
     {
         if (EndDate <= StartDate)
             yield return new ValidationResult(SystemMessages.InvalidPolicyDates, new[] { nameof(EndDate) });
+
+        if (string.IsNullOrWhiteSpace(InsuredAsset))
+            yield return new ValidationResult("Debe describir el bien asegurado.", new[] { nameof(InsuredAsset) });
+
+        if (FirstDueDate.Date < StartDate.Date)
+            yield return new ValidationResult(SystemMessages.InvalidFirstDueDate, new[] { nameof(FirstDueDate) });
     }
 }

@@ -3,13 +3,19 @@ using FederacionSantillan.Model.Exceptions;
 
 namespace FederacionSantillan.Model.DTOs.Requests;
 
-public class SignInRequestDto
+public class SignInRequestDto : IValidatableObject
 {
-    [Required(ErrorMessage = SystemMessages.CredentialsRequired)]
+    [Required(AllowEmptyStrings = false, ErrorMessage = SystemMessages.CredentialsRequired)]
     public string Username { get; set; }
 
-    [Required(ErrorMessage = SystemMessages.CredentialsRequired)]
+    [Required(AllowEmptyStrings = false, ErrorMessage = SystemMessages.CredentialsRequired)]
     public string Password { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+            yield return new ValidationResult(SystemMessages.CredentialsRequired);
+    }
 }
 
 public class PaymentRequestDto
@@ -18,6 +24,7 @@ public class PaymentRequestDto
     public int InstallmentId { get; set; }
 
     [Required(ErrorMessage = SystemMessages.SelectionRequired)]
+    [RegularExpression(@"^(Transferencia|Efectivo|Débito Automático|MercadoPago)$", ErrorMessage = "Debe seleccionar un medio de pago válido.")]
     public string PaymentMethod { get; set; }
 
     public string Notes { get; set; } = string.Empty;
