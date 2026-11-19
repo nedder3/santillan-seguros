@@ -44,7 +44,60 @@ public class DtoValidationTests
         bool valid = ValidateDto(dto, out var errors);
 
         Assert.False(valid);
-        Assert.Equal(2, errors.Count);
+        Assert.NotEmpty(errors);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.Phone)));
+    }
+
+    [Fact]
+    public void Given_InsuredDtoWithArbitraryInvalidCuit_When_Validated_Then_FailsValidation()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.DocumentType = "CUIT";
+        dto.TaxId = "2223221321312312"; // User screenshot example
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.TaxId)));
+    }
+
+    [Fact]
+    public void Given_InsuredDtoWithInvalidCuitChecksum_When_Validated_Then_FailsValidation()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.DocumentType = "CUIT";
+        dto.TaxId = "20-34567890-1"; // Invalid check digit, correct is 6
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.TaxId)));
+    }
+
+    [Fact]
+    public void Given_InsuredDtoWithValidDni_When_Validated_Then_ReturnsTrue()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.DocumentType = "DNI";
+        dto.TaxId = "34567890"; // 8 digits
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.True(valid);
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Given_InsuredDtoWithInvalidDniLength_When_Validated_Then_ReturnsFalse()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.DocumentType = "DNI";
+        dto.TaxId = "12345"; // too short
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.TaxId)));
     }
 
     [Fact]

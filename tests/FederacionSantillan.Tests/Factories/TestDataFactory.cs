@@ -8,8 +8,8 @@ public static class TestDataFactory
     public static CustomDate CreateDate(int day = 15, int month = 6, int year = 2026) =>
         new(day, month, year);
 
-    public static Insured CreateInsured(int id = 1, string taxId = "20-34567890-1", string name = "Carlos Gomez") =>
-        new(id, taxId, name, "291-4123456", "carlos@email.com", "Av. Alem 1240");
+    public static Insured CreateInsured(int id = 1, string taxId = "20-34567890-6", string name = "Carlos Gomez") =>
+        new(id, taxId, name, "2914123456", "carlos@email.com", "Av. Alem 1240");
 
     public static Branch CreateBranch(int id = 1, string code = "AUTO", string name = "Automotor") =>
         new(id, code, name, "Vehicle coverage");
@@ -25,16 +25,17 @@ public static class TestDataFactory
         {
             PolicyNumberRef = 900101,
             InsuredNameRef = "Carlos Gomez",
-            InsuredPhoneRef = "291-4123456",
+            InsuredPhoneRef = "2914123456",
             BranchNameRef = "Automotor"
         };
 
     public static InsuredRequestDto CreateValidInsuredDto() =>
         new()
         {
-            TaxId = "20-34567890-1",
+            DocumentType = "CUIT",
+            TaxId = "20-34567890-6",
             FullName = "Carlos Gomez",
-            Phone = "291-4123456",
+            Phone = "2914123456",
             Email = "carlos@email.com",
             Address = "Av. Alem 1240"
         };
