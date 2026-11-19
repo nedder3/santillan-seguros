@@ -20,5 +20,21 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: santillan_seguros_app
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__MariaDb=Server=mariadb;Port=3306;Database=santillan_seguros;User ID=santillan;Password=santillan123;Connection Timeout=10;
+      - SCREEN_WIDTH=1366
+      - SCREEN_HEIGHT=768
+    ports:
+      - "8080:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
 volumes:
   mariadb_data:
