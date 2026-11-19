@@ -15,6 +15,23 @@ public partial class FormRegistroUsuario : Form
         Icon = IconHelper.CrearIconoEscudo();
         btnGuardar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "check");
         btnCancelar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(51, 65, 85), "close");
+
+        txtNombreCompleto.KeyPress += (_, e) =>
+        {
+            if (char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                return;
+            }
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar is not ('.' or '\'' or '-'))
+                e.Handled = true;
+        };
+
+        txtUsername.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar) && e.KeyChar is not ('.' or '_'))
+                e.Handled = true;
+        };
     }
 
     private void Campos_TextChanged(object sender, EventArgs e)

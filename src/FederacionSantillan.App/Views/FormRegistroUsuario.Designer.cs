@@ -75,6 +75,7 @@ partial class FormRegistroUsuario
         txtNombreCompleto.BorderStyle = BorderStyle.FixedSingle;
         txtNombreCompleto.Font = new Font("Segoe UI", 10F);
         txtNombreCompleto.Location = new Point(28, 86);
+        txtNombreCompleto.MaxLength = 120;
         txtNombreCompleto.Name = "txtNombreCompleto";
         txtNombreCompleto.Size = new Size(364, 25);
         txtNombreCompleto.TabIndex = 0;
@@ -94,6 +95,7 @@ partial class FormRegistroUsuario
         txtUsername.BorderStyle = BorderStyle.FixedSingle;
         txtUsername.Font = new Font("Segoe UI", 10F);
         txtUsername.Location = new Point(28, 142);
+        txtUsername.MaxLength = 50;
         txtUsername.Name = "txtUsername";
         txtUsername.Size = new Size(364, 25);
         txtUsername.TabIndex = 1;
@@ -113,6 +115,7 @@ partial class FormRegistroUsuario
         txtPassword.BorderStyle = BorderStyle.FixedSingle;
         txtPassword.Font = new Font("Segoe UI", 10F);
         txtPassword.Location = new Point(28, 198);
+        txtPassword.MaxLength = 100;
         txtPassword.Name = "txtPassword";
         txtPassword.PasswordChar = '*';
         txtPassword.Size = new Size(364, 25);
@@ -134,6 +137,7 @@ partial class FormRegistroUsuario
         txtConfirmarPassword.BorderStyle = BorderStyle.FixedSingle;
         txtConfirmarPassword.Font = new Font("Segoe UI", 10F);
         txtConfirmarPassword.Location = new Point(28, 254);
+        txtConfirmarPassword.MaxLength = 100;
         txtConfirmarPassword.Name = "txtConfirmarPassword";
         txtConfirmarPassword.PasswordChar = '*';
         txtConfirmarPassword.Size = new Size(364, 25);

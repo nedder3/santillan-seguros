@@ -92,6 +92,7 @@ partial class FormLogin
         txtUsuario.BorderStyle = BorderStyle.FixedSingle;
         txtUsuario.Font = new Font("Segoe UI", 10.5F);
         txtUsuario.Location = new Point(35, 126);
+        txtUsuario.MaxLength = 50;
         txtUsuario.Name = "txtUsuario";
         txtUsuario.Size = new Size(368, 26);
         txtUsuario.TabIndex = 1;
@@ -112,6 +113,7 @@ partial class FormLogin
         txtPassword.BorderStyle = BorderStyle.FixedSingle;
         txtPassword.Font = new Font("Segoe UI", 10.5F);
         txtPassword.Location = new Point(35, 186);
+        txtPassword.MaxLength = 100;
         txtPassword.Name = "txtPassword";
         txtPassword.PasswordChar = '*';
         txtPassword.Size = new Size(368, 26);

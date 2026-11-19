@@ -82,16 +82,44 @@ public partial class FormPrincipal : Form
                 e.Handled = true;
         };
 
+        txtAsegNombre.KeyPress += (_, e) =>
+        {
+            bool isDni = cmbTipoDoc.SelectedItem?.ToString() == "DNI";
+            if (isDni && char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                return;
+            }
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar is not ('.' or '\'' or '-' or ','))
+                e.Handled = true;
+        };
+
+        txtBuscarAseg.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar is not ('-' or '.'))
+                e.Handled = true;
+        };
+
         txtPolNum.KeyPress += (_, e) =>
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
         };
 
-        txtPolPrima.KeyPress += (_, e) =>
+        txtPolPrima.KeyPress += (sender, e) =>
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar is not ('.' or ','))
-                e.Handled = true;
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                if (e.KeyChar is '.' or ',')
+                {
+                    if (sender is TextBox tb && (tb.Text.Contains('.') || tb.Text.Contains(',')))
+                        e.Handled = true;
+                }
+                else
+                {
+                    e.Handled = true;
+                }
+            }
         };
     }
 

@@ -605,6 +605,7 @@ partial class FormPrincipal
 
         txtBuscarAseg.AccessibleName = "Buscar asegurado por Nombre o DNI";
         txtBuscarAseg.Location = new Point(530, 14);
+        txtBuscarAseg.MaxLength = 60;
         txtBuscarAseg.Size = new Size(340, 24);
         txtBuscarAseg.TabIndex = 8;
         txtBuscarAseg.TextChanged += txtBuscarAseg_TextChanged;
@@ -654,7 +655,7 @@ partial class FormPrincipal
         grpNuevaPoliza.Controls.Add(lblPolNum);
 
         lblPolNum.AutoSize = true; lblPolNum.Location = new Point(14, 24); lblPolNum.Text = "N° Póliza:";
-        txtPolNum.Location = new Point(14, 42); txtPolNum.Size = new Size(100, 23); txtPolNum.TabIndex = 0;
+        txtPolNum.Location = new Point(14, 42); txtPolNum.MaxLength = 9; txtPolNum.Size = new Size(100, 23); txtPolNum.TabIndex = 0;
 
         lblPolAseg.AutoSize = true; lblPolAseg.Location = new Point(126, 24); lblPolAseg.Text = "Asegurado:";
         cmbPolAsegurado.DropDownStyle = ComboBoxStyle.DropDownList; cmbPolAsegurado.Location = new Point(126, 42); cmbPolAsegurado.Size = new Size(250, 23); cmbPolAsegurado.TabIndex = 1;
@@ -663,11 +664,11 @@ partial class FormPrincipal
         cmbPolRamo.DropDownStyle = ComboBoxStyle.DropDownList; cmbPolRamo.Location = new Point(388, 42); cmbPolRamo.Size = new Size(180, 23); cmbPolRamo.TabIndex = 2;
 
         lblPolBien.AutoSize = true; lblPolBien.Location = new Point(580, 24); lblPolBien.Text = "Bien Asegurado / Descripción:";
-        txtPolBien.Location = new Point(580, 42); txtPolBien.Size = new Size(320, 23); txtPolBien.TabIndex = 3;
+        txtPolBien.Location = new Point(580, 42); txtPolBien.MaxLength = 180; txtPolBien.Size = new Size(320, 23); txtPolBien.TabIndex = 3;
 
         lblPolPrima.AutoSize = true; lblPolPrima.Location = new Point(14, 76); lblPolPrima.Text = "Prima Total ($):";
         txtPolPrima.AccessibleName = "Prima Total en pesos";
-        txtPolPrima.Location = new Point(14, 94); txtPolPrima.Size = new Size(130, 23); txtPolPrima.TabIndex = 4;
+        txtPolPrima.Location = new Point(14, 94); txtPolPrima.MaxLength = 14; txtPolPrima.Size = new Size(130, 23); txtPolPrima.TabIndex = 4;
         txtPolPrima.TextChanged += ActualizarPreviewCuota_Event;
 
         lblPolCuotas.AutoSize = true; lblPolCuotas.Location = new Point(156, 76); lblPolCuotas.Text = "Cuotas:";

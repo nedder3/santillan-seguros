@@ -31,6 +31,7 @@ partial class FormVerificarPassword
         txtPassword.AccessibleName = "Contraseña actual";
         txtPassword.Font = new Font("Segoe UI", 10.5F);
         txtPassword.Location = new Point(22, 48);
+        txtPassword.MaxLength = 100;
         txtPassword.PasswordChar = '*';
         txtPassword.Size = new Size(340, 26);
         txtPassword.TabIndex = 0;

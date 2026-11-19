@@ -17,6 +17,12 @@ public partial class FormLogin : Form
         btnIngresar.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(15, 92, 45), "check");
         btnCrearUsuario.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(30, 64, 175), "plus");
         btnSalir.Image = IconHelper.CrearIconoCirculo(Color.FromArgb(51, 65, 85), "close");
+
+        txtUsuario.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar) && e.KeyChar is not ('.' or '_'))
+                e.Handled = true;
+        };
     }
 
     private void FormLogin_Load(object sender, EventArgs e)

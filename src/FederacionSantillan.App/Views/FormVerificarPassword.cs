@@ -16,6 +16,13 @@ public partial class FormVerificarPassword : Form
 
     private void btnConfirmar_Click(object sender, EventArgs e)
     {
+        if (string.IsNullOrWhiteSpace(txtPassword.Text))
+        {
+            MessageBox.Show("Ingrese su contraseña para continuar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtPassword.Focus();
+            return;
+        }
+
         if (_authController.VerifyCurrentPassword(txtPassword.Text))
         {
             DialogResult = DialogResult.OK;
