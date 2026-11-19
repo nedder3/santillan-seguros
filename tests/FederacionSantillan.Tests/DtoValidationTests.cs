@@ -88,6 +88,19 @@ public class DtoValidationTests
     }
 
     [Fact]
+    public void Given_InsuredDtoWithRaw11DigitsCuitWithoutDashes_When_Validated_Then_ReturnsTrue()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.DocumentType = "CUIT";
+        dto.TaxId = "20345678906"; // 11 pure digits without dashes
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.True(valid);
+        Assert.Empty(errors);
+    }
+
+    [Fact]
     public void Given_InsuredDtoWithInvalidDniLength_When_Validated_Then_ReturnsFalse()
     {
         var dto = TestDataFactory.CreateValidInsuredDto();
