@@ -2,6 +2,7 @@
 -- SEED DATA - Federacion Santillan Seguros (Relative dates to CURDATE())
 -- ============================================================================
 
+SET NAMES utf8mb4;
 USE santillan_seguros;
 
 INSERT IGNORE INTO users (username, password_hash, full_name, role, active) VALUES

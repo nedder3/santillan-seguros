@@ -44,7 +44,8 @@ public class Insured(int id, string taxId, string fullName, string phone, string
     public Insured clone() => new(insuredId, taxId, fullName, phone, email, address) { active = active };
 
     public bool equals(Insured other) =>
-        other != null && (insuredId, taxId) == (other.insuredId, other.taxId);
+        other != null && (insuredId, taxId, fullName, phone, email, address) ==
+        (other.insuredId, other.taxId, other.fullName, other.phone, other.email, other.address);
 
     public override string ToString() => $"[{insuredId}] {fullName} (CUIT/DNI: {taxId}, Tel: {phone})";
 }
