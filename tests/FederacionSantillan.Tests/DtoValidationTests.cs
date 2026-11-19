@@ -162,4 +162,54 @@ public class DtoValidationTests
         Assert.False(valid);
         Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.FirstDueDate)));
     }
+
+    [Fact]
+    public void Given_RegisterUserDtoWithNumbersInFullName_When_Validated_Then_FailsValidation()
+    {
+        var dto = TestDataFactory.CreateValidRegisterUserDto();
+        dto.FullName = "2112321"; // User screenshot test case
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.FullName)));
+    }
+
+    [Fact]
+    public void Given_RegisterUserDtoWithAlphanumericUsername_When_Validated_Then_ReturnsTrue()
+    {
+        var dto = TestDataFactory.CreateValidRegisterUserDto();
+        dto.Username = "asd12"; // User screenshot test case
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.True(valid);
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Given_InsuredDtoWithNumbersOnlyInFullNameForDni_When_Validated_Then_FailsValidation()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.DocumentType = "DNI";
+        dto.TaxId = "34567890";
+        dto.FullName = "2112321";
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.FullName)));
+    }
+
+    [Fact]
+    public void Given_PolicyDtoWithPureNumericAssetDescription_When_Validated_Then_FailsValidation()
+    {
+        var dto = TestDataFactory.CreateValidPolicyDto();
+        dto.InsuredAsset = "12345678";
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Contains(errors, e => e.MemberNames.Contains(nameof(dto.InsuredAsset)));
+    }
 }
