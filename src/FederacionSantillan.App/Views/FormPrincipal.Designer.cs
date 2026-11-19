@@ -208,18 +208,19 @@ partial class FormPrincipal
         panelTop.Size = new Size(1120, 56);
 
         lblBrand.AutoSize = true;
-        lblBrand.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+        lblBrand.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         lblBrand.ForeColor = Color.White;
-        lblBrand.Location = new Point(16, 15);
+        lblBrand.Location = new Point(16, 16);
         lblBrand.Name = "lblBrand";
-        lblBrand.Text = "Federación Santillán Seguros — Panel de Cobranzas y Cartera";
+        lblBrand.Text = "Federación Santillán Seguros — Panel de Cartera";
 
         lblUsuarioActivo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        lblUsuarioActivo.AutoSize = true;
-        lblUsuarioActivo.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
+        lblUsuarioActivo.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
         lblUsuarioActivo.ForeColor = Color.FromArgb(219, 234, 254);
-        lblUsuarioActivo.Location = new Point(495, 19);
+        lblUsuarioActivo.Location = new Point(440, 19);
         lblUsuarioActivo.Name = "lblUsuarioActivo";
+        lblUsuarioActivo.Size = new Size(320, 20);
+        lblUsuarioActivo.TextAlign = ContentAlignment.MiddleRight;
         lblUsuarioActivo.Text = "Usuario: --";
 
         btnOpciones.AccessibleName = "Opciones";
