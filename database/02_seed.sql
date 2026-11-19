@@ -17,12 +17,12 @@ INSERT IGNORE INTO branches (branch_id, code, name, description) VALUES
 (5, 'SURETY', 'Caución', 'Garantías contractuales y de alquiler');
 
 INSERT IGNORE INTO insureds (insured_id, tax_id, full_name, phone, email, address) VALUES
-(1, '20-34567890-1', 'Gómez, Carlos Alberto', '291-4123456', 'cgomez@email.com', 'Av. Alem 1240, Bahía Blanca'),
-(2, '27-29876543-4', 'Fernández, Laura Beatriz', '291-5234567', 'laura.f@email.com', 'Sarmiento 450, Bahía Blanca'),
-(3, '20-18765432-9', 'Rodríguez, Martín Ezequiel', '291-6345678', 'mrodriguez@email.com', 'Alsina 820, Bahía Blanca'),
-(4, '27-38112233-0', 'Pérez, Sofía Valeria', '291-4987654', 'sofia.perez@email.com', '12 de Octubre 315, Bahía Blanca'),
-(5, '20-25667788-5', 'Martínez, Juan Ignacio', '291-5778899', 'jmartinez@email.com', 'Zelarrayán 1510, Bahía Blanca'),
-(6, '30-71223344-8', 'Constructora del Sur SRL', '291-4550011', 'admin@constructorasur.com.ar', 'Parque Industrial, Bahía Blanca');
+(1, '20-34567890-6', 'Gómez, Carlos Alberto', '2914123456', 'cgomez@email.com', 'Av. Alem 1240, Bahía Blanca'),
+(2, '27-29876543-3', 'Fernández, Laura Beatriz', '2915234567', 'laura.f@email.com', 'Sarmiento 450, Bahía Blanca'),
+(3, '20-18765432-8', 'Rodríguez, Martín Ezequiel', '2916345678', 'mrodriguez@email.com', 'Alsina 820, Bahía Blanca'),
+(4, '27-38112233-1', 'Pérez, Sofía Valeria', '2914987654', 'sofia.perez@email.com', '12 de Octubre 315, Bahía Blanca'),
+(5, '20-25667788-2', 'Martínez, Juan Ignacio', '2915778899', 'jmartinez@email.com', 'Zelarrayán 1510, Bahía Blanca'),
+(6, '30-71223345-8', 'Constructora del Sur SRL', '2914550011', 'admin@constructorasur.com.ar', 'Parque Industrial, Bahía Blanca');
 
 INSERT IGNORE INTO policies (policy_id, policy_number, insured_id, branch_id, company, insured_asset, total_premium, installments_count, start_date, end_date, status) VALUES
 (1, 900101, 1, 1, 'Federación Patronal Seguros', 'Toyota Hilux 2022 - Patente AF452KL', 360000.00, 6, DATE_SUB(CURDATE(), INTERVAL 60 DAY), DATE_ADD(CURDATE(), INTERVAL 120 DAY), 'ACTIVE'),
