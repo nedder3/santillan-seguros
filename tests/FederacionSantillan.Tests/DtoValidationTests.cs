@@ -35,6 +35,19 @@ public class DtoValidationTests
     }
 
     [Fact]
+    public void Given_InsuredDtoWithLettersInPhoneOrTaxId_When_Validated_Then_ReturnsFalse()
+    {
+        var dto = TestDataFactory.CreateValidInsuredDto();
+        dto.Phone = "asdsadsa";
+        dto.TaxId = "abc-12345";
+
+        bool valid = ValidateDto(dto, out var errors);
+
+        Assert.False(valid);
+        Assert.Equal(2, errors.Count);
+    }
+
+    [Fact]
     public void Given_RegisterUserDtoWithMismatchedPasswords_When_Validated_Then_ReturnsFalse()
     {
         var dto = TestDataFactory.CreateValidRegisterUserDto();
